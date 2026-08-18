@@ -27,6 +27,10 @@ function showSection(sectionId, buttonElement) {
     // Aplica estilo ativo ao botão clicado
     buttonElement.classList.remove('text-gray-600', 'font-medium', 'border-transparent');
     buttonElement.classList.add('bg-blue-50', 'text-blue-950', 'border-l-4', 'border-blue-950', 'font-semibold');
+   buttonElement.scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest'
+});
 
     // Força a rolagem para o topo do conteúdo em telas menores
    updateSectionNavigation(sectionId);
