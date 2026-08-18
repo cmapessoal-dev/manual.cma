@@ -1084,7 +1084,7 @@
    ========================= */
 
 .cma-hero {
-    min-height: 72vh;
+    min-height: 100vh;
     position: relative;
     display: flex;
     align-items: center;
@@ -1207,4 +1207,29 @@
     .cma-hero-meta span {
         display: none;
     }
+}
+.cma-hero-actions {
+    margin-top: 32px;
+}
+
+.cma-hero-btn {
+    display: inline-block;
+    background: #fbbf24;
+    color: #172554;
+    padding: 14px 30px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 800;
+    text-decoration: none;
+    box-shadow: 0 10px 24px rgba(0,0,0,.18);
+    transition: .2s ease;
+}
+
+.cma-hero-btn:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+}
+
+html {
+    scroll-behavior: smooth;
 }
