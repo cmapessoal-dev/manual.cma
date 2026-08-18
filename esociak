@@ -865,7 +865,19 @@ function renderCmaCalendar() {
                 'esocial'
             );
         }
-
+        
+        // GPS avulsa
+if (
+    due15.getFullYear() === year &&
+    due15.getMonth() === month &&
+    due15.getDate() === day
+) {
+    addCalendarEvent(
+        dayElement,
+        'GPS avulsa',
+        'gps'
+    );
+}
 
         // FGTS / INSS
         if (
