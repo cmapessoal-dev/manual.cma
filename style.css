@@ -1551,3 +1551,11 @@ button[onclick^="toggleExplainer"]:hover {
         font-size: 17px;
     }
 }
+.cma-event-gps {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.cma-dot-gps {
+    background: #7c3aed;
+}
