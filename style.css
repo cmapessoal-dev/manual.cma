@@ -1330,3 +1330,16 @@ button[onclick^="toggleExplainer"]:hover {
     background: #dbeafe !important;
     transform: translateY(-1px);
 }
+/* ITEM ATIVO DO SUMÁRIO CMA */
+#manual-menu button {
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+}
+
+#manual-menu button.bg-blue-50 {
+    color: #082f7d !important;
+    font-weight: 700 !important;
+    background: #eff6ff !important;
+    border-left-color: #2563eb !important;
+    border-radius: 0 6px 6px 0;
+}
