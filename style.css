@@ -1579,3 +1579,24 @@ button[onclick^="toggleExplainer"]:hover {
     padding: 12px 4px;
     border-right: 1px solid rgba(23, 37, 84, 0.12);
 }
+.manual-section .bg-white p,
+.manual-section .bg-blue-50 p,
+.manual-section .bg-amber-50 p,
+.manual-section .bg-red-50 p,
+.manual-section .bg-gray-100 p {
+    width: 100%;
+    max-width: none;
+    text-align: justify;
+    text-justify: inter-word;
+    line-height: 1.65;
+    margin: 0;
+}
+
+.manual-section .bg-white,
+.manual-section .bg-blue-50,
+.manual-section .bg-amber-50,
+.manual-section .bg-red-50,
+.manual-section .bg-gray-100 {
+    width: 100%;
+    box-sizing: border-box;
+}
