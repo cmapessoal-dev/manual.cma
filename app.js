@@ -44,7 +44,7 @@ const manualSections = [
     { id: 'sst', nome: 'SST e CIPA' },
     { id: 'ferias', nome: 'Programação de Férias' },
     { id: 'beneficios', nome: 'Gestão de Benefícios' },
-    { id: 'demissao', nome: 'CCT e Rotinas de Demissão' }
+    { id: 'demissao', nome: 'CCT e Rotinas de Demissão' },
    { id: 'acidente', nome: 'Acidente de Trabalho' },
 { id: 'mei', nome: 'Contratação de MEI/Autônomos' },
 { id: 'cargos', nome: 'Plano de Cargos e Salários' },
