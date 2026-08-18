@@ -1078,6 +1078,7 @@
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
 /* =========================
    CAPA CMA
    ========================= */
@@ -1103,9 +1104,9 @@
     inset: 0;
     background: linear-gradient(
         90deg,
-        rgba(2, 13, 39, .15),
-        rgba(2, 13, 39, .02),
-        rgba(2, 13, 39, .15)
+        rgba(2,13,39,.15),
+        rgba(2,13,39,.02),
+        rgba(2,13,39,.15)
     );
 }
 
@@ -1129,9 +1130,8 @@
 
 .cma-hero-logo img {
     display: block;
-    width: auto;
-    height: 72px;
-    max-width: 260px;
+    width: 210px;
+    height: auto;
 }
 
 .cma-hero-badge {
@@ -1201,14 +1201,10 @@
     }
 
     .cma-hero-logo img {
-        height: 58px;
+        width: 165px;
     }
 
     .cma-hero-meta span {
         display: none;
-    }
-
-    .cma-hero-meta {
-        line-height: 1.8;
     }
 }
