@@ -1244,3 +1244,45 @@ html {
 .cma-hero-action {
     margin-bottom: 30px;
 }
+/* ==========================================================
+   NAVEGAÇÃO ANTERIOR / PRÓXIMO — MANUAL CMA
+   ========================================================== */
+
+.cma-page-navigation {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.cma-nav-btn {
+    padding: 10px 20px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cma-nav-anterior {
+    background: #ffffff;
+    color: #082f7d;
+    border: 1px solid #082f7d;
+}
+
+.cma-nav-anterior:hover {
+    background: #f3f6fb;
+}
+
+.cma-nav-proximo {
+    background: #082f7d;
+    color: #ffffff;
+    border: 1px solid #082f7d;
+}
+
+.cma-nav-proximo:hover {
+    background: #061f54;
+}
