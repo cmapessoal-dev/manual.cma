@@ -1233,3 +1233,14 @@
 html {
     scroll-behavior: smooth;
 }
+/* AJUSTE FINAL DA CAPA CMA */
+
+/* Dá mais espaço entre o botão e as informações do rodapé da capa */
+.cma-hero-actions {
+    margin-bottom: 30px;
+}
+
+/* Caso o botão esteja usando a classe no singular */
+.cma-hero-action {
+    margin-bottom: 30px;
+}
