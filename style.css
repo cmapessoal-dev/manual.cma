@@ -1078,177 +1078,137 @@
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
+/* =========================
+   CAPA CMA
+   ========================= */
 
-/* ==========================================================================
-   CAPA / HERO - CMA
-   ========================================================================== */
-
-.cma-capa {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #061d4f 0%, #082f7d 55%, #071a45 100%);
-    color: #ffffff;
+.cma-hero {
+    min-height: 72vh;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     overflow: hidden;
-    padding: 60px 24px;
+    padding: 70px 24px;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(59,130,246,.24), transparent 30%),
+        radial-gradient(circle at 85% 75%, rgba(245,158,11,.12), transparent 28%),
+        linear-gradient(135deg, #061a46 0%, #082a6d 50%, #061532 100%);
+    color: #fff;
+    border-bottom: 4px solid #f59e0b;
 }
 
-.cma-capa::before {
-    content: "";
+.cma-hero-overlay {
     position: absolute;
-    width: 420px;
-    height: 420px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    top: -180px;
-    left: -120px;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(2, 13, 39, .15),
+        rgba(2, 13, 39, .02),
+        rgba(2, 13, 39, .15)
+    );
 }
 
-.cma-capa::after {
-    content: "";
-    position: absolute;
-    width: 520px;
-    height: 520px;
-    border-radius: 50%;
-    background: rgba(245, 158, 11, 0.06);
-    bottom: -260px;
-    right: -160px;
-}
-
-.cma-capa-conteudo {
-    width: 100%;
-    max-width: 950px;
-    text-align: center;
+.cma-hero-content {
     position: relative;
     z-index: 2;
+    width: 100%;
+    max-width: 920px;
+    margin: 0 auto;
+    text-align: center;
 }
 
-.cma-capa-logo {
-    display: inline-block;
-    background: #ffffff;
-    padding: 12px 20px;
-    border-radius: 14px;
-    margin-bottom: 30px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+.cma-hero-logo {
+    display: inline-flex;
+    background: #fff;
+    padding: 10px 18px;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.22);
+    margin-bottom: 24px;
 }
 
-.cma-capa-logo img {
-    height: 85px;
-    width: auto;
-}
-
-.cma-capa-selo {
-    display: inline-block;
-    border: 1px solid #fbbf24;
-    color: #fbbf24;
-    padding: 8px 18px;
-    border-radius: 999px;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .05em;
-    margin-bottom: 25px;
-}
-
-.cma-capa h1 {
-    font-size: clamp(38px, 6vw, 68px);
-    line-height: 1.05;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    margin-bottom: 25px;
-}
-
-.cma-capa h1 span {
-    color: #fbbf24;
+.cma-hero-logo img {
     display: block;
+    width: auto;
+    height: 72px;
+    max-width: 260px;
 }
 
-.cma-capa-subtitulo {
-    font-size: clamp(20px, 2.5vw, 28px);
-    line-height: 1.4;
+.cma-hero-badge {
+    width: fit-content;
+    margin: 0 auto 24px;
+    padding: 8px 18px;
+    border: 1px solid #fbbf24;
+    border-radius: 999px;
+    color: #fbbf24;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .06em;
+}
+
+.cma-hero-title {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(38px, 5vw, 64px);
+    line-height: 1.06;
+    font-weight: 800;
+    letter-spacing: -.035em;
+}
+
+.cma-hero-title span {
+    display: block;
+    color: #fbbf24;
+    margin-top: 8px;
+}
+
+.cma-hero-subtitle {
+    margin: 28px auto 0;
+    max-width: 720px;
     color: #dbeafe;
-    margin: 0 auto 18px;
-    max-width: 760px;
+    font-size: clamp(20px, 2.4vw, 27px);
+    line-height: 1.45;
 }
 
-.cma-capa-subtitulo strong {
-    color: #ffffff;
+.cma-hero-subtitle strong {
+    color: #fff;
 }
 
-.cma-capa-descricao {
+.cma-hero-text {
+    margin: 20px auto 0;
+    max-width: 720px;
     color: #bfdbfe;
     font-size: 15px;
-    max-width: 750px;
-    margin: 0 auto 35px;
     line-height: 1.7;
 }
 
-.cma-capa-botoes {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.cma-btn-principal {
-    background: #fbbf24;
-    color: #172554;
-    padding: 14px 28px;
-    border-radius: 9px;
-    font-weight: 800;
-    text-decoration: none;
-    transition: .2s;
-}
-
-.cma-btn-principal:hover {
-    background: #f59e0b;
-    transform: translateY(-2px);
-}
-
-.cma-btn-secundario {
-    border: 1px solid rgba(255,255,255,.45);
-    color: #ffffff;
-    padding: 13px 28px;
-    border-radius: 9px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: .2s;
-}
-
-.cma-btn-secundario:hover {
-    background: rgba(255,255,255,.10);
-}
-
-.cma-capa-info {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255,255,255,.15);
+.cma-hero-meta {
+    margin-top: 34px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255,255,255,.16);
     color: #bfdbfe;
     font-size: 13px;
 }
 
-html {
-    scroll-behavior: smooth;
+.cma-hero-meta span {
+    margin: 0 10px;
+    color: #fbbf24;
 }
 
 @media (max-width: 640px) {
-    .cma-capa {
-        min-height: 100svh;
-        padding: 40px 20px;
+    .cma-hero {
+        min-height: auto;
+        padding: 48px 18px;
     }
 
-    .cma-capa-logo img {
-        height: 65px;
+    .cma-hero-logo img {
+        height: 58px;
     }
 
-    .cma-capa-botoes {
-        flex-direction: column;
+    .cma-hero-meta span {
+        display: none;
     }
 
-    .cma-btn-principal,
-    .cma-btn-secundario {
-        width: 100%;
+    .cma-hero-meta {
+        line-height: 1.8;
     }
 }
