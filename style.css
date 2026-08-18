@@ -1412,15 +1412,16 @@ button[onclick^="toggleExplainer"]:hover {
 .cma-calendar-weekdays {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    background: #fbbf24;
-    color: #172554;
+   background: #f8fafc;
+   color: #082f7d;
     font-size: 11px;
     font-weight: 800;
     text-align: center;
+   border-top: 3px solid #f5b51b;
     border-bottom: 1px solid #e5e7eb;
 }
 
-.cma-calendar-weekdays div {
+padding: 12px 4px;
     padding: 10px 4px;
     border-right: 1px solid rgba(23, 37, 84, 0.12);
 }
@@ -1558,4 +1559,20 @@ button[onclick^="toggleExplainer"]:hover {
 
 .cma-dot-gps {
     background: #7c3aed;
+}
+.cma-calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: #f8fafc;
+    color: #082f7d;
+    font-size: 11px;
+    font-weight: 800;
+    text-align: center;
+    border-top: 3px solid #f5b51b;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.cma-calendar-weekdays div {
+    padding: 12px 4px;
+    border-right: 1px solid rgba(23, 37, 84, 0.12);
 }
