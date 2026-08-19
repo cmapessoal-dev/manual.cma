@@ -2,7 +2,35 @@
   let navegacaoProfundaInstalada=false;
   let showSectionOriginal=null;
 
+  function criarSuporteWhatsapp(){
+    if(document.getElementById('cma-whatsapp-suporte'))return;
+
+    const link=document.createElement('a');
+    link.id='cma-whatsapp-suporte';
+    link.className='cma-whatsapp-suporte';
+    link.href='https://wa.me/5521965805916?text=Ol%C3%A1%21%20Fiquei%20com%20uma%20d%C3%BAvida%20sobre%20uma%20regra%20do%20Manual%20CMA.%20Pode%20me%20ajudar%3F';
+    link.target='_blank';
+    link.rel='noopener';
+    link.setAttribute('aria-label','Ficou com dúvidas sobre esta regra? Fale com nosso DP pelo WhatsApp');
+    link.title='Ficou com dúvidas sobre esta regra? Fale com nosso DP';
+    link.innerHTML=`
+      <span class="cma-whatsapp-texto">Ficou com dúvidas sobre esta regra?<strong>Fale com nosso DP</strong></span>
+      <span class="cma-whatsapp-icone" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><path d="M19.11 17.25c-.27-.14-1.58-.78-1.82-.87-.24-.09-.42-.14-.6.14-.18.27-.69.87-.85 1.05-.16.18-.31.2-.58.07-.27-.14-1.14-.42-2.17-1.34-.8-.71-1.34-1.59-1.5-1.86-.16-.27-.02-.42.12-.55.12-.12.27-.31.4-.47.13-.16.18-.27.27-.45.09-.18.04-.34-.02-.47-.07-.14-.6-1.45-.82-1.98-.22-.52-.44-.45-.6-.46h-.51c-.18 0-.47.07-.71.34-.24.27-.93.91-.93 2.21s.95 2.56 1.08 2.74c.13.18 1.87 2.85 4.53 4 .63.27 1.12.44 1.5.56.63.2 1.21.17 1.66.1.51-.08 1.58-.65 1.8-1.27.22-.62.22-1.16.16-1.27-.07-.11-.25-.18-.52-.31z"/><path d="M16.04 4.5c-6.36 0-11.53 5.16-11.53 11.52 0 2.03.53 4.01 1.53 5.75L4.41 27.7l6.07-1.59a11.5 11.5 0 0 0 5.56 1.42h.01c6.35 0 11.52-5.17 11.52-11.52 0-3.08-1.2-5.97-3.38-8.15A11.44 11.44 0 0 0 16.04 4.5zm0 20.99h-.01c-1.72 0-3.4-.46-4.87-1.33l-.35-.21-3.6.94.96-3.51-.23-.36a9.43 9.43 0 0 1-1.45-5c0-5.27 4.29-9.56 9.57-9.56 2.55 0 4.95 1 6.76 2.8a9.5 9.5 0 0 1 2.8 6.76c-.01 5.27-4.3 9.57-9.58 9.57z"/></svg>
+      </span>`;
+    document.body.appendChild(link);
+
+    if(!document.getElementById('cma-whatsapp-style')){
+      const style=document.createElement('style');
+      style.id='cma-whatsapp-style';
+      style.textContent=`
+        .cma-whatsapp-suporte{position:fixed;right:22px;bottom:22px;z-index:9999;display:flex;align-items:center;gap:10px;text-decoration:none;filter:drop-shadow(0 8px 18px rgba(15,23,42,.18));transition:transform .2s ease,filter .2s ease}.cma-whatsapp-suporte:hover{transform:translateY(-2px);filter:drop-shadow(0 12px 22px rgba(15,23,42,.24))}.cma-whatsapp-texto{display:flex;flex-direction:column;align-items:flex-end;max-width:235px;padding:9px 12px;border:1px solid #d1fae5;border-radius:12px;background:#fff;color:#475569;font-size:11.5px;line-height:1.3;box-shadow:0 5px 16px rgba(15,23,42,.08)}.cma-whatsapp-texto strong{margin-top:2px;color:#166534;font-size:12px}.cma-whatsapp-icone{width:52px;height:52px;display:grid;place-items:center;flex:0 0 auto;border-radius:50%;background:#25D366;color:#fff;border:3px solid #fff;box-shadow:0 6px 18px rgba(37,211,102,.35)}.cma-whatsapp-icone svg{width:29px;height:29px;fill:currentColor}@media(max-width:640px){.cma-whatsapp-suporte{right:14px;bottom:14px;gap:7px}.cma-whatsapp-texto{max-width:190px;padding:8px 10px;font-size:10.5px}.cma-whatsapp-texto strong{font-size:11px}.cma-whatsapp-icone{width:48px;height:48px}.cma-whatsapp-icone svg{width:27px;height:27px}}`;
+      document.head.appendChild(style);
+    }
+  }
+
   function criarAreaModelos(){
+    criarSuporteWhatsapp();
     const menu=document.getElementById('manual-menu');
     const main=document.querySelector('#manual-conteudo main');
     if(!menu||!main)return;
