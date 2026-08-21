@@ -68,6 +68,7 @@
     instalarLinksDiretos();
     carregarComplementoJornada();
     carregarComercioFeriados();
+    carregarAtualizacoesSST();
   }
 
   function card(sigla,titulo,texto){
@@ -90,6 +91,14 @@
     const script=document.createElement('script');
     script.id='cma-comercio-feriados-loader';
     script.src='comercio-feriados/comercio-feriados.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
+  function carregarAtualizacoesSST(){
+    if(document.getElementById('cma-sst-extra-loader')||document.getElementById('cma-sst-atualizacoes'))return;
+    const script=document.createElement('script');
+    script.id='cma-sst-extra-loader';
+    script.src='sst/sst-extra.js?v=20260821';
     document.body.appendChild(script);
   }
 
