@@ -66,6 +66,7 @@
     }
 
     instalarLinksDiretos();
+    carregarComplementoJornada();
   }
 
   function card(sigla,titulo,texto){
@@ -73,6 +74,14 @@
       return `<article class="cma-modelo-card" data-categoria="admissao"><div class="cma-modelo-card-top"><div class="cma-modelo-card-icon">AD</div><h3>${titulo}</h3></div><p>${texto}</p><a class="cma-modelo-file" href="modelos/admissao/documentos-e-informacoes-para-admissao-clt.pdf" target="_blank" rel="noopener"><span class="cma-modelo-file-icon">PDF</span><span class="cma-modelo-file-text"><strong>Documentos e Informações para Admissão — Funcionário CLT</strong><span>Formulário de admissão • PDF</span></span><span class="cma-modelo-file-action">Abrir ↗</span></a><div class="cma-modelo-card-footer"><span class="cma-modelo-count">1 modelo disponível</span><span class="cma-modelo-status cma-modelo-status-disponivel">Disponível</span></div></article>`;
     }
     return `<article class="cma-modelo-card" data-categoria="${sigla}"><div class="cma-modelo-card-top"><div class="cma-modelo-card-icon">${sigla.slice(0,2).toUpperCase()}</div><h3>${titulo}</h3></div><p>${texto}</p><div class="cma-modelo-card-footer"><span class="cma-modelo-count">Nenhum arquivo cadastrado</span><span class="cma-modelo-status">Em preparação</span></div></article>`;
+  }
+
+  function carregarComplementoJornada(){
+    if(document.getElementById('cma-jornada-extra-loader')||document.getElementById('cma-jornada-domingos-feriados'))return;
+    const script=document.createElement('script');
+    script.id='cma-jornada-extra-loader';
+    script.src='jornada/jornada-extra.js?v=20260821';
+    document.body.appendChild(script);
   }
 
   function idDaHash(){
