@@ -31,10 +31,19 @@
     document.body.appendChild(script);
   }
 
+  function carregarIntroducaoExtra(){
+    if(document.getElementById('cma-introducao-extra-loader')||document.getElementById('cma-introducao-escopo'))return;
+    const script=document.createElement('script');
+    script.id='cma-introducao-extra-loader';
+    script.src='introducao/introducao-extra.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function incluirBasesLegaisAtualizadas(){
     carregarTipografiaGlobal();
     carregarUrlCapa();
     carregarCalculadoraCusto();
+    carregarIntroducaoExtra();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
