@@ -18,11 +18,13 @@
 
   function texto(tipo){
     if(tipo==='cct')return {
-      titulo:'Atenção à norma coletiva e ao enquadramento',
+      botao:'Observações sobre CCT e enquadramento',
+      titulo:'Norma coletiva e enquadramento podem alterar a regra geral',
       corpo:'As informações desta página apresentam a regra geral. A Convenção ou o Acordo Coletivo de Trabalho, o enquadramento sindical, a atividade da empresa e condições específicas do vínculo podem estabelecer critérios diferentes ou adicionais. Antes de aplicar a orientação, confirme a norma coletiva vigente e as particularidades do caso.'
     };
     return {
-      titulo:'Atenção às particularidades do caso',
+      botao:'Observações importantes',
+      titulo:'A aplicação pode depender das particularidades do caso',
       corpo:'As informações desta página têm caráter de orientação geral e inicial. A aplicação prática pode variar conforme a situação concreta, documentos disponíveis, atividade exercida, enquadramento da empresa e legislação específica aplicável. Situações excepcionais devem ser analisadas individualmente antes da tomada de decisão.'
     };
   }
@@ -33,7 +35,25 @@
     const t=texto(dados.tipo);
     const aviso=document.createElement('div');
     aviso.className='cma-aviso-legal';
-    aviso.innerHTML=`<div class="cma-aviso-legal-icone" aria-hidden="true">!</div><div><strong>${t.titulo}</strong><p>${t.corpo}</p></div>`;
+    aviso.innerHTML=`
+      <button type="button" class="cma-aviso-legal-btn" aria-expanded="false">
+        <span class="cma-aviso-legal-info" aria-hidden="true">i</span>
+        <span>${t.botao}</span>
+        <span class="cma-aviso-legal-seta" aria-hidden="true">⌄</span>
+      </button>
+      <div class="cma-aviso-legal-conteudo" hidden>
+        <strong>${t.titulo}</strong>
+        <p>${t.corpo}</p>
+      </div>`;
+
+    const btn=aviso.querySelector('.cma-aviso-legal-btn');
+    const conteudo=aviso.querySelector('.cma-aviso-legal-conteudo');
+    btn.addEventListener('click',()=>{
+      const aberto=btn.getAttribute('aria-expanded')==='true';
+      btn.setAttribute('aria-expanded',String(!aberto));
+      conteudo.hidden=aberto;
+      aviso.classList.toggle('is-open',!aberto);
+    });
 
     const cabecalho=secao.querySelector(':scope > .flex.border-b, :scope > .flex.items-start, :scope > h3');
     if(cabecalho&&cabecalho.nextSibling)secao.insertBefore(aviso,cabecalho.nextSibling);
@@ -47,7 +67,18 @@
     if(document.getElementById('cma-avisos-legais-style'))return;
     const st=document.createElement('style');
     st.id='cma-avisos-legais-style';
-    st.textContent=`.cma-aviso-legal{display:flex;align-items:flex-start;gap:11px;margin:0 0 16px;padding:12px 14px;border:1px solid #fde68a;border-left:4px solid #d97706;border-radius:0 10px 10px 0;background:#fffbeb;box-shadow:0 2px 7px rgba(15,23,42,.04)}.cma-aviso-legal-icone{display:flex;align-items:center;justify-content:center;flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:#d97706;color:#fff;font-size:13px;font-weight:900;margin-top:1px}.cma-aviso-legal strong{display:block;color:#92400e;font-size:13px;line-height:1.35;margin-bottom:3px}.cma-aviso-legal p{margin:0;color:#78350f;font-size:12.5px;line-height:1.55}@media(max-width:640px){.cma-aviso-legal{padding:12px;gap:9px}.cma-aviso-legal strong{font-size:14px}.cma-aviso-legal p{font-size:14px;line-height:1.55}}`;
+    st.textContent=`
+      .cma-aviso-legal{margin:0 0 16px}
+      .cma-aviso-legal-btn{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#475569;font-size:12px;font-weight:700;cursor:pointer;transition:.2s;box-shadow:0 1px 3px rgba(15,23,42,.04)}
+      .cma-aviso-legal-btn:hover{background:#f8fafc;border-color:#94a3b8;color:#1e3a8a}
+      .cma-aviso-legal-info{display:flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:#e0e7ff;color:#1e3a8a;font-size:11px;font-weight:900;font-family:Georgia,serif}
+      .cma-aviso-legal-seta{font-size:14px;line-height:1;transition:transform .2s}
+      .cma-aviso-legal.is-open .cma-aviso-legal-seta{transform:rotate(180deg)}
+      .cma-aviso-legal-conteudo{margin-top:8px;padding:11px 13px;border:1px solid #dbe3ef;border-left:3px solid #64748b;border-radius:0 9px 9px 0;background:#f8fafc;color:#475569;box-shadow:0 2px 7px rgba(15,23,42,.03)}
+      .cma-aviso-legal-conteudo strong{display:block;color:#334155;font-size:12.5px;line-height:1.4;margin-bottom:4px}
+      .cma-aviso-legal-conteudo p{margin:0;color:#64748b;font-size:12.5px;line-height:1.55}
+      @media(max-width:640px){.cma-aviso-legal-btn{width:100%;justify-content:flex-start;font-size:14px;padding:9px 11px}.cma-aviso-legal-seta{margin-left:auto}.cma-aviso-legal-conteudo strong,.cma-aviso-legal-conteudo p{font-size:14px}}
+    `;
     document.head.appendChild(st);
   }
 
