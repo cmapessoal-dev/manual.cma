@@ -12,6 +12,12 @@
       bibliografia.src='bibliografia/bibliografia-extra.js?v=20260821';
       document.body.appendChild(bibliografia);
     }
+    if(!document.getElementById('cma-guarda-documentos-loader')){
+      const guarda=document.createElement('script');
+      guarda.id='cma-guarda-documentos-loader';
+      guarda.src='guarda-documentos/guarda-documentos.js?v=20260821';
+      document.body.appendChild(guarda);
+    }
   }
 
   function removerCipaOriginal(secao){
