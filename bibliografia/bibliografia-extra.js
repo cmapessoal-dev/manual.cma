@@ -1,4 +1,12 @@
 (function(){
+  function carregarTipografiaGlobal(){
+    if(document.getElementById('cma-tipografia-global-loader')||document.getElementById('cma-tipografia-global'))return;
+    const script=document.createElement('script');
+    script.id='cma-tipografia-global-loader';
+    script.src='tipografia/tipografia.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function carregarTabelaMultas(){
     if(document.getElementById('cma-tabela-multas-loader')||document.getElementById('tabela-multas'))return;
     const script=document.createElement('script');
@@ -8,6 +16,7 @@
   }
 
   function incluirBasesLegaisAtualizadas(){
+    carregarTipografiaGlobal();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
