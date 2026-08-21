@@ -1,10 +1,25 @@
 (function(){
+  function carregarComplementosGerais(){
+    if(!document.getElementById('cma-faltas-justificaveis-loader')){
+      const faltas=document.createElement('script');
+      faltas.id='cma-faltas-justificaveis-loader';
+      faltas.src='faltas-justificaveis/faltas-justificaveis.js?v=20260821';
+      document.body.appendChild(faltas);
+    }
+    if(!document.getElementById('cma-bibliografia-extra-loader')){
+      const bibliografia=document.createElement('script');
+      bibliografia.id='cma-bibliografia-extra-loader';
+      bibliografia.src='bibliografia/bibliografia-extra.js?v=20260821';
+      document.body.appendChild(bibliografia);
+    }
+  }
+
   function incluirAtualizacoesSST(){
     const secao=document.getElementById('sst');
-    if(!secao||document.getElementById('cma-sst-atualizacoes'))return;
+    if(!secao||document.getElementById('cma-sst-atualizacoes')){carregarComplementosGerais();return;}
 
     const conteudo=secao.querySelector('.space-y-4.text-sm.text-gray-700');
-    if(!conteudo)return;
+    if(!conteudo){carregarComplementosGerais();return;}
 
     const wrapper=document.createElement('div');
     wrapper.id='cma-sst-atualizacoes';
@@ -54,6 +69,7 @@
       </div>`;
 
     conteudo.appendChild(wrapper);
+    carregarComplementosGerais();
   }
 
   if(document.readyState==='loading'){
