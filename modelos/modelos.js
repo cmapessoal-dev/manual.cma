@@ -67,6 +67,7 @@
 
     instalarLinksDiretos();
     carregarComplementoJornada();
+    carregarComercioFeriados();
   }
 
   function card(sigla,titulo,texto){
@@ -84,8 +85,16 @@
     document.body.appendChild(script);
   }
 
+  function carregarComercioFeriados(){
+    if(document.getElementById('cma-comercio-feriados-loader')||document.getElementById('comercio-feriados'))return;
+    const script=document.createElement('script');
+    script.id='cma-comercio-feriados-loader';
+    script.src='comercio-feriados/comercio-feriados.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function idDaHash(){
-    const valor=decodeURIComponent((window.location.hash||'').replace(/^#/,''));
+    const valor=decodeURIComponent((window.location.hash||'').replace(/^#/,'') );
     return manualSections.some(item=>item.id===valor)?valor:null;
   }
 
