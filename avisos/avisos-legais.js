@@ -63,9 +63,18 @@
     document.head.appendChild(st);
   }
 
+  function carregarBuscaAvancada(){
+    if(document.getElementById('cma-busca-avancada-loader'))return;
+    const script=document.createElement('script');
+    script.id='cma-busca-avancada-loader';
+    script.src='busca/busca-avancada.js?v=20260821b';
+    document.body.appendChild(script);
+  }
+
   function iniciar(){
     instalarEstilo();
     aplicar();
+    carregarBuscaAvancada();
     const alvo=document.getElementById('manual-conteudo')||document.body;
     const obs=new MutationObserver(()=>aplicar());
     obs.observe(alvo,{childList:true,subtree:true});
