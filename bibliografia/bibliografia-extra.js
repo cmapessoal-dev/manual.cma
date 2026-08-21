@@ -1,7 +1,15 @@
 (function(){
+  function carregarTabelaMultas(){
+    if(document.getElementById('cma-tabela-multas-loader')||document.getElementById('tabela-multas'))return;
+    const script=document.createElement('script');
+    script.id='cma-tabela-multas-loader';
+    script.src='multas/tabela-multas.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function incluirBasesLegaisAtualizadas(){
     const secao=document.getElementById('baselegal');
-    if(!secao||document.getElementById('cma-bases-legais-20260821'))return;
+    if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
     const bloco=document.createElement('div');
     bloco.id='cma-bases-legais-20260821';
@@ -9,7 +17,7 @@
     bloco.innerHTML=`
       <div class="bg-blue-50 border-l-4 border-blue-900 p-4 rounded-r shadow-sm">
         <strong class="text-blue-950 block mb-1">Bases legais incluídas nas atualizações de agosto/2026</strong>
-        <p class="text-blue-950 leading-relaxed">As normas abaixo fundamentam os conteúdos adicionados ao Manual sobre trabalho em domingos e feriados, riscos psicossociais, campanhas de saúde e faltas justificáveis.</p>
+        <p class="text-blue-950 leading-relaxed">As normas abaixo fundamentam os conteúdos adicionados ao Manual sobre trabalho em domingos e feriados, riscos psicossociais, campanhas de saúde, faltas justificáveis e multas administrativas trabalhistas.</p>
       </div>
 
       <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
@@ -46,10 +54,19 @@
           <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15377.htm" target="_blank" rel="noopener"><strong>Lei nº 15.377/2026</strong></a> — dever de informar sobre exames preventivos de HPV e câncer, nos termos do art. 473, XII.</li>
           <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452compilado.htm" target="_blank" rel="noopener"><strong>CLT — art. 473, texto compilado</strong></a> — referência principal para consulta das hipóteses vigentes.</li>
         </ul>
+      </div>
+
+      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+        <strong class="text-blue-950 block mb-2">Multas administrativas trabalhistas</strong>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li><strong>Portaria MTE nº 1.131, de 3 de julho de 2025</strong> — atualiza os valores e critérios das multas administrativas trabalhistas e altera os Anexos I e IV da Portaria MTP nº 667/2021.</li>
+          <li><strong>Portaria MTP nº 667/2021</strong> — regulamenta o processo administrativo trabalhista e os parâmetros para aplicação das multas administrativas.</li>
+        </ul>
       </div>`;
 
     const nav=secao.querySelector('.cma-page-navigation');
     if(nav)secao.insertBefore(bloco,nav);else secao.appendChild(bloco);
+    carregarTabelaMultas();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',incluirBasesLegaisAtualizadas);else incluirBasesLegaisAtualizadas();
