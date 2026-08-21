@@ -15,8 +15,17 @@
     document.body.appendChild(script);
   }
 
+  function carregarUrlCapa(){
+    if(document.getElementById('cma-capa-url-loader'))return;
+    const script=document.createElement('script');
+    script.id='cma-capa-url-loader';
+    script.src='capa/capa-url.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function incluirBasesLegaisAtualizadas(){
     carregarTipografiaGlobal();
+    carregarUrlCapa();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
