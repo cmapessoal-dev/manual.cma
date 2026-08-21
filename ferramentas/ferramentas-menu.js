@@ -4,6 +4,13 @@
     const st=document.createElement('style');
     st.id='cma-ferramentas-menu-style';
     st.textContent=`
+      @media(min-width:1024px){
+        #manual-menu{max-height:calc(100vh - 3rem);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:10px}
+        #manual-menu::-webkit-scrollbar{width:7px}
+        #manual-menu::-webkit-scrollbar-track{background:transparent}
+        #manual-menu::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px}
+        #manual-menu::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+      }
       .cma-ferramentas-grupo{margin:4px 0}
       .cma-ferramentas-toggle{display:flex;align-items:center;width:100%;gap:9px;padding:9px 12px;border:0;border-left:4px solid transparent;border-radius:6px;background:transparent;color:#475569;font-size:14px;font-weight:700;text-align:left;cursor:pointer;transition:.18s}
       .cma-ferramentas-toggle:hover{background:#f8fafc;color:#172554}
@@ -19,17 +26,19 @@
     document.head.appendChild(st);
   }
 
-  function localizarBotao(){
-    if(typeof getMenuButton==='function')return getMenuButton('custo-empregado');
-    return [...document.querySelectorAll('#manual-menu button')].find(b=>(b.getAttribute('onclick')||'').includes("'custo-empregado'"));
+  function localizarBotao(id){
+    if(typeof getMenuButton==='function')return getMenuButton(id);
+    return [...document.querySelectorAll('#manual-menu button')].find(b=>(b.getAttribute('onclick')||'').includes(`'${id}'`));
   }
 
   function criarGrupo(){
     const menu=document.getElementById('manual-menu');
-    const botao=localizarBotao();
-    if(!menu||!botao)return false;
+    const botaoCusto=localizarBotao('custo-empregado');
+    const botaoModelos=localizarBotao('modelos');
+    if(!menu||!botaoCusto||!botaoModelos)return false;
     if(document.getElementById('cma-ferramentas-grupo'))return true;
 
+    const referencia=botaoModelos;
     const grupo=document.createElement('div');
     grupo.id='cma-ferramentas-grupo';
     grupo.className='cma-ferramentas-grupo';
@@ -41,8 +50,10 @@
       </button>
       <div id="cma-ferramentas-submenu" class="cma-ferramentas-submenu"></div>`;
 
-    menu.insertBefore(grupo,botao);
-    grupo.querySelector('.cma-ferramentas-submenu').appendChild(botao);
+    menu.insertBefore(grupo,referencia);
+    const submenu=grupo.querySelector('.cma-ferramentas-submenu');
+    submenu.appendChild(botaoModelos);
+    submenu.appendChild(botaoCusto);
 
     const toggle=grupo.querySelector('.cma-ferramentas-toggle');
     function abrir(estado){
@@ -51,23 +62,23 @@
     }
     toggle.addEventListener('click',()=>abrir(!grupo.classList.contains('is-open')));
 
-    botao.addEventListener('click',()=>abrir(true));
+    [botaoModelos,botaoCusto].forEach(botao=>botao.addEventListener('click',()=>abrir(true)));
 
     const hash=(location.hash||'').replace('#','');
-    abrir(hash==='custo-empregado');
+    abrir(hash==='custo-empregado'||hash==='modelos');
 
     const obs=new MutationObserver(()=>{
-      const ativo=botao.classList.contains('bg-blue-50')||botao.classList.contains('active-menu-btn');
+      const ativo=[botaoModelos,botaoCusto].some(botao=>botao.classList.contains('bg-blue-50')||botao.classList.contains('active-menu-btn'));
       if(ativo)abrir(true);
     });
-    obs.observe(botao,{attributes:true,attributeFilter:['class']});
+    [botaoModelos,botaoCusto].forEach(botao=>obs.observe(botao,{attributes:true,attributeFilter:['class']}));
     return true;
   }
 
   function iniciar(){
     instalarEstilo();
     let tentativas=0;
-    (function tentar(){if(criarGrupo())return;if(++tentativas<50)setTimeout(tentar,200)})();
+    (function tentar(){if(criarGrupo())return;if(++tentativas<60)setTimeout(tentar,200)})();
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar);else iniciar();
