@@ -47,12 +47,21 @@
     document.body.appendChild(script);
   }
 
+  function carregarAvisosLegais(){
+    if(document.getElementById('cma-avisos-legais-loader'))return;
+    const script=document.createElement('script');
+    script.id='cma-avisos-legais-loader';
+    script.src='avisos/avisos-legais.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function incluirBasesLegaisAtualizadas(){
     carregarTipografiaGlobal();
     carregarUrlCapa();
     carregarCalculadoraCusto();
     carregarExportacaoPdf();
     carregarIntroducaoExtra();
+    carregarAvisosLegais();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
@@ -97,7 +106,7 @@
           <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/_Ato2015-2018/2016/Lei/L13257.htm#art37" target="_blank" rel="noopener"><strong>Lei nº 13.257/2016</strong></a> — acompanhamento de filho de até 6 anos em consulta médica.</li>
           <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/_Ato2015-2018/2018/Lei/L13767.htm#art1" target="_blank" rel="noopener"><strong>Lei nº 13.767/2018</strong></a> — até 3 dias para exames preventivos de câncer.</li>
           <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2026/lei/l15377.htm" target="_blank" rel="noopener"><strong>Lei nº 15.377/2026</strong></a> — dever de informar sobre exames preventivos de HPV e câncer, nos termos do art. 473, XII.</li>
-          <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452compilado.htm" target="_blank" rel="noopener"><strong>CLT — art. 473, texto compilado</strong></a> — referência principal para consulta das hipóteses vigentes.</li>
+          <li><a class="text-blue-800 underline" href="https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452compilado.htm" target="_blank" rel="noopener"><strong>CLT — art. 473, texto compilado</strong></a> — referência principal para consulta das hipóes vigentes.</li>
         </ul>
       </div>
 
