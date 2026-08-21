@@ -21,6 +21,17 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-blue-950 w-7 h-7"><path d="M3 3h18v4H3z"/><path d="M5 7v14h14V7"/><path d="M9 11h6"/><path d="M9 15h6"/></svg>
           Trabalho no Comércio em Feriados
         </h3>
+        <button onclick="toggleExplainer('exp-comercio-feriados')" class="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 flex items-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle w-3.5 h-3.5 mr-1"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          Entenda os Termos
+        </button>
+      </div>
+
+      <div id="exp-comercio-feriados" class="hidden bg-slate-100 border border-slate-300 p-3 rounded mb-4 text-xs text-slate-700 space-y-2">
+        <p><strong>Autorização Permanente:</strong> permissão prevista em norma para determinadas atividades funcionarem em domingos e/ou feriados sem depender, para esse ponto específico, de nova autorização coletiva a cada ocasião.</p>
+        <p><strong>CCT — Convenção Coletiva de Trabalho:</strong> instrumento firmado entre o sindicato dos trabalhadores e o sindicato patronal que estabelece regras aplicáveis à categoria, podendo prever autorização e condições para o trabalho em feriados.</p>
+        <p><strong>Feriado:</strong> dia reconhecido por lei como feriado nacional, estadual ou municipal. Para fins trabalhistas, o trabalho nesses dias pode estar sujeito a regras próprias de autorização, compensação e remuneração.</p>
+        <p><strong>Legislação Municipal:</strong> normas do município que podem disciplinar o funcionamento do comércio, inclusive quanto à abertura de estabelecimentos em domingos e feriados.</p>
       </div>
 
       <div class="space-y-4 text-sm text-gray-700">
