@@ -1,7 +1,35 @@
 (function(){
   function incluirAvisoIntroducao(){
     const secao=document.getElementById('introducao');
-    if(!secao||document.getElementById('cma-introducao-escopo'))return;
+    if(!secao)return;
+
+    if(!document.getElementById('cma-introducao-alinhamento')){
+      const style=document.createElement('style');
+      style.id='cma-introducao-alinhamento';
+      style.textContent=`
+        #introducao .space-y-4.text-sm.text-gray-700.leading-relaxed > p,
+        #introducao .bg-blue-50 p,
+        #introducao .bg-amber-50 p {
+          width:100%;
+          max-width:none;
+          text-align:justify !important;
+          text-justify:inter-word;
+          line-height:1.68;
+          hyphens:auto;
+        }
+        @media(max-width:640px){
+          #introducao .space-y-4.text-sm.text-gray-700.leading-relaxed > p,
+          #introducao .bg-blue-50 p,
+          #introducao .bg-amber-50 p {
+            text-align:left !important;
+            hyphens:none;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    if(document.getElementById('cma-introducao-escopo'))return;
     const conteudo=secao.querySelector('.space-y-4.text-sm.text-gray-700.leading-relaxed');
     if(!conteudo)return;
 
