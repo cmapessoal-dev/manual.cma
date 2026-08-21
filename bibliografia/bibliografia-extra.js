@@ -17,7 +17,7 @@
     bloco.innerHTML=`
       <div class="bg-blue-50 border-l-4 border-blue-900 p-4 rounded-r shadow-sm">
         <strong class="text-blue-950 block mb-1">Bases legais incluídas nas atualizações de agosto/2026</strong>
-        <p class="text-blue-950 leading-relaxed">As normas abaixo fundamentam os conteúdos adicionados ao Manual sobre trabalho em domingos e feriados, riscos psicossociais, campanhas de saúde, faltas justificáveis e multas administrativas trabalhistas.</p>
+        <p class="text-blue-950 leading-relaxed">As normas abaixo fundamentam os conteúdos adicionados ao Manual sobre trabalho em domingos e feriados, riscos psicossociais, campanhas de saúde, faltas justificáveis, multas administrativas trabalhistas e guarda de documentos.</p>
       </div>
 
       <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
@@ -61,6 +61,22 @@
         <ul class="list-disc list-inside space-y-1 text-gray-600">
           <li><strong>Portaria MTE nº 1.131, de 3 de julho de 2025</strong> — atualiza os valores e critérios das multas administrativas trabalhistas e altera os Anexos I e IV da Portaria MTP nº 667/2021.</li>
           <li><strong>Portaria MTP nº 667/2021</strong> — regulamenta o processo administrativo trabalhista e os parâmetros para aplicação das multas administrativas.</li>
+        </ul>
+      </div>
+
+      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+        <strong class="text-blue-950 block mb-2">Guarda de documentos trabalhistas, previdenciários, FGTS e SST</strong>
+        <ul class="list-disc list-inside space-y-1 text-gray-600">
+          <li><strong>Constituição Federal, art. 7º, XXIX</strong> — referência prescricional utilizada no material-base para diversos documentos trabalhistas.</li>
+          <li><strong>Portaria MTP nº 671/2021</strong> — referências para CAGED e RAIS.</li>
+          <li><strong>Decreto-Lei nº 2.052/1983</strong> — documentos relacionados ao PIS/PASEP.</li>
+          <li><strong>Portaria nº 3.214/1978 e NRs 4, 5 e 7</strong> — documentos de SST, CIPA e exames ocupacionais.</li>
+          <li><strong>Decreto nº 99.684/1990</strong> — referência indicada no material-base para documentos do FGTS.</li>
+          <li><strong>Lei nº 5.172/1966 — CTN, art. 174</strong> — contribuição sindical.</li>
+          <li><strong>Decreto nº 3.048/1999, art. 348</strong> e <strong>Súmula Vinculante nº 8 do STF</strong> — documentos previdenciários.</li>
+          <li><strong>IN PRES/INSS nº 128/2022, art. 284, § 9º</strong> — PPP e comprovação de entrega ao trabalhador.</li>
+          <li><strong>Resoluções CODEFAT nº 393/2004 e nº 957/2022</strong> — Comunicação de Dispensa e Seguro-Desemprego.</li>
+          <li><strong>NR-1, item 1.5.7.3.3.1, e NR-7, item 7.6.1.1</strong> — guarda de documentos de PGR e PCMSO conforme o material-base.</li>
         </ul>
       </div>`;
 
