@@ -31,6 +31,14 @@
     document.body.appendChild(script);
   }
 
+  function carregarExportacaoPdf(){
+    if(document.getElementById('cma-exportar-pdf-loader'))return;
+    const script=document.createElement('script');
+    script.id='cma-exportar-pdf-loader';
+    script.src='calculadora-custo/exportar-pdf.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function carregarIntroducaoExtra(){
     if(document.getElementById('cma-introducao-extra-loader')||document.getElementById('cma-introducao-escopo'))return;
     const script=document.createElement('script');
@@ -43,6 +51,7 @@
     carregarTipografiaGlobal();
     carregarUrlCapa();
     carregarCalculadoraCusto();
+    carregarExportacaoPdf();
     carregarIntroducaoExtra();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
