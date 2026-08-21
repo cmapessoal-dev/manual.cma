@@ -55,6 +55,14 @@
     document.body.appendChild(script);
   }
 
+  function carregarFerramentasMenu(){
+    if(document.getElementById('cma-ferramentas-menu-loader'))return;
+    const script=document.createElement('script');
+    script.id='cma-ferramentas-menu-loader';
+    script.src='ferramentas/ferramentas-menu.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function incluirBasesLegaisAtualizadas(){
     carregarTipografiaGlobal();
     carregarUrlCapa();
@@ -62,6 +70,7 @@
     carregarExportacaoPdf();
     carregarIntroducaoExtra();
     carregarAvisosLegais();
+    carregarFerramentasMenu();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
