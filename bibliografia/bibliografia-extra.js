@@ -23,9 +23,18 @@
     document.body.appendChild(script);
   }
 
+  function carregarCalculadoraCusto(){
+    if(document.getElementById('cma-calculadora-custo-loader')||document.getElementById('custo-empregado'))return;
+    const script=document.createElement('script');
+    script.id='cma-calculadora-custo-loader';
+    script.src='calculadora-custo/calculadora-custo.js?v=20260821';
+    document.body.appendChild(script);
+  }
+
   function incluirBasesLegaisAtualizadas(){
     carregarTipografiaGlobal();
     carregarUrlCapa();
+    carregarCalculadoraCusto();
     const secao=document.getElementById('baselegal');
     if(!secao||document.getElementById('cma-bases-legais-20260821')){carregarTabelaMultas();return;}
 
