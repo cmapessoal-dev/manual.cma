@@ -1,5 +1,14 @@
 (function(){
+  function carregarAcessoRapido(){
+    if(document.getElementById('cma-acesso-rapido-loader')||document.getElementById('cma-acesso-rapido'))return;
+    const script=document.createElement('script');
+    script.id='cma-acesso-rapido-loader';
+    script.src='capa/acesso-rapido.js?v=20260822';
+    document.body.appendChild(script);
+  }
+
   function instalarUrlDaCapa(){
+    carregarAcessoRapido();
     const capa=document.querySelector('.cma-hero');
     if(!capa||window.__cmaUrlCapaInstalada)return;
     window.__cmaUrlCapaInstalada=true;
