@@ -7,10 +7,16 @@
       itens:['admissao','experiencia','jornada','comercio-feriados','afastamentos','faltas-justificaveis','ferias','beneficios','demissao','acidente','mei','cargos']
     },
     {
-      id:'obrigacoes',
-      titulo:'SST e Obrigações',
+      id:'sst',
+      titulo:'SST',
       icone:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',
-      itens:['sst','cronograma','fiscalizacao','tabela-multas','guarda-documentos']
+      itens:['sst']
+    },
+    {
+      id:'prazos',
+      titulo:'Prazos e Calendários',
+      icone:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+      itens:['cronograma','guarda-documentos']
     },
     {
       id:'ferramentas',
@@ -22,8 +28,15 @@
       id:'referencias',
       titulo:'Referências',
       icone:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',
-      itens:['baselegal']
+      itens:['tabela-multas','baselegal']
     }
+  ];
+
+  const subtemasSST=[
+    ['cma-sst-programas','Programas e Laudos'],
+    ['cma-sst-cipa','CIPA'],
+    ['cma-sst-riscos-psicossociais','Riscos Psicossociais'],
+    ['cma-sst-campanhas','Campanhas de Saúde']
   ];
 
   let organizando=false;
@@ -52,10 +65,14 @@
       .cma-sumario-grupo.is-open>.cma-sumario-submenu{display:block}
       .cma-sumario-submenu>button{padding-left:10px!important;font-size:13px!important}
       .cma-sumario-submenu>button svg{width:15px!important;height:15px!important}
+      .cma-sst-subtemas{margin:2px 0 5px 25px;padding-left:9px;border-left:1px dashed #cbd5e1}
+      .cma-sst-subtema{display:block;width:100%;padding:6px 8px;border:0;border-radius:5px;background:transparent;color:#64748b;font-size:12px;font-weight:600;text-align:left;cursor:pointer;transition:.15s}
+      .cma-sst-subtema:hover{background:#f1f5f9;color:#172554}
       #manual-menu>.border-t{display:none!important}
       @media(max-width:640px){
         .cma-sumario-toggle{font-size:15px;padding-top:10px;padding-bottom:10px}
         .cma-sumario-submenu>button{font-size:14px!important}
+        .cma-sst-subtema{font-size:13px;padding:7px 8px}
       }
     `;
     document.head.appendChild(st);
@@ -65,9 +82,18 @@
     const menu=document.getElementById('manual-menu');
     if(!menu)return null;
     return [...menu.querySelectorAll('button')].find(b=>{
-      if(b.classList.contains('cma-sumario-toggle'))return false;
+      if(b.classList.contains('cma-sumario-toggle')||b.classList.contains('cma-sst-subtema'))return false;
       return (b.getAttribute('onclick')||'').includes(`'${id}'`);
     })||null;
+  }
+
+  function removerFiscalizacao(){
+    const botao=localizarBotao('fiscalizacao');
+    if(botao)botao.remove();
+    if(typeof manualSections!=='undefined'){
+      const i=manualSections.findIndex(x=>x.id==='fiscalizacao');
+      if(i>=0)manualSections.splice(i,1);
+    }
   }
 
   function abrirGrupo(grupo,estado,fecharOutros){
@@ -105,11 +131,33 @@
     return grupo;
   }
 
+  function criarSubtemasSST(grupo){
+    const submenu=grupo.querySelector('.cma-sumario-submenu');
+    const botaoSST=localizarBotao('sst');
+    if(!submenu||!botaoSST)return;
+    let bloco=submenu.querySelector('.cma-sst-subtemas');
+    if(!bloco){
+      bloco=document.createElement('div');
+      bloco.className='cma-sst-subtemas';
+      bloco.innerHTML=subtemasSST.map(([id,rotulo])=>`<button type="button" class="cma-sst-subtema" data-alvo="${id}">${rotulo}</button>`).join('');
+      botaoSST.insertAdjacentElement('afterend',bloco);
+      bloco.querySelectorAll('.cma-sst-subtema').forEach(btn=>btn.addEventListener('click',()=>{
+        abrirGrupo(grupo,true,true);
+        if(typeof showSection==='function')showSection('sst',botaoSST);
+        setTimeout(()=>{
+          const alvo=document.getElementById(btn.dataset.alvo);
+          if(alvo)alvo.scrollIntoView({behavior:'smooth',block:'start'});
+        },100);
+      }));
+    }
+  }
+
   function reorganizar(){
     const menu=document.getElementById('manual-menu');
     if(!menu||organizando)return false;
     organizando=true;
     try{
+      removerFiscalizacao();
       const intro=localizarBotao('introducao');
       let ancora=intro?intro.nextSibling:null;
 
@@ -129,6 +177,7 @@
             }
           }
         });
+        if(cfg.id==='sst')criarSubtemasSST(grupo);
         ancora=grupo.nextSibling;
       });
 
@@ -150,10 +199,7 @@
   function agendarReorganizacao(){
     if(agendado)return;
     agendado=true;
-    requestAnimationFrame(()=>{
-      agendado=false;
-      reorganizar();
-    });
+    requestAnimationFrame(()=>{agendado=false;reorganizar();});
   }
 
   function observarAtivos(){
