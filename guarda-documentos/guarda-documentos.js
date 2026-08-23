@@ -1,123 +1,44 @@
 (function(){
-  function criarSecaoGuardaDocumentos(){
-    const menu=document.getElementById('manual-menu');
-    const main=document.querySelector('#manual-conteudo main');
-    if(!menu||!main||document.getElementById('guarda-documentos'))return;
-
-    const botao=document.createElement('button');
-    botao.type='button';
-    botao.setAttribute('onclick',"showSection('guarda-documentos', this)");
-    botao.className='w-full text-left px-3 py-2 rounded text-sm font-medium text-gray-600 hover:bg-gray-50 hover:translate-x-0.5 transition-all flex items-center border-l-4 border-transparent';
-    botao.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide w-4 h-4 mr-2.5 shrink-0"><path d="M4 4h16v16H4z"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M8 10h8"/><path d="M8 14h5"/></svg> Prazos de Guarda de Documentos';
-
-    const baseBtn=typeof getMenuButton==='function'?getMenuButton('baselegal'):null;
-    if(baseBtn)menu.insertBefore(botao,baseBtn);else menu.appendChild(botao);
-
-    const linhas=[
-      ['1','Acordo de Compensação','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['2','Acordo de Prorrogação','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['3','Atestado Médico','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['4','Autorização para desconto não previsto em lei','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['5','Aviso Prévio','2 anos','CF, art. 7º, XXIX'],
-      ['6','CAGED — Cadastro Geral de Empregados e Desempregados','5 anos a contar da data do envio','Portaria MTP nº 671/2021, art. 157, § 2º'],
-      ['7','Comprovante de Cadastramento PIS/PASEP','10 anos','Decreto-Lei nº 2.052/1983, arts. 3º e 10'],
-      ['8','Declaração de Instalação (NR-2 — Portaria nº 3.214/1978)','Indeterminado','Conforme referência do material-base'],
-      ['9','Exames Médicos (ASO)','20 anos, no mínimo, após a rescisão do contrato com o empregado','Portaria nº 3.214/1978 — NR-7'],
-      ['10','FGTS — documentos','30 anos','Decreto nº 99.684/1990'],
-      ['11','Folha de votação de eleição da CIPA','5 anos','Portaria nº 3.214/1978 — NR-5'],
-      ['12','GRCS — Guia de Recolhimento de Contribuição Sindical','5 anos','CTN — Lei nº 5.172/1966, art. 174'],
-      ['13','Documentos do INSS sujeitos à fiscalização','5 anos. Na hipótese de dolo, fraude ou simulação, observar a regra específica indicada na fundamentação legal.','Súmula Vinculante nº 8 do STF e Decreto nº 3.048/1999, art. 348, § 2º'],
-      ['14','Livro de Atas da CIPA','Indeterminado','Conforme referência do material-base'],
-      ['15','Livro de Inspeção do Trabalho','Indeterminado','Conforme referência do material-base'],
-      ['16','Mapa Anual de Acidente de Trabalho','5 anos','Portaria nº 3.214/1978 — NR-4'],
-      ['17','Pedido de Demissão','2 anos','CF, art. 7º, XXIX'],
-      ['18','PPP — Perfil Profissiográfico Previdenciário e comprovação de entrega ao trabalhador','20 anos','IN PRES/INSS nº 128/2022, art. 284, § 9º'],
-      ['19','RAIS','5 anos','Portaria MTP nº 671/2021, art. 152'],
-      ['20','Recibo de abono de férias','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['21','Recibo de adiantamento salarial','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['22','Recibo de entrega da Comunicação de Dispensa — CD (Seguro-Desemprego)','5 anos para os recibos emitidos até 22/09/2022','Resolução CODEFAT nº 393/2004, revogada pela Resolução CODEFAT nº 957/2022'],
-      ['23','Recibo de gozo de férias','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['24','Recibo de pagamento de salário','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['25','Registro de Empregados','Indeterminado','Conforme referência do material-base'],
-      ['26','Salário-Educação — documentos de convênios','5 anos. Na hipótese de dolo, fraude ou simulação, observar a regra específica indicada na fundamentação legal.','Decreto-Lei nº 1.422/1975, art. 1º, § 3º; Súmula Vinculante nº 8 do STF; Decreto nº 3.048/1999, art. 348, § 2º'],
-      ['27','Salário-Família — comprovantes de pagamento e cópia das certidões (vacinação e frequência escolar)','5 anos. Na hipótese de ocorrência de dolo, fraude ou simulação, observar a regra específica indicada na fundamentação legal.','Decreto nº 3.048/1999, art. 348, caput e § 2º'],
-      ['28','Salário-Maternidade','5 anos. Na hipótese de dolo, fraude ou simulação, observar a regra específica indicada na fundamentação legal.','Súmula Vinculante nº 8 do STF e Decreto nº 3.048/1999, art. 348, § 2º'],
-      ['29','Solicitação de abono de férias','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX'],
-      ['30','Segurança e Saúde no Trabalho — PCMSO e PGR','20 anos','NR-7, item 7.6.1.1; NR-1, item 1.5.7.3.3.1'],
-      ['31','Termo de Rescisão de Contrato de Trabalho','2 anos','CF, art. 7º, XXIX'],
-      ['32','Vale-Transporte','5 anos durante a vigência do contrato, até 2 anos após a rescisão','CF, art. 7º, XXIX']
+  function criar(){
+    const menu=document.getElementById('manual-menu'),main=document.querySelector('#manual-conteudo main');if(!menu||!main||document.getElementById('guarda-documentos'))return;
+    const botao=document.createElement('button');botao.type='button';botao.setAttribute('onclick',"showSection('guarda-documentos', this)");botao.className='w-full text-left px-3 py-2 rounded text-sm font-medium text-gray-600 hover:bg-gray-50 hover:translate-x-0.5 transition-all flex items-center border-l-4 border-transparent';botao.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2.5 shrink-0"><path d="M4 4h16v16H4z"/><path d="M8 2v4M16 2v4M8 10h8M8 14h5"/></svg> Prazos de Guarda de Documentos';const baseBtn=typeof getMenuButton==='function'?getMenuButton('baselegal'):null;if(baseBtn)menu.insertBefore(botao,baseBtn);else menu.appendChild(botao);
+    const L=[
+      ['1','Acordo de Compensação','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['2','Acordo de Prorrogação','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['3','Atestados e documentos de afastamento','5 anos durante o vínculo e até 2 anos após a rescisão, sem prejuízo de prazos específicos de SST/previdenciários','CF, art. 7º, XXIX','Vigente'],
+      ['4','Autorização para descontos','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['5','Aviso-prévio','2 anos após a extinção do contrato, como referência prescricional trabalhista','CF, art. 7º, XXIX','Vigente'],
+      ['6','CAGED — arquivos e recibos','5 anos da data do envio. Aplicável ao acervo de declarações exigidas pelo sistema legado.','Portaria MTP nº 671/2021, art. 157, § 2º','Legado'],
+      ['7','Comprovante de cadastramento PIS/PASEP','10 anos','Decreto-Lei nº 2.052/1983','Legado/arquivo'],
+      ['8','Declaração de Instalação da antiga NR-2','A NR-2 foi revogada. Preservar apenas eventual acervo histórico conforme política documental da empresa.','Portaria SEPRT nº 915/2019','Legado'],
+      ['9','Prontuário médico ocupacional / registros vinculados ao PCMSO','No mínimo 20 anos após o desligamento, salvo previsão diversa em anexo da NR-7','NR-7, item 7.6.1.1','Vigente'],
+      ['10','FGTS — documentos comprobatórios','5 anos como referência prescricional atual; para acervos antigos, observar as regras de transição decorrentes do Tema 608/STF','CF, art. 7º, XXIX; STF, Tema 608 (ARE 709.212)','Vigente'],
+      ['11','Documentação do processo eleitoral da CIPA','No mínimo 5 anos','NR-5','Vigente'],
+      ['12','Guia/registro de contribuição sindical','5 anos como referência tributária','CTN, art. 174','Vigente quando aplicável'],
+      ['13','Documentos previdenciários sujeitos à fiscalização','5 anos, ressalvadas hipóteses com prazo específico','Decreto nº 3.048/1999 e legislação previdenciária aplicável','Vigente'],
+      ['14','Atas e demais documentação da CIPA','No mínimo 5 anos','NR-5','Vigente'],
+      ['15','Livro de Inspeção do Trabalho impresso','O livro impresso foi substituído pelo eLIT. Preservar eventual acervo físico histórico; a rotina atual é eletrônica.','Decreto nº 10.854/2021, art. 14, redação do Decreto nº 11.905/2024','Legado'],
+      ['16','Mapas e registros de SST previstos na NR-4','Conservar conforme a obrigação específica e política documental; recomenda-se não descartar sem validação técnica','NR-4 vigente','Vigente conforme enquadramento'],
+      ['17','Pedido de demissão','2 anos após a extinção do contrato, como referência prescricional trabalhista','CF, art. 7º, XXIX','Vigente'],
+      ['18','PPP e documentação comprobatória','20 anos como referência de guarda da documentação comprobatória. Desde 2023, o PPP é emitido eletronicamente a partir dos eventos de SST do eSocial.','IN PRES/INSS nº 128/2022 e regras do PPP eletrônico','Vigente'],
+      ['19','RAIS — arquivos e recibos','5 anos da data do envio. Aplicável às declarações exigidas ou retificações de períodos legados.','Portaria MTP nº 671/2021, art. 152','Legado/uso residual'],
+      ['20','Recibo de abono de férias','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['21','Recibo de adiantamento salarial','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['22','Comunicação de Dispensa — CD / Seguro-Desemprego','5 anos para os recibos emitidos sob a sistemática anterior, quando aplicável','Resoluções CODEFAT nº 393/2004 e nº 957/2022','Legado'],
+      ['23','Recibo de férias','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['24','Recibos e comprovantes de pagamento salarial','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['25','Registro de empregados','Manter o histórico funcional. Registros atuais podem estar em meio eletrônico/eSocial; não descartar o acervo legado sem validação.','CLT e Portaria MTP nº 671/2021','Vigente/arquivo'],
+      ['26','Salário-Educação — documentos sujeitos à comprovação','5 anos, ressalvado prazo específico aplicável ao caso','Legislação previdenciária/tributária aplicável','Vigente quando aplicável'],
+      ['27','Salário-Família — comprovantes','5 anos, ressalvadas exigências específicas de comprovação','Decreto nº 3.048/1999','Vigente'],
+      ['28','Salário-Maternidade — documentos de suporte','5 anos, ressalvadas exigências específicas','Decreto nº 3.048/1999 e legislação previdenciária','Vigente'],
+      ['29','Solicitação de abono de férias','5 anos durante o vínculo e até 2 anos após a rescisão','CF, art. 7º, XXIX','Vigente'],
+      ['30','PGR — histórico das atualizações','No mínimo 20 anos, ou prazo superior previsto em norma específica','NR-1, item 1.5.7.3.3.1','Vigente'],
+      ['31','Termo de Rescisão de Contrato de Trabalho','2 anos após a extinção do contrato, sem prejuízo da guarda de documentos que comprovem parcelas alcançadas pelo prazo quinquenal','CF, art. 7º, XXIX','Vigente'],
+      ['32','Vale-Transporte — solicitações, declarações e controles','5 anos durante o vínculo e até 2 anos após a rescisão, como referência trabalhista','CF, art. 7º, XXIX','Vigente']
     ];
-
-    const section=document.createElement('section');
-    section.id='guarda-documentos';
-    section.className='manual-section hidden fade-in';
-    section.innerHTML=`
-      <div class="flex items-start justify-between gap-4 border-b border-gray-200 pb-4 mb-4">
-        <h3 class="text-2xl font-bold text-blue-950 flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-blue-950 w-7 h-7"><path d="M4 4h16v16H4z"/><path d="M8 2v4"/><path d="M16 2v4"/><path d="M8 10h8"/><path d="M8 14h5"/></svg>
-          Guarda de Documentos Trabalhistas, Previdenciários e FGTS
-        </h3>
-        <button onclick="toggleExplainer('exp-guarda-documentos')" class="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 flex items-center shrink-0">Entenda os Termos</button>
-      </div>
-
-      <div id="exp-guarda-documentos" class="hidden bg-slate-100 border border-slate-300 p-3 rounded mb-4 text-xs text-slate-700 space-y-2">
-        <p><strong>Prazo de guarda:</strong> período durante o qual o documento deve permanecer arquivado e disponível para comprovação, fiscalização ou defesa da empresa.</p>
-        <p><strong>Prazo indeterminado:</strong> indica que o documento deve ser preservado sem uma data final previamente definida no material de referência.</p>
-        <p><strong>Fundamentação legal:</strong> norma utilizada como referência para o prazo indicado. A legislação pode ser alterada, por isso os prazos devem ser revistos periodicamente.</p>
-      </div>
-
-      <div class="bg-blue-50 border-l-4 border-blue-900 p-4 rounded-r shadow-sm mb-4">
-        <strong class="text-blue-950 block mb-1">Orientação para organização documental</strong>
-        <p class="text-blue-950 text-sm leading-relaxed">A empresa deve manter seus documentos trabalhistas, previdenciários, de FGTS e de SST organizados e acessíveis durante todo o período de guarda aplicável. Sempre que possível, mantenha cópias digitais com controle de acesso, identificação do empregado e período correspondente.</p>
-      </div>
-
-      <div class="cma-guarda-table-wrap">
-        <table class="cma-guarda-table">
-          <thead><tr><th>Nº</th><th>Documento</th><th>Período</th><th>Fundamentação Legal</th></tr></thead>
-          <tbody>${linhas.map(l=>`<tr><td>${l[0]}</td><td>${l[1]}</td><td>${l[2]}</td><td>${l[3]}</td></tr>`).join('')}</tbody>
-        </table>
-      </div>
-
-      <div class="bg-amber-50 border-l-4 border-amber-600 p-4 rounded-r shadow-sm mt-4">
-        <strong class="text-amber-900 block mb-1">Atenção aos documentos com prazo indeterminado</strong>
-        <p class="text-amber-950 text-sm leading-relaxed">Os documentos classificados como de guarda indeterminada devem ser preservados, pois podem ser solicitados em fiscalização. O descarte documental deve considerar não apenas o prazo trabalhista, mas também eventuais obrigações previdenciárias, fiscais, de SST e de proteção de dados.</p>
-      </div>`;
-
-    const base=document.getElementById('baselegal');
-    if(base)main.insertBefore(section,base);else main.appendChild(section);
-
-    if(typeof manualSections!=='undefined'&&!manualSections.some(x=>x.id==='guarda-documentos')){
-      const pos=manualSections.findIndex(x=>x.id==='baselegal');
-      manualSections.splice(pos>=0?pos:manualSections.length,0,{id:'guarda-documentos',nome:'Prazos de Guarda de Documentos'});
-    }
-
-    const style=document.createElement('style');
-    style.id='cma-guarda-documentos-style';
-    style.textContent=`
-      #guarda-documentos{font-size:15px}
-      #guarda-documentos #exp-guarda-documentos{font-size:13.5px;line-height:1.6}
-      #guarda-documentos .text-sm{font-size:14.5px;line-height:1.65}
-      .cma-guarda-table-wrap{width:100%;overflow-x:auto;border:1px solid #e2e8f0;border-radius:12px;background:#fff;-webkit-overflow-scrolling:touch}
-      .cma-guarda-table{width:100%;min-width:940px;border-collapse:collapse;font-size:13.5px}
-      .cma-guarda-table th{padding:12px 11px;background:#172554;color:#fff;text-align:left;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;line-height:1.35}
-      .cma-guarda-table th:first-child,.cma-guarda-table td:first-child{width:50px;text-align:center}
-      .cma-guarda-table td{padding:11px;border-bottom:1px solid #e5e7eb;vertical-align:top;color:#475569;line-height:1.55}
-      .cma-guarda-table td:nth-child(2){font-weight:700;color:#1e293b;min-width:220px}.cma-guarda-table td:nth-child(3){min-width:285px}.cma-guarda-table td:nth-child(4){min-width:260px}
-      .cma-guarda-table tbody tr:nth-child(even){background:#f8fafc}.cma-guarda-table tbody tr:last-child td{border-bottom:0}
-      @media(max-width:640px){
-        #guarda-documentos{font-size:16px}
-        #guarda-documentos h3{font-size:21px;line-height:1.3}
-        #guarda-documentos #exp-guarda-documentos{font-size:15px;line-height:1.65}
-        #guarda-documentos .text-sm{font-size:15.5px;line-height:1.65}
-        #guarda-documentos button{font-size:12.5px}
-        .cma-guarda-table{min-width:980px;font-size:15px}
-        .cma-guarda-table th{font-size:13.5px;padding:12px 10px}
-        .cma-guarda-table td{padding:12px 10px;line-height:1.6}
-      }`;
-    document.head.appendChild(style);
-
-    if(window.location.hash==='#guarda-documentos')setTimeout(()=>showSection('guarda-documentos',botao),50);
+    const s=document.createElement('section');s.id='guarda-documentos';s.className='manual-section hidden fade-in';s.innerHTML=`<div class="flex items-start justify-between gap-4 border-b border-gray-200 pb-4 mb-4"><h3 class="text-2xl font-bold text-blue-950">Prazos de Guarda de Documentos</h3><button onclick="toggleExplainer('exp-guarda-documentos')" class="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 shrink-0">Entenda os Termos</button></div><div id="exp-guarda-documentos" class="hidden bg-slate-100 border border-slate-300 p-3 rounded mb-4 text-xs text-slate-700 space-y-2"><p><strong>Vigente:</strong> referência aplicável à rotina atual.</p><p><strong>Legado:</strong> obrigação substituída ou revogada, mantida na tabela apenas para orientar o tratamento de arquivos históricos.</p><p><strong>Importante:</strong> prescrição e prazo mínimo de guarda não são conceitos idênticos. Quando houver dúvida, adote a guarda mais conservadora e valide a norma específica.</p></div><div class="bg-blue-50 border-l-4 border-blue-900 p-4 rounded-r shadow-sm mb-4"><strong class="text-blue-950 block mb-1">Tabela revisada</strong><p class="text-blue-950 text-sm leading-relaxed">A tabela foi atualizada para diferenciar obrigações atuais de documentos legados, inclusive NR-2, FGTS, eLIT, CAGED/RAIS e PPP eletrônico.</p></div><div class="cma-guarda-table-wrap"><table class="cma-guarda-table"><thead><tr><th>Nº</th><th>Documento</th><th>Prazo / orientação</th><th>Fundamentação</th><th>Situação</th></tr></thead><tbody>${L.map(l=>`<tr><td>${l[0]}</td><td>${l[1]}</td><td>${l[2]}</td><td>${l[3]}</td><td><span class="cma-guarda-status ${l[4].startsWith('Legado')?'legado':'vigente'}">${l[4]}</span></td></tr>`).join('')}</tbody></table></div><div class="bg-amber-50 border-l-4 border-amber-600 p-4 rounded-r shadow-sm mt-4"><strong class="text-amber-900 block mb-1">Antes do descarte</strong><p class="text-amber-950 text-sm leading-relaxed">Considere simultaneamente os prazos trabalhistas, previdenciários, tributários, de SST, eventuais ações ou fiscalizações em curso e a política de proteção de dados. Documentos relacionados à exposição ocupacional e histórico de saúde exigem atenção especial.</p></div>`;
+    const base=document.getElementById('baselegal');if(base)main.insertBefore(s,base);else main.appendChild(s);if(typeof manualSections!=='undefined'&&!manualSections.some(x=>x.id==='guarda-documentos')){const p=manualSections.findIndex(x=>x.id==='baselegal');manualSections.splice(p>=0?p:manualSections.length,0,{id:'guarda-documentos',nome:'Prazos de Guarda de Documentos'});}
+    const st=document.createElement('style');st.id='cma-guarda-documentos-style';st.textContent=`.cma-guarda-table-wrap{width:100%;overflow-x:auto;border:1px solid #e2e8f0;border-radius:12px;background:#fff;-webkit-overflow-scrolling:touch}.cma-guarda-table{width:100%;min-width:1120px;border-collapse:collapse;font-size:13px}.cma-guarda-table th{padding:12px 10px;background:#172554;color:#fff;text-align:left;font-size:12px;text-transform:uppercase}.cma-guarda-table td{padding:11px 10px;border-bottom:1px solid #e5e7eb;vertical-align:top;color:#475569;line-height:1.5}.cma-guarda-table td:nth-child(2){font-weight:700;color:#1e293b;min-width:220px}.cma-guarda-table td:nth-child(3){min-width:330px}.cma-guarda-table td:nth-child(4){min-width:260px}.cma-guarda-table tbody tr:nth-child(even){background:#f8fafc}.cma-guarda-status{display:inline-block;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap}.cma-guarda-status.vigente{background:#dcfce7;color:#166534}.cma-guarda-status.legado{background:#f1f5f9;color:#64748b}@media(max-width:640px){.cma-guarda-table{font-size:14px}.cma-guarda-status{font-size:11px}}`;document.head.appendChild(st);if(location.hash==='#guarda-documentos')setTimeout(()=>showSection('guarda-documentos',botao),80);
   }
-
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',criarSecaoGuardaDocumentos);else criarSecaoGuardaDocumentos();
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',criar);else criar();
 })();
