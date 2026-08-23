@@ -16,6 +16,7 @@
     ['exportar-custo-pdf','calculadora-custo/exportar-pdf.js'],
     ['multas','multas/tabela-multas.js'],
     ['bibliografia-extra','bibliografia/bibliografia-extra.js'],
+    ['navegacao','core/navegacao.js'],
     ['avisos-legais','avisos/avisos-legais.js'],
     ['busca-avancada','busca/busca-avancada.js'],
     ['ferramentas-menu','ferramentas/ferramentas-menu.js']
