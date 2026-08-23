@@ -20,6 +20,14 @@
     }
   }
 
+  function instalarEstiloSubtemas(){
+    if(document.getElementById('cma-sst-subtemas-style'))return;
+    const st=document.createElement('style');
+    st.id='cma-sst-subtemas-style';
+    st.textContent='#cma-sst-programas,#cma-sst-cipa,#cma-sst-riscos-psicossociais,#cma-sst-campanhas{scroll-margin-top:24px}';
+    document.head.appendChild(st);
+  }
+
   function removerCipaOriginal(secao){
     const titulo=Array.from(secao.querySelectorAll('h4')).find(h=>(h.textContent||'').includes('CIPA'));
     if(!titulo)return;
@@ -38,6 +46,7 @@
   }
 
   function incluirAtualizacoesSST(){
+    instalarEstiloSubtemas();
     const secao=document.getElementById('sst');
     if(!secao){carregarComplementosGerais();return;}
 
@@ -54,7 +63,7 @@
     wrapper.id='cma-sst-atualizacoes';
     wrapper.className='space-y-4';
     wrapper.innerHTML=`
-      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+      <div id="cma-sst-programas" class="bg-white p-4 rounded border border-gray-200 shadow-sm">
         <h4 class="font-bold text-blue-950 text-sm mb-3">Programas e Laudos de SST — o que são e quais os principais prazos</h4>
 
         <div class="space-y-4 text-gray-600 text-sm leading-relaxed">
@@ -86,7 +95,7 @@
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+      <div id="cma-sst-riscos-psicossociais" class="bg-white p-4 rounded border border-gray-200 shadow-sm">
         <h4 class="font-bold text-blue-950 text-sm mb-2">Riscos Psicossociais — NR-1 e PGR</h4>
         <p class="text-gray-600 leading-relaxed text-sm mb-3">Desde 26 de maio de 2026, a NR-1 passou a incluir expressamente os <strong>fatores de risco psicossociais relacionados ao trabalho</strong> no Gerenciamento de Riscos Ocupacionais (GRO). A empresa deve avaliar esses fatores dentro do PGR e registrar as medidas de prevenção aplicáveis.</p>
         <strong class="text-blue-950 block mb-2 text-sm">Principais fatores que devem ser avaliados:</strong>
@@ -105,7 +114,7 @@
         <p class="text-amber-950 leading-relaxed text-sm">A empresa deve entrar em contato com a clínica ou profissional responsável pelo SST para revisar o PGR, verificar a metodologia adequada para avaliação dos riscos psicossociais e definir o respectivo plano de ação. A análise e as medidas devem considerar a realidade de cada empresa.</p>
       </div>
 
-      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+      <div id="cma-sst-cipa" class="bg-white p-4 rounded border border-gray-200 shadow-sm">
         <h4 class="font-bold text-blue-950 text-sm mb-2">CIPA — Comissão Interna de Prevenção de Acidentes e de Assédio</h4>
         <p class="text-sm text-gray-600 leading-relaxed mb-2">A necessidade de constituição da CIPA depende do número de empregados, do grau de risco e do dimensionamento previsto na NR-5. Quando o estabelecimento não se enquadrar no quadro de dimensionamento, deverá ser observada a regra aplicável ao <strong>representante nomeado da NR-5</strong>.</p>
         <ul class="list-disc list-inside space-y-1 text-gray-600 text-sm mb-3">
@@ -119,7 +128,7 @@
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded border border-gray-200 shadow-sm">
+      <div id="cma-sst-campanhas" class="bg-white p-4 rounded border border-gray-200 shadow-sm">
         <h4 class="font-bold text-blue-950 text-sm mb-2">Campanhas de Vacinação e Prevenção em Saúde</h4>
         <p class="text-gray-600 leading-relaxed text-sm mb-3">A Lei nº 15.377/2026 estabeleceu deveres de informação e conscientização em saúde. As empresas devem disponibilizar aos empregados informações sobre <strong>campanhas oficiais de vacinação</strong>, HPV e os cânceres de <strong>mama, colo do útero e próstata</strong>, observando as orientações do Ministério da Saúde.</p>
         <strong class="text-blue-950 block mb-2 text-sm">A empresa deve:</strong>
