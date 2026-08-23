@@ -1,7 +1,6 @@
 (function(){
   const VERSAO='20260823';
   window.CMA_MANUAL_VERSION=VERSAO;
-
   const modulos=[
     ['jornada-extra','jornada/jornada-extra.js'],
     ['comercio-feriados','comercio-feriados/comercio-feriados.js'],
@@ -13,33 +12,16 @@
     ['tipografia','tipografia/tipografia.js'],
     ['capa-url','capa/capa-url.js'],
     ['calculadora-custo','calculadora-custo/calculadora-custo.js'],
-    ['exportar-custo-pdf','calculadora-custo/exportar-pdf.js'],
     ['ferramentas-base','ferramentas/ferramentas-base.js'],
+    ['exportar-custo-pdf','calculadora-custo/exportar-pdf.js'],
     ['multas','multas/tabela-multas.js'],
     ['bibliografia-extra','bibliografia/bibliografia-extra.js'],
     ['avisos-legais','avisos/avisos-legais.js'],
     ['busca-avancada','busca/busca-avancada.js'],
     ['ferramentas-menu','ferramentas/ferramentas-menu.js']
   ];
-
-  function carregar(id,caminho){
-    return new Promise(resolve=>{
-      const existente=document.querySelector(`script[data-cma-modulo="${id}"]`);
-      if(existente){resolve();return;}
-      const s=document.createElement('script');
-      s.dataset.cmaModulo=id;
-      s.src=`${caminho}?v=${VERSAO}`;
-      s.async=false;
-      s.onload=resolve;
-      s.onerror=()=>{console.error('CMA Manual: falha ao carregar',caminho);resolve();};
-      document.body.appendChild(s);
-    });
-  }
-
-  async function iniciar(){
-    for(const [id,caminho] of modulos)await carregar(id,caminho);
-    document.dispatchEvent(new CustomEvent('cma:modulos-prontos',{detail:{versao:VERSAO}}));
-  }
-
+  function jaExiste(caminho){return [...document.scripts].some(s=>{try{return new URL(s.src,location.href).pathname.endsWith('/'+caminho);}catch(e){return false;}});}
+  function carregar(id,caminho){return new Promise(resolve=>{if(jaExiste(caminho)||document.querySelector(`script[data-cma-modulo="${id}"]`)){resolve();return;}const s=document.createElement('script');s.dataset.cmaModulo=id;s.src=`${caminho}?v=${VERSAO}`;s.async=false;s.onload=resolve;s.onerror=()=>{console.error('CMA Manual: falha ao carregar',caminho);resolve();};document.body.appendChild(s);});}
+  async function iniciar(){for(const [id,caminho] of modulos)await carregar(id,caminho);document.dispatchEvent(new CustomEvent('cma:modulos-prontos',{detail:{versao:VERSAO}}));}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar,{once:true});else iniciar();
 })();
