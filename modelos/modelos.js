@@ -23,7 +23,7 @@
     instalarEstilo();instalarLinksDiretos();carregarBootstrap();return true;
   }
 
-  function carregarBootstrap(){if(document.querySelector('script[data-cma-bootstrap]'))return;const s=document.createElement('script');s.dataset.cmaBootstrap='1';s.src='core/bootstrap.js?v=20260823';s.async=false;document.body.appendChild(s);}
+  function carregarBootstrap(){if(document.querySelector('script[data-cma-bootstrap]'))return;const s=document.createElement('script');s.dataset.cmaBootstrap='1';s.src='core/bootstrap.js?v='+Date.now();s.async=false;document.body.appendChild(s);}
   function idHash(){const id=decodeURIComponent((location.hash||'').replace(/^#/,''));return typeof manualSections!=='undefined'&&manualSections.some(x=>x.id===id)?id:null;}
   function instalarLinksDiretos(){
     if(deepLinkInstalado||typeof window.showSection!=='function')return;deepLinkInstalado=true;showSectionOriginal=window.showSection;
