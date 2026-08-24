@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260824e';
+  const VERSAO='20260824f';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['jornada-extra','jornada/jornada-extra.js'],
@@ -19,6 +19,7 @@
     ['calculadora-horas-extras','calculadora-horas-extras/calculadora-horas-extras.js'],
     ['calculadora-adicional-noturno','calculadora-adicional-noturno/calculadora-adicional-noturno.js'],
     ['calculadora-pro-labore','calculadora-pro-labore/calculadora-pro-labore.js'],
+    ['calculadora-faltas-atrasos','calculadora-faltas-atrasos/calculadora-faltas-atrasos.js'],
     ['exportador-calculadoras','ferramentas/exportador-calculadoras.js'],
     ['exportar-custo-pdf','calculadora-custo/exportar-pdf.js'],
     ['multas','multas/tabela-multas.js'],
