@@ -41,10 +41,50 @@
 
   function campoComLabel(input){
     if(!input)return null;
-    let box=input.closest('.cma-folha-money')||input;
-    const pai=box.parentElement;
-    if(!pai)return null;
-    return pai;
+    const box=input.closest('.cma-folha-money')||input;
+    return box.parentElement||null;
+  }
+
+  function criarGrupo(titulo,subtitulo,classe){
+    const grupo=document.createElement('div');
+    grupo.className=`cma-folha-grupo ${classe}`;
+    grupo.innerHTML=`<div class="cma-folha-grupo-titulo"><strong>${titulo}</strong><span>${subtitulo}</span></div><div class="cma-folha-grupo-conteudo"></div>`;
+    return grupo;
+  }
+
+  function organizarGrupos(form){
+    const proventos=criarGrupo('Proventos','Valores que aumentam a remuneração','cma-folha-grupo-proventos');
+    const descontos=criarGrupo('Descontos','Valores que reduzem a folha','cma-folha-grupo-descontos');
+    const pConteudo=proventos.querySelector('.cma-folha-grupo-conteudo');
+    const dConteudo=descontos.querySelector('.cma-folha-grupo-conteudo');
+    ['outros-proventos','horas-extras','adicional-noturno','premio'].forEach(id=>{
+      const el=form.querySelector(`[data-cma-folha-opcao="${id}"]`);if(el)pConteudo.appendChild(el);
+    });
+    ['faltas-atrasos','pensao','outros-descontos'].forEach(id=>{
+      const el=form.querySelector(`[data-cma-folha-opcao="${id}"]`);if(el)dConteudo.appendChild(el);
+    });
+    form.append(proventos,descontos);
+  }
+
+  function organizarComoCalculamos(sec){
+    const memoria=sec.querySelector('.cma-folha-memoria');
+    if(!memoria)return;
+    const resultados=memoria.parentElement;
+    const detalhe=document.createElement('details');
+    detalhe.className='cma-folha-como-calculamos';
+    detalhe.innerHTML='<summary><span>Como calculamos?</span><small>Ver memória de cálculo e critérios tributários</small></summary><div class="cma-folha-como-conteudo"></div>';
+    const conteudo=detalhe.querySelector('.cma-folha-como-conteudo');
+    const explicacao=document.getElementById('exp-calculadora-folha');
+    if(explicacao){
+      explicacao.classList.remove('hidden','bg-slate-100','border','border-slate-300','p-3','rounded','mb-4');
+      explicacao.classList.add('cma-folha-explicacao-interna');
+      conteudo.appendChild(explicacao);
+    }
+    memoria.querySelector('h4')?.remove();
+    conteudo.appendChild(memoria);
+    resultados.appendChild(detalhe);
+    const topo=sec.querySelector('button[onclick*="exp-calculadora-folha"]');
+    if(topo)topo.remove();
   }
 
   function aplicar(){
@@ -76,7 +116,7 @@
       ancora.parentNode.insertBefore(blocoPremio,ancora);
       ancora.parentNode.insertBefore(blocoPensao,ancora);
       ancora.remove();
-      criarPergunta('Recebe prêmio sem incidência?',blocoPremio,'premio');
+      criarPergunta('Recebe prêmio sem incidência previdenciária?',blocoPremio,'premio');
       criarPergunta('Tem pensão alimentícia?',blocoPensao,'pensao');
     }
 
@@ -109,6 +149,9 @@
       linhaCfg.remove();
     }
 
+    organizarGrupos(form);
+    organizarComoCalculamos(sec);
+
     sec.addEventListener('click',e=>{
       if(!e.target.closest('.cma-ferramenta-limpar'))return;
       setTimeout(()=>sec.querySelectorAll('.cma-folha-opcao').forEach(w=>w._cmaDefinir?.(false,{limpar:false})),0);
@@ -122,7 +165,14 @@
     const st=document.createElement('style');
     st.id='cma-folha-ux-opcoes-style';
     st.textContent=`
-      #calculadora-folha .cma-folha-opcao{margin-top:11px;border:1px solid #e2e8f0;border-radius:11px;background:#fff;overflow:hidden;transition:.18s}
+      #calculadora-folha .cma-folha-grupo{margin-top:16px;border:1px solid #dbe3ef;border-radius:13px;overflow:hidden;background:#fff}
+      #calculadora-folha .cma-folha-grupo-titulo{padding:12px 14px;border-bottom:1px solid #e2e8f0;background:#f8fafc}
+      #calculadora-folha .cma-folha-grupo-titulo strong{display:block;color:#172554;font-size:15px;font-weight:900}
+      #calculadora-folha .cma-folha-grupo-titulo span{display:block;margin-top:2px;color:#64748b;font-size:11.5px}
+      #calculadora-folha .cma-folha-grupo-proventos .cma-folha-grupo-titulo{border-left:4px solid #2563eb}
+      #calculadora-folha .cma-folha-grupo-descontos .cma-folha-grupo-titulo{border-left:4px solid #dc2626}
+      #calculadora-folha .cma-folha-grupo-conteudo{padding:2px 12px 12px}
+      #calculadora-folha .cma-folha-opcao{margin-top:10px;border:1px solid #e2e8f0;border-radius:11px;background:#fff;overflow:hidden;transition:.18s}
       #calculadora-folha .cma-folha-opcao.aberto{border-color:#bfdbfe;box-shadow:0 3px 12px rgba(30,64,175,.06)}
       #calculadora-folha .cma-folha-opcao-cab{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 13px;background:#f8fafc}
       #calculadora-folha .cma-folha-opcao-cab>span{color:#172554;font-size:13.5px;font-weight:800}
@@ -137,6 +187,14 @@
       #calculadora-folha .cma-folha-avancado{margin-top:12px;border:1px dashed #cbd5e1;border-radius:9px;background:#f8fafc}
       #calculadora-folha .cma-folha-avancado summary{padding:10px 12px;cursor:pointer;color:#64748b;font-size:12.5px;font-weight:800}
       #calculadora-folha .cma-folha-avancado-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px 12px}
+      #calculadora-folha .cma-folha-como-calculamos{border:1px solid #dbe3ef;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 6px 18px rgba(15,23,42,.04)}
+      #calculadora-folha .cma-folha-como-calculamos summary{display:flex;flex-direction:column;gap:2px;padding:15px 17px;cursor:pointer;background:#f8fafc;color:#172554;list-style:none}
+      #calculadora-folha .cma-folha-como-calculamos summary::-webkit-details-marker{display:none}
+      #calculadora-folha .cma-folha-como-calculamos summary span{font-size:15px;font-weight:900}
+      #calculadora-folha .cma-folha-como-calculamos summary small{color:#64748b;font-size:11.5px;font-weight:600}
+      #calculadora-folha .cma-folha-como-conteudo{padding:14px}
+      #calculadora-folha .cma-folha-explicacao-interna{margin-bottom:12px;padding:12px;border-radius:10px;background:#f8fafc;color:#475569;font-size:12px;line-height:1.5}
+      #calculadora-folha .cma-folha-como-conteudo .cma-folha-memoria{box-shadow:none;border-radius:10px;margin:0}
       @media(max-width:640px){#calculadora-folha .cma-folha-opcao-cab{align-items:flex-start;flex-direction:column}#calculadora-folha .cma-folha-escolha{width:100%}#calculadora-folha .cma-folha-escolha button{flex:1;padding:9px}#calculadora-folha .cma-folha-avancado-grid{grid-template-columns:1fr}}
     `;
     document.head.appendChild(st);
