@@ -1,11 +1,12 @@
 (function(){
-  const VERSAO='20260824ag';
+  const VERSAO='20260824ah';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
     ['calendario-layout','core/calendario-layout.js'],
     ['jornada-extra','jornada/jornada-extra.js'],
     ['admissao-modalidades','admissao/admissao-modalidades.js'],
+    ['sincronizar-tipos-contratos','admissao/sincronizar-tipos-contratos.js'],
     ['comercio-feriados','comercio-feriados/comercio-feriados.js'],
     ['sst-extra','sst/sst-extra.js'],
     ['sst-paginas','sst/sst-paginas.js'],
