@@ -111,6 +111,18 @@ test('Horas Extras e DSR — 10h a 50% sobre salário de R$ 2.200', () => {
   perto(brl(dom.window.document.getElementById('cma-he-valor-hora').textContent), 10.00);
 });
 
+test('Adicional Noturno — jornada integral de 22h às 5h', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-adicional-noturno/calculadora-adicional-noturno.js');
+  setValor(dom, 'cma-an-salario', 2200);
+  setValor(dom, 'cma-an-divisor', 220);
+  setValor(dom, 'cma-an-percentual', 20);
+  setValor(dom, 'cma-an-entrada', '22:00');
+  setValor(dom, 'cma-an-saida', '05:00');
+  perto(brl(dom.window.document.getElementById('cma-an-total').textContent), 16.00);
+  assert.equal(dom.window.document.getElementById('cma-an-hora-reduzida').textContent, '52min30s');
+});
+
 test('Faltas, Atrasos e DSR — 1 falta, 1h30 de atraso e 1 DSR', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-faltas-atrasos/calculadora-faltas-atrasos.js');
