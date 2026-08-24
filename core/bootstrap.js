@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260824ab';
+  const VERSAO='20260824ac';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -30,6 +30,7 @@
     ['calculadora-folha-opcoes','calculadora-folha/ux-opcoes.js'],
     ['calculadora-folha-alinhamento','calculadora-folha/alinhamento.js'],
     ['calculadora-jornada','calculadora-jornada/calculadora-jornada.js'],
+    ['integracoes-manual-ferramentas','integracoes/manual-ferramentas.js'],
     ['calculadora-prazos','calculadora-prazos/calculadora-prazos.js'],
     ['status-experiencia','calculadora-prazos/status-experiencia.js'],
     ['exportador-calculadoras','ferramentas/exportador-calculadoras.js'],
