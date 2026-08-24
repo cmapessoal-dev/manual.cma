@@ -1,0 +1,15 @@
+(function(){
+  if(window.CMATributos2026)return;
+  const P={
+    inss:{teto:8475.55,faixas:[{ate:1621,aliquota:.075},{ate:2902.84,aliquota:.09},{ate:4354.27,aliquota:.12},{ate:8475.55,aliquota:.14}]},
+    irrf:{dependente:189.59,simplificado:607.20,faixas:[{ate:2428.80,aliquota:0,deducao:0},{ate:2826.65,aliquota:.075,deducao:182.16},{ate:3751.05,aliquota:.15,deducao:394.16},{ate:4664.68,aliquota:.225,deducao:675.49},{ate:Infinity,aliquota:.275,deducao:908.73}]},
+    salarioFamilia:{limite:1980.38,cota:67.54}
+  };
+  const r2=v=>Math.round((Number(v)||0)*100)/100;
+  function inss(base){base=Math.max(0,Number(base)||0);const limitada=Math.min(base,P.inss.teto);let anterior=0,total=0,detalhes=[];for(const f of P.inss.faixas){if(limitada<=anterior)break;const parcela=Math.min(limitada,f.ate)-anterior;if(parcela>0){const valor=parcela*f.aliquota;total+=valor;detalhes.push({base:r2(parcela),aliquota:f.aliquota,valor:r2(valor)});}anterior=f.ate;}return {base:r2(base),baseLimitada:r2(limitada),valor:r2(total),aliquotaEfetiva:base?total/base:0,detalhes};}
+  function impostoTabela(base){base=Math.max(0,Number(base)||0);const f=P.irrf.faixas.find(x=>base<=x.ate)||P.irrf.faixas.at(-1);return {base:r2(base),aliquota:f.aliquota,deducao:f.deducao,valor:r2(Math.max(0,base*f.aliquota-f.deducao))};}
+  function reducao2026(rendimentos,imposto){rendimentos=Math.max(0,Number(rendimentos)||0);imposto=Math.max(0,Number(imposto)||0);let red=0;if(rendimentos<=5000)red=Math.min(imposto,312.89);else if(rendimentos<=7350)red=Math.min(imposto,Math.max(0,978.62-(.133145*rendimentos)));return r2(red);}
+  function irrf({rendimentos=0,inss=0,dependentes=0,pensao=0,outrasDeducoes=0}={}){rendimentos=Math.max(0,Number(rendimentos)||0);dependentes=Math.max(0,Math.floor(Number(dependentes)||0));const dedLegal=Math.max(0,Number(inss)||0)+(dependentes*P.irrf.dependente)+Math.max(0,Number(pensao)||0)+Math.max(0,Number(outrasDeducoes)||0);const dedSimpl=P.irrf.simplificado;const usaSimpl=dedSimpl>dedLegal;const deducaoUsada=usaSimpl?dedSimpl:dedLegal;const base=Math.max(0,rendimentos-deducaoUsada);const tabela=impostoTabela(base);const reducao=reducao2026(rendimentos,tabela.valor);return {rendimentos:r2(rendimentos),deducaoLegal:r2(dedLegal),descontoSimplificado:r2(dedSimpl),metodo:usaSimpl?'Desconto simplificado':'Deduções legais',deducaoUsada:r2(deducaoUsada),base:r2(base),aliquota:tabela.aliquota,parcelaDeduzir:tabela.deducao,impostoAntesReducao:tabela.valor,reducao,valor:r2(Math.max(0,tabela.valor-reducao))};}
+  function salarioFamilia(remuneracao,dependentesElegiveis){remuneracao=Math.max(0,Number(remuneracao)||0);dependentesElegiveis=Math.max(0,Math.floor(Number(dependentesElegiveis)||0));const elegivel=remuneracao>0&&remuneracao<=P.salarioFamilia.limite;return {elegivel,cotas:elegivel?dependentesElegiveis:0,valorCota:P.salarioFamilia.cota,total:r2(elegivel?dependentesElegiveis*P.salarioFamilia.cota:0)};}
+  window.CMATributos2026={ano:2026,parametros:P,calcularINSS:inss,calcularIRRF:irrf,calcularSalarioFamilia:salarioFamilia,arredondar:r2};
+})();
