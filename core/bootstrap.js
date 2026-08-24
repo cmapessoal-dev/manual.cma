@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260824w';
+  const VERSAO='20260824x';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['jornada-extra','jornada/jornada-extra.js'],
