@@ -1,0 +1,35 @@
+name: Testes das calculadoras
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ferramentas/**'
+      - 'calculadora-*/**'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/testes-calculadoras.yml'
+  pull_request:
+    paths:
+      - 'ferramentas/**'
+      - 'calculadora-*/**'
+      - 'tests/**'
+      - 'package.json'
+      - '.github/workflows/testes-calculadoras.yml'
+  workflow_dispatch:
+
+jobs:
+  testar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependências
+        run: npm install
+      - name: Executar testes
+        run: npm test
