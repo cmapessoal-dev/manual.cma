@@ -3,7 +3,7 @@
     {id:'rotinas',titulo:'Rotinas Trabalhistas',icone:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',itens:['admissao','experiencia','jornada','comercio-feriados','afastamentos','faltas-justificaveis','ferias','beneficios','demissao','acidente','mei','cargos']},
     {id:'sst',titulo:'SST',icone:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/>',itens:['sst','sst-cipa','sst-riscos-psicossociais','sst-campanhas']},
     {id:'prazos',titulo:'Prazos e Calendários',icone:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',itens:['cronograma','guarda-documentos']},
-    {id:'ferramentas',titulo:'Ferramentas',icone:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.9 7.9l-5.7 5.7a2.1 2.1 0 0 1-3-3l5.7-5.7a6 6 0 0 1 7.9-7.9z"/>',itens:['modelos','custo-empregado','calculadora-ferias','calculadora-decimo-terceiro','calculadora-horas-extras','calculadora-adicional-noturno']},
+    {id:'ferramentas',titulo:'Ferramentas',icone:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.1-3.1a6 6 0 0 1-7.9 7.9l-5.7 5.7a2.1 2.1 0 0 1-3-3l5.7-5.7a6 6 0 0 1 7.9-7.9z"/>',itens:['modelos','custo-empregado','calculadora-ferias','calculadora-decimo-terceiro','calculadora-horas-extras','calculadora-adicional-noturno','calculadora-pro-labore']},
     {id:'referencias',titulo:'Referências',icone:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>',itens:['tabela-multas','baselegal']}
   ];
   let organizando=false,agendado=false,ultimoAtivo='';
