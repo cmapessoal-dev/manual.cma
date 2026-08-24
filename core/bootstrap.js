@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260824k';
+  const VERSAO='20260824l';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['jornada-extra','jornada/jornada-extra.js'],
@@ -23,6 +23,7 @@
     ['calculadora-faltas-atrasos','calculadora-faltas-atrasos/calculadora-faltas-atrasos.js'],
     ['calculadora-folha','calculadora-folha/calculadora-folha.js'],
     ['calculadora-folha-opcoes','calculadora-folha/ux-opcoes.js'],
+    ['calculadora-folha-alinhamento','calculadora-folha/alinhamento.js'],
     ['calculadora-prazos','calculadora-prazos/calculadora-prazos.js'],
     ['status-experiencia','calculadora-prazos/status-experiencia.js'],
     ['exportador-calculadoras','ferramentas/exportador-calculadoras.js'],
