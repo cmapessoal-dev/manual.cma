@@ -23,6 +23,7 @@
     ['modelos','Modelos de Documentos'],
     ['custo-empregado','Custo do Empregado'],
     ['calculadora-ferias','Calculadora de Férias'],
+    ['calculadora-decimo-terceiro','Calculadora de 13º Salário'],
     ['tabela-multas','Tabela de Multas Trabalhistas'],
     ['baselegal','Bibliografia e Base Legal']
   ];
