@@ -3,7 +3,7 @@
   const st=document.createElement('style');
   st.id='cma-calendario-layout-style';
   st.textContent=`
-    .cma-calendar-wrapper{width:100%;max-width:100%;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box}
+    .cma-calendar-wrapper{width:100%;max-width:100%;margin-top:18px!important;margin-bottom:28px!important;margin-left:auto!important;margin-right:auto!important;box-sizing:border-box}
     .cma-calendar-header{display:grid!important;grid-template-columns:40px minmax(0,1fr) 40px!important;align-items:center!important;column-gap:12px!important}
     .cma-calendar-heading{min-width:0;text-align:center!important}
     .cma-calendar-arrow{display:flex!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:0!important}
