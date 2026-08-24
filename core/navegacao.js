@@ -22,6 +22,7 @@
     ['guarda-documentos','Prazos de Guarda de Documentos'],
     ['modelos','Modelos de Documentos'],
     ['custo-empregado','Custo do Empregado'],
+    ['calculadora-ferias','Calculadora de Férias'],
     ['tabela-multas','Tabela de Multas Trabalhistas'],
     ['baselegal','Bibliografia e Base Legal']
   ];
