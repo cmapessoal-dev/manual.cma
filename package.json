@@ -1,0 +1,10 @@
+{
+  "name": "manual-cma",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/calculadoras.test.js"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.3"
+  }
+}
