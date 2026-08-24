@@ -36,7 +36,7 @@
             <div><dt>Valor da hora</dt><dd>Não pode ser inferior ao valor horário do salário mínimo nem ao devido aos empregados do estabelecimento que exerçam a mesma função.</dd></div>
             <div><dt>Convocação</dt><dd>Deve informar a jornada com pelo menos <strong>3 dias corridos</strong> de antecedência.</dd></div>
             <div><dt>Resposta</dt><dd>O empregado tem <strong>1 dia útil</strong> para aceitar ou recusar. O silêncio é considerado recusa e a recusa não descaracteriza o vínculo.</dd></div>
-            <div><dt>Pagamento</dt><dd>Ao final de cada período trabalhado: remuneração, férias proporcionais + 1/3, 13º proporcional, DSR e adicionais legais, discriminados no recibo.</dd></div>
+            <div><dt>Pagamento</dt><dd><strong>Tudo é pago ao final de cada período de prestação de serviços.</strong> O empregado recebe, de forma imediata e discriminada no recibo, a remuneração do período, <strong>férias proporcionais + 1/3, 13º salário proporcional, DSR e adicionais legais</strong>. Essas parcelas não ficam acumuladas para pagamento posterior como ocorre na rotina mensal comum.</dd></div>
             <div><dt>Inatividade</dt><dd>Não é tempo à disposição e o trabalhador pode prestar serviços a outros contratantes.</dd></div>
           </dl>
           <div class="cma-adm-mod-alerta"><strong>Cuidado:</strong> o intermitente não deve ser tratado como empregado de jornada fixa disfarçado. Também é indispensável conferir a norma coletiva antes da contratação.</div>
