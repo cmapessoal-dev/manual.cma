@@ -14,7 +14,20 @@
         <div><span class="cma-adm-mod-kicker">Antes de admitir</span><h4>Modalidades de Contratação</h4><p>A modalidade deve ser definida antes do envio da admissão, porque interfere na jornada, remuneração, contrato e rotina de pagamento.</p></div>
       </div>
 
-      <div class="cma-adm-mod-grid">
+      <div class="cma-adm-mod-lista">
+        <article class="cma-adm-mod-card">
+          <div class="cma-adm-mod-card-top"><span class="cma-adm-mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8M8 21h8M12 3v18"/><path d="M5 8h14M5 16h14"/></svg></span><div><h5>Contrato por Prazo Indeterminado</h5><span class="cma-adm-mod-ref">CLT, art. 443</span></div></div>
+          <p>É a modalidade mais comum de contratação. O vínculo é iniciado sem uma data previamente definida para encerramento e permanece ativo até que uma das partes promova o desligamento ou ocorra outra hipótese legal de término do contrato.</p>
+          <dl>
+            <div><dt>Duração</dt><dd>Não possui data final previamente estabelecida.</dd></div>
+            <div><dt>Jornada</dt><dd>Segue a jornada contratada, respeitando os limites legais e a CCT/ACT aplicável.</dd></div>
+            <div><dt>Remuneração</dt><dd>Deve observar o salário contratual, piso da categoria e demais parcelas devidas conforme a função e as condições de trabalho.</dd></div>
+            <div><dt>Direitos</dt><dd>Aplicam-se normalmente férias + 1/3, 13º salário, FGTS, INSS, DSR e demais direitos trabalhistas cabíveis.</dd></div>
+            <div><dt>Desligamento</dt><dd>As verbas e obrigações variam conforme a modalidade de rescisão: pedido de demissão, dispensa sem justa causa, justa causa, acordo ou outras hipóteses legais.</dd></div>
+          </dl>
+          <div class="cma-adm-mod-alerta cma-adm-mod-info"><strong>Uso comum:</strong> quando a necessidade de trabalho é contínua e não existe motivo para estabelecer previamente uma data de término do vínculo.</div>
+        </article>
+
         <article class="cma-adm-mod-card">
           <div class="cma-adm-mod-card-top"><span class="cma-adm-mod-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><h5>Contrato em Tempo Parcial</h5><span class="cma-adm-mod-ref">CLT, art. 58-A</span></div></div>
           <p>Indicado quando a empresa necessita de uma jornada semanal reduzida, com salário proporcional ao empregado que exerce a mesma função em tempo integral.</p>
@@ -41,10 +54,6 @@
           </dl>
           <div class="cma-adm-mod-alerta"><strong>Cuidado:</strong> o intermitente não deve ser tratado como empregado de jornada fixa disfarçado. Também é indispensável conferir a norma coletiva antes da contratação.</div>
         </article>
-      </div>
-
-      <div class="cma-adm-mod-resumo">
-        <strong>Regra prática:</strong><span>se existe uma jornada reduzida, porém habitual e previamente definida, avalie o <b>tempo parcial</b>. Se a necessidade é descontínua e ocorre mediante convocações, avalie o <b>intermitente</b>.</span>
       </div>`;
 
     alvo.appendChild(bloco);
@@ -55,7 +64,7 @@
   function instalarEstilo(){
     if(document.getElementById('cma-admissao-modalidades-style'))return;
     const st=document.createElement('style');st.id='cma-admissao-modalidades-style';st.textContent=`
-      .cma-admissao-modalidades{margin-top:20px}.cma-adm-mod-head{margin-bottom:13px}.cma-adm-mod-kicker{display:block;margin-bottom:3px;color:#2563eb;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.cma-adm-mod-head h4{margin:0;color:#172554;font-size:19px;font-weight:850}.cma-adm-mod-head p{margin:5px 0 0!important;color:#64748b!important;font-size:13px!important;line-height:1.55!important;text-align:left!important}.cma-adm-mod-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.cma-adm-mod-card{padding:17px;border:1px solid #e2e8f0;border-radius:13px;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.04)}.cma-adm-mod-card-top{display:flex;align-items:center;gap:11px}.cma-adm-mod-icon{display:grid;width:38px;height:38px;place-items:center;flex:0 0 38px;border-radius:10px;background:#eff6ff;color:#1e3a8a}.cma-adm-mod-icon svg{width:20px;height:20px}.cma-adm-mod-card h5{margin:0;color:#172554;font-size:15px;font-weight:850;line-height:1.3}.cma-adm-mod-ref{display:block;margin-top:2px;color:#94a3b8;font-size:10.5px;font-weight:700}.cma-adm-mod-card>p{margin:12px 0!important;color:#64748b!important;font-size:12.5px!important;line-height:1.55!important;text-align:left!important}.cma-adm-mod-card dl{margin:0}.cma-adm-mod-card dl>div{display:grid;grid-template-columns:105px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid #f1f5f9}.cma-adm-mod-card dt{color:#475569;font-size:11.5px;font-weight:850}.cma-adm-mod-card dd{margin:0;color:#475569;font-size:12px;line-height:1.5}.cma-adm-mod-card dd strong{color:#172554}.cma-adm-mod-alerta{margin-top:11px;padding:9px 10px;border-radius:8px;background:#fffbeb;color:#78350f;font-size:11.5px;line-height:1.5}.cma-adm-mod-resumo{display:flex;gap:7px;margin-top:12px;padding:12px 13px;border-left:4px solid #2563eb;border-radius:0 9px 9px 0;background:#f8fbff;color:#475569;font-size:12.5px;line-height:1.5}.cma-adm-mod-resumo strong{color:#172554;white-space:nowrap}@media(max-width:760px){.cma-adm-mod-grid{grid-template-columns:1fr}.cma-adm-mod-card{padding:15px}.cma-adm-mod-card dl>div{grid-template-columns:1fr;gap:3px}.cma-adm-mod-card dt{font-size:12px}.cma-adm-mod-card dd{font-size:13px}.cma-adm-mod-card>p{font-size:13px!important}.cma-adm-mod-resumo{display:block}.cma-adm-mod-resumo strong{display:block;margin-bottom:3px}}
+      .cma-admissao-modalidades{margin-top:20px}.cma-adm-mod-head{margin-bottom:13px}.cma-adm-mod-kicker{display:block;margin-bottom:3px;color:#2563eb;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.cma-adm-mod-head h4{margin:0;color:#172554;font-size:19px;font-weight:850}.cma-adm-mod-head p{margin:5px 0 0!important;color:#64748b!important;font-size:13px!important;line-height:1.55!important;text-align:left!important}.cma-adm-mod-lista{display:flex;flex-direction:column;gap:13px}.cma-adm-mod-card{padding:17px;border:1px solid #e2e8f0;border-radius:13px;background:#fff;box-shadow:0 5px 14px rgba(15,23,42,.04)}.cma-adm-mod-card-top{display:flex;align-items:center;gap:11px}.cma-adm-mod-icon{display:grid;width:38px;height:38px;place-items:center;flex:0 0 38px;border-radius:10px;background:#eff6ff;color:#1e3a8a}.cma-adm-mod-icon svg{width:20px;height:20px}.cma-adm-mod-card h5{margin:0;color:#172554;font-size:15px;font-weight:850;line-height:1.3}.cma-adm-mod-ref{display:block;margin-top:2px;color:#94a3b8;font-size:10.5px;font-weight:700}.cma-adm-mod-card>p{margin:12px 0!important;color:#64748b!important;font-size:12.5px!important;line-height:1.55!important;text-align:left!important}.cma-adm-mod-card dl{margin:0}.cma-adm-mod-card dl>div{display:grid;grid-template-columns:125px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid #f1f5f9}.cma-adm-mod-card dt{color:#475569;font-size:11.5px;font-weight:850}.cma-adm-mod-card dd{margin:0;color:#475569;font-size:12px;line-height:1.5}.cma-adm-mod-card dd strong{color:#172554}.cma-adm-mod-alerta{margin-top:11px;padding:9px 10px;border-radius:8px;background:#fffbeb;color:#78350f;font-size:11.5px;line-height:1.5}.cma-adm-mod-info{background:#eff6ff;color:#1e3a8a}@media(max-width:760px){.cma-adm-mod-card{padding:15px}.cma-adm-mod-card dl>div{grid-template-columns:1fr;gap:3px}.cma-adm-mod-card dt{font-size:12px}.cma-adm-mod-card dd{font-size:13px}.cma-adm-mod-card>p{font-size:13px!important}}
     `;document.head.appendChild(st);
   }
 
