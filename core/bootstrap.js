@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260825e';
+  const VERSAO='20260825f';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -11,6 +11,7 @@
     ['tipos-contratos-tipografia','admissao/tipos-contratos-tipografia.js'],
     ['tipos-contratos-complementos','admissao/tipos-contratos-complementos.js'],
     ['ferias-conteudo','ferias/ferias-conteudo.js'],
+    ['demissao-conteudo','demissao/demissao-conteudo.js'],
     ['comercio-feriados','comercio-feriados/comercio-feriados.js'],
     ['sst-extra','sst/sst-extra.js'],
     ['sst-paginas','sst/sst-paginas.js'],
