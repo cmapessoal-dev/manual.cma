@@ -1,6 +1,8 @@
 (function(){
   if(window.CMAMobileUX)return;
 
+  let ultimoModoMobile=null;
+
   function instalarEstilo(){
     if(document.getElementById('cma-mobile-ux-style'))return;
     const st=document.createElement('style');
@@ -54,6 +56,13 @@
     document.head.appendChild(st);
   }
 
+  function definirEstado(menu,toggle,fechado){
+    menu.classList.toggle('cma-mobile-fechado',fechado);
+    toggle.setAttribute('aria-expanded',String(!fechado));
+    const indicador=toggle.querySelector('.cma-mobile-menu-indicador');
+    if(indicador)indicador.textContent=fechado?'＋':'−';
+  }
+
   function prepararMenu(){
     const menu=document.getElementById('manual-menu');
     if(!menu)return false;
@@ -65,30 +74,26 @@
       toggle.style.cssText='display:none;width:100%;align-items:center;justify-content:space-between;gap:12px;padding:13px 14px;border:0;background:#172554;color:#fff;font-weight:800;font-size:15px;cursor:pointer';
       toggle.innerHTML='<span>Sumário do Manual</span><span class="cma-mobile-menu-indicador" aria-hidden="true">＋</span>';
       menu.insertBefore(toggle,menu.firstChild);
-      toggle.addEventListener('click',()=>{
-        menu.classList.toggle('cma-mobile-fechado');
-        const fechado=menu.classList.contains('cma-mobile-fechado');
-        toggle.setAttribute('aria-expanded',String(!fechado));
-        toggle.querySelector('.cma-mobile-menu-indicador').textContent=fechado?'＋':'−';
-      });
+      toggle.addEventListener('click',()=>definirEstado(menu,toggle,!menu.classList.contains('cma-mobile-fechado')));
     }
-    if(innerWidth<1024){
-      menu.classList.add('cma-mobile-fechado');
-      toggle.setAttribute('aria-expanded','false');
-      toggle.querySelector('.cma-mobile-menu-indicador').textContent='＋';
-    }else{
-      menu.classList.remove('cma-mobile-fechado');
+
+    const modoMobile=innerWidth<1024;
+    if(ultimoModoMobile===null){
+      ultimoModoMobile=modoMobile;
+      definirEstado(menu,toggle,modoMobile);
+    }else if(modoMobile!==ultimoModoMobile){
+      ultimoModoMobile=modoMobile;
+      definirEstado(menu,toggle,modoMobile);
+    }else if(!modoMobile){
+      definirEstado(menu,toggle,false);
     }
+
     if(!menu.dataset.cmaMobileClicks){
       menu.dataset.cmaMobileClicks='1';
       menu.addEventListener('click',e=>{
         const b=e.target.closest('button');
         if(!b||b.classList.contains('cma-mobile-menu-toggle')||innerWidth>=1024)return;
-        setTimeout(()=>{
-          menu.classList.add('cma-mobile-fechado');
-          toggle.setAttribute('aria-expanded','false');
-          toggle.querySelector('.cma-mobile-menu-indicador').textContent='＋';
-        },40);
+        setTimeout(()=>definirEstado(menu,toggle,true),40);
       });
     }
     return true;
