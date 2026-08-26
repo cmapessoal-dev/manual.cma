@@ -45,14 +45,14 @@
         <p><strong>Seguro-desemprego:</strong> o simples término normal do contrato por prazo determinado não gera o benefício.</p>
       </div>
 
-      <div class="cma-dem-modalidade cma-dem-modalidade-atencao">
+      <div class="cma-dem-modalidade">
         <h6>Rescisão antecipada do contrato a prazo pelo empregador</h6>
         <p><strong>Devido:</strong> saldo de salário, férias vencidas e proporcionais + 1/3, 13º proporcional e, quando aplicável, indenização prevista no art. 479 da CLT correspondente à metade da remuneração a que o empregado teria direito até o término do contrato.</p>
         <p><strong>FGTS:</strong> a rescisão antecipada sem justa causa por iniciativa do empregador gera multa de 40%, conforme o motivo de desligamento informado ao FGTS Digital.</p>
         <p><strong>Atenção:</strong> se o contrato tiver cláusula assecuratória de rescisão antecipada, podem ser aplicadas as regras dos contratos por prazo indeterminado, nos termos do art. 481 da CLT.</p>
       </div>
 
-      <div class="cma-dem-modalidade cma-dem-modalidade-atencao">
+      <div class="cma-dem-modalidade">
         <h6>Rescisão antecipada do contrato a prazo pelo empregado</h6>
         <p><strong>Devido ao empregado:</strong> saldo de salário, férias vencidas e proporcionais + 1/3 e 13º proporcional.</p>
         <p><strong>Possível indenização ao empregador:</strong> o art. 480 da CLT prevê indenização pelos prejuízos que a saída antecipada causar ao empregador, limitada ao valor que o empregado receberia em situação inversa. Por isso, não é correto tratar o desconto de 50% do período restante como automático em todos os casos.</p>
