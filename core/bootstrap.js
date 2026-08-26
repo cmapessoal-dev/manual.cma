@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260826m';
+  const VERSAO='20260826n';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -59,7 +59,8 @@
     ['navegacao','core/navegacao.js'],
     ['avisos-legais','avisos/avisos-legais.js'],
     ['busca-avancada','busca/busca-avancada.js'],
-    ['ferramentas-menu','ferramentas/ferramentas-menu.js']
+    ['ferramentas-menu','ferramentas/ferramentas-menu.js'],
+    ['mobile-ux','mobile/mobile-ux.js']
   ];
   function jaExiste(caminho){return [...document.scripts].some(s=>{try{return new URL(s.src,location.href).pathname.endsWith('/'+caminho);}catch(e){return false;}});}
   function carregar(id,caminho){return new Promise(resolve=>{if(jaExiste(caminho)||document.querySelector(`script[data-cma-modulo="${id}"]`)){resolve();return;}const s=document.createElement('script');s.dataset.cmaModulo=id;s.src=`${caminho}?v=${VERSAO}`;s.async=false;s.onload=resolve;s.onerror=()=>{console.error('CMA Manual: falha ao carregar',caminho);resolve();};document.body.appendChild(s);});}
