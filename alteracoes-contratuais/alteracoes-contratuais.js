@@ -6,6 +6,22 @@
     if(typeof showSection==='function')showSection(id,typeof getMenuButton==='function'?getMenuButton(id):null);
   }
 
+  function criarBotaoMenu(){
+    const menu=document.getElementById('manual-menu');
+    if(!menu)return false;
+    const existente=[...menu.querySelectorAll('button')].find(b=>(b.getAttribute('onclick')||'').includes("'alteracoes-contratuais'"));
+    if(existente)return true;
+    const b=document.createElement('button');
+    b.type='button';
+    b.setAttribute('onclick',"showSection('alteracoes-contratuais', this)");
+    b.className='w-full text-left px-3 py-2 rounded text-sm font-medium text-gray-600 hover:bg-gray-50 hover:translate-x-0.5 transition-all flex items-center border-l-4 border-transparent';
+    b.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 mr-2.5 shrink-0"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg> Alterações Contratuais';
+    const referencia=typeof getMenuButton==='function'?getMenuButton('beneficios'):null;
+    if(referencia)referencia.insertAdjacentElement('beforebegin',b);
+    else menu.appendChild(b);
+    return true;
+  }
+
   function checklistHTML(){return `
     <div class="cma-alt-check-head">
       <div><span>Material de apoio</span><h3>Checklist de Alteração Contratual</h3><p>Conferências antes de efetivar uma mudança nas condições do contrato de trabalho.</p></div>
@@ -36,7 +52,9 @@
 
   function criar(){
     const main=document.querySelector('#manual-conteudo main');
-    if(!main||document.getElementById('alteracoes-contratuais'))return false;
+    if(!main)return false;
+    criarBotaoMenu();
+    if(document.getElementById('alteracoes-contratuais'))return true;
     const sec=document.createElement('section');sec.id='alteracoes-contratuais';sec.className='manual-section hidden fade-in';
     sec.innerHTML=`
       <div class="flex items-start justify-between gap-4 border-b border-gray-200 pb-4 mb-4">
@@ -65,7 +83,8 @@
     `;document.head.appendChild(st);
   }
 
-  window.CMAAlteracoesContratuais={criar,abrirChecklist};
+  window.CMAAlteracoesContratuais={criar,abrirChecklist,criarBotaoMenu};
   let tentativas=0;(function iniciar(){if(criar())return;if(++tentativas<50)setTimeout(iniciar,180)})();
   document.addEventListener('cma:modulos-prontos',criar);
+  document.addEventListener('cma:navegacao-atualizada',criarBotaoMenu);
 })();
