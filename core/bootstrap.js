@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260826k';
+  const VERSAO='20260826l';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -20,6 +20,7 @@
     ['comercio-feriados','comercio-feriados/comercio-feriados.js'],
     ['sst-extra','sst/sst-extra.js'],
     ['sst-paginas','sst/sst-paginas.js'],
+    ['sst-padrao','sst/sst-padrao.js'],
     ['faltas-justificaveis','faltas-justificaveis/faltas-justificaveis.js'],
     ['padrao-rotinas-legadas','core/padrao-rotinas-legadas.js'],
     ['remover-numeracao-titulos','core/remover-numeracao-titulos.js'],
