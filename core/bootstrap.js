@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260826l';
+  const VERSAO='20260826m';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -15,6 +15,7 @@
     ['afastamentos-fix','afastamentos/afastamentos-fix.js'],
     ['alteracoes-contratuais','alteracoes-contratuais/alteracoes-contratuais.js'],
     ['demissao-conteudo','demissao/demissao-conteudo.js'],
+    ['demissao-titulos','demissao/titulos.js'],
     ['modalidades-rescisao','demissao/modalidades-rescisao.js'],
     ['padrao-rotinas','core/padrao-rotinas.js'],
     ['comercio-feriados','comercio-feriados/comercio-feriados.js'],
