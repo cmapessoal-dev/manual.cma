@@ -22,7 +22,7 @@
     {id:'afastamentos',nome:'Atestados e Afastamentos',grupo:'rotinas'},
     {id:'faltas-justificaveis',nome:'Faltas Justificáveis',grupo:'rotinas'},
     {id:'acidente',nome:'Acidente de Trabalho',grupo:'rotinas'},
-    {id:'demissao',nome:'CCT e Rotinas de Demissão',grupo:'rotinas'},
+    {id:'demissao',nome:'Rescisão do Contrato de Trabalho',grupo:'rotinas'},
     {id:'mei',nome:'Contratação de MEI/Autônomos',grupo:'rotinas'},
     {id:'cargos',nome:'Plano de Cargos e Salários',grupo:'rotinas'},
     {id:'sst',nome:'Programas e Laudos',grupo:'sst'},
