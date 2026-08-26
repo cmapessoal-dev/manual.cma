@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260826g';
+  const VERSAO='20260826h';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -20,6 +20,7 @@
     ['sst-extra','sst/sst-extra.js'],
     ['sst-paginas','sst/sst-paginas.js'],
     ['faltas-justificaveis','faltas-justificaveis/faltas-justificaveis.js'],
+    ['padrao-rotinas-legadas','core/padrao-rotinas-legadas.js'],
     ['guarda-documentos','guarda-documentos/guarda-documentos.js'],
     ['introducao-extra','introducao/introducao-extra.js'],
     ['tipografia','tipografia/tipografia.js'],
