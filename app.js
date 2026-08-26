@@ -58,5 +58,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   const p=document.getElementById('calendar-prev'),n=document.getElementById('calendar-next');
   if(p)p.onclick=()=>{cmaCalendarDate.setMonth(cmaCalendarDate.getMonth()-1);renderCmaCalendar()};
   if(n)n.onclick=()=>{cmaCalendarDate.setMonth(cmaCalendarDate.getMonth()+1);renderCmaCalendar()};
-  const ms=document.createElement('script');ms.src='modelos/modelos.js';ms.defer=true;document.body.appendChild(ms);
+
+  const core=document.createElement('script');
+  core.dataset.cmaBootstrap='1';
+  core.src='core/bootstrap.js?v=20260826c';
+  core.async=false;
+  document.body.appendChild(core);
+
+  const ms=document.createElement('script');
+  ms.src='modelos/modelos.js?v=20260826c';
+  ms.defer=true;
+  document.body.appendChild(ms);
 });
