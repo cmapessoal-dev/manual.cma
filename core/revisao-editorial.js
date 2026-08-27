@@ -81,7 +81,7 @@
     if(hero){
       const walker=document.createTreeWalker(hero,NodeFilter.SHOW_TEXT);
       let n;while(n=walker.nextNode()){
-        if((n.nodeValue||'').includes('Atualizado em Agosto de 2026'))n.nodeValue=n.nodeValue.replace('Atualizado em Agosto de 2026','Última revisão: 24/08/2026');
+        if((n.nodeValue||'').includes('Atualizado em Agosto de 2026'))n.nodeValue=n.nodeValue.replace('Atualizado em Agosto de 2026','Última revisão: 27/08/2026');
       }
     }
   }
