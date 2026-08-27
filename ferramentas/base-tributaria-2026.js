@@ -5,7 +5,7 @@
     irrf:{dependente:189.59,simplificado:607.20,faixas:[{ate:2428.80,aliquota:0,deducao:0},{ate:2826.65,aliquota:.075,deducao:182.16},{ate:3751.05,aliquota:.15,deducao:394.16},{ate:4664.68,aliquota:.225,deducao:675.49},{ate:Infinity,aliquota:.275,deducao:908.73}]},
     salarioFamilia:{limite:1980.38,cota:67.54}
   };
-  const r2=v=>Math.round((Number(v)||0)*100)/100;
+  const r2=v=>Math.round(((Number(v)||0)+1e-9)*100)/100;
   function inss(base){base=Math.max(0,Number(base)||0);const limitada=Math.min(base,P.inss.teto);let anterior=0,total=0,detalhes=[];for(const f of P.inss.faixas){if(limitada<=anterior)break;const parcela=Math.min(limitada,f.ate)-anterior;if(parcela>0){const valor=parcela*f.aliquota;total+=valor;detalhes.push({base:r2(parcela),aliquota:f.aliquota,valor:r2(valor)});}anterior=f.ate;}return {base:r2(base),baseLimitada:r2(limitada),valor:r2(total),aliquotaEfetiva:base?total/base:0,detalhes};}
   function impostoTabela(base){base=Math.max(0,Number(base)||0);const f=P.irrf.faixas.find(x=>base<=x.ate)||P.irrf.faixas.at(-1);return {base:r2(base),aliquota:f.aliquota,deducao:f.deducao,valor:r2(Math.max(0,base*f.aliquota-f.deducao))};}
   function reducao2026(rendimentos,imposto){rendimentos=Math.max(0,Number(rendimentos)||0);imposto=Math.max(0,Number(imposto)||0);let red=0;if(rendimentos<=5000)red=Math.min(imposto,312.89);else if(rendimentos<=7350)red=Math.min(imposto,Math.max(0,978.62-(.133145*rendimentos)));return r2(red);}
