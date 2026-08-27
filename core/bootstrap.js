@@ -1,15 +1,17 @@
 (function(){
-  const VERSAO='20260827a';
+  const VERSAO='20260827b';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
     ['calendario-layout','core/calendario-layout.js'],
     ['jornada-extra','jornada/jornada-extra.js'],
+    ['jornada-conteudo','jornada/jornada-conteudo.js'],
     ['admissao-modalidades','admissao/admissao-modalidades.js'],
     ['admissao-conteudo','admissao/admissao-conteudo.js'],
     ['sincronizar-tipos-contratos','admissao/sincronizar-tipos-contratos.js'],
     ['tipos-contratos-tipografia','admissao/tipos-contratos-tipografia.js'],
     ['tipos-contratos-complementos','admissao/tipos-contratos-complementos.js'],
+    ['beneficios-conteudo','beneficios/beneficios-conteudo.js'],
     ['ferias-conteudo','ferias/ferias-conteudo.js'],
     ['afastamentos-conteudo','afastamentos/afastamentos-conteudo.js'],
     ['afastamentos-fix','afastamentos/afastamentos-fix.js'],
@@ -24,6 +26,8 @@
     ['sst-padrao','sst/sst-padrao.js'],
     ['faltas-justificaveis','faltas-justificaveis/faltas-justificaveis.js'],
     ['acidente-conteudo','acidente/acidente-conteudo.js'],
+    ['mei-autonomos-conteudo','mei/mei-autonomos-conteudo.js'],
+    ['auditoria-conteudo-2026','core/auditoria-conteudo-2026.js'],
     ['padrao-rotinas-legadas','core/padrao-rotinas-legadas.js'],
     ['remover-numeracao-titulos','core/remover-numeracao-titulos.js'],
     ['guarda-documentos','guarda-documentos/guarda-documentos.js'],
