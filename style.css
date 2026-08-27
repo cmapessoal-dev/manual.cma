@@ -1600,3 +1600,45 @@ button[onclick^="toggleExplainer"]:hover {
     width: 100%;
     box-sizing: border-box;
 }
+
+
+/* PADRONIZAÇÃO GLOBAL DO ALINHAMENTO EDITORIAL */
+@media (min-width: 769px) {
+    #manual-conteudo main[class] section.manual-section[id] p {
+        text-align: justify !important;
+        text-justify: inter-word;
+        hyphens: auto;
+    }
+
+    #manual-conteudo main[class] section.manual-section[id] p.text-center,
+    #manual-conteudo main[class] section.manual-section[id] .text-center p {
+        text-align: center !important;
+        text-justify: auto;
+        hyphens: none;
+    }
+
+    #manual-conteudo main[class] section.manual-section[id] p.text-right,
+    #manual-conteudo main[class] section.manual-section[id] .text-right p {
+        text-align: right !important;
+        text-justify: auto;
+        hyphens: none;
+    }
+}
+
+@media (max-width: 768px) {
+    #manual-conteudo main[class] section.manual-section[id] p {
+        text-align: left !important;
+        text-justify: auto;
+        hyphens: none;
+    }
+
+    #manual-conteudo main[class] section.manual-section[id] p.text-center,
+    #manual-conteudo main[class] section.manual-section[id] .text-center p {
+        text-align: center !important;
+    }
+
+    #manual-conteudo main[class] section.manual-section[id] p.text-right,
+    #manual-conteudo main[class] section.manual-section[id] .text-right p {
+        text-align: right !important;
+    }
+}
