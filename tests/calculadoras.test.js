@@ -223,12 +223,24 @@ test('Simulador de Rescisão — calcula dias e avos automaticamente pelas datas
   carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
   const r = dom.window.CMACalculadoraRescisao.calcularAutomaticos({
     admissao: '2026-02-16',
-    desligamento: '2026-10-24',
-    inicioFerias: '2026-04-10'
+    desligamento: '2026-10-24'
   });
   assert.equal(r.diasSaldo, 24);
   assert.equal(r.avosDecimo, 8);
-  assert.equal(r.avosFerias, 7);
+  assert.equal(r.avosFerias, 8);
+  assert.equal(r.periodosCompletos, 0);
+});
+
+test('Simulador de Rescisão — transforma 12 avos em período completo e mantém o excedente proporcional', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularAutomaticos({
+    admissao: '2025-05-15',
+    desligamento: '2026-08-28'
+  });
+  assert.equal(r.totalAvosFerias, 15);
+  assert.equal(r.periodosCompletos, 1);
+  assert.equal(r.avosFerias, 3);
 });
 
 test('Simulador de Rescisão — saldo usa salário e demais verbas usam salário mais médias', () => {
