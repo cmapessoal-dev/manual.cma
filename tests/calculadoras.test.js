@@ -181,12 +181,13 @@ test('Apurador de Ponto — classifica todas as horas de domingo ou feriado a 10
   assert.equal(r.extra100, 480);
 });
 
-test('Apurador de Ponto — converte o período urbano de 22h às 5h em 8 horas noturnas', () => {
+test('Apurador de Ponto — apura o período noturno pelo tempo real, sem conversão', () => {
   const dom = criarAmbiente();
   carregar(dom, 'apurador-ponto/apurador-ponto.js');
-  const r = dom.window.CMAApuradorPonto.analisarDia({ previsto: 420, marcacoes: ['22:00','05:00','',''], noturno: true });
-  assert.equal(r.noturnoReal, 420);
-  assert.equal(r.noturnoReduzido, 480);
+  const cincoMinutos = dom.window.CMAApuradorPonto.analisarDia({ previsto: 485, marcacoes: ['14:00','22:05','',''] });
+  const seteHoras = dom.window.CMAApuradorPonto.analisarDia({ previsto: 420, marcacoes: ['22:00','05:00','',''] });
+  assert.equal(cincoMinutos.noturnoReal, 5);
+  assert.equal(seteHoras.noturnoReal, 420);
 });
 
 test('Apurador de Ponto — exclui marcações incompletas da apuração', () => {
