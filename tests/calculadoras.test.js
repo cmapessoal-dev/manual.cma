@@ -197,3 +197,23 @@ test('Apurador de Ponto — exclui marcações incompletas da apuração', () =>
   assert.equal(r.valido, false);
   assert.equal(r.incompleto, true);
 });
+
+test('Simulador de Rescisão — calcula a base bruta das verbas informadas', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularBase({
+    salario: 3000,
+    diasSaldo: 10,
+    avosFerias: 6,
+    periodosVencidos: 1,
+    avosDecimo: 8,
+    diasAviso: 30
+  });
+  assert.equal(r.saldoSalario, 1000);
+  assert.equal(r.feriasProporcionais, 1500);
+  assert.equal(r.feriasVencidas, 3000);
+  assert.equal(r.tercoFerias, 1500);
+  assert.equal(r.decimoTerceiro, 2000);
+  assert.equal(r.avisoPrevio, 3000);
+  assert.equal(r.totalBruto, 12000);
+});
