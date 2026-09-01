@@ -241,3 +241,57 @@ test('Simulador de Rescisão — saldo usa salário e demais verbas usam salári
   assert.equal(r.avisoPrevio, 3600);
   assert.equal(r.totalBruto, 14200);
 });
+
+test('Simulador de Rescisão — dispensa sem justa causa inclui aviso indenizado', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'sem_justa',formaAviso:'indenizado',salario:3000,diasSaldo:10,avosFerias:6,avosDecimo:8,diasAviso:30});
+  assert.equal(r.saldoSalario, 1000);
+  assert.equal(r.feriasProporcionais, 1500);
+  assert.equal(r.decimoTerceiro, 2000);
+  assert.equal(r.avisoPrevio, 3000);
+  assert.equal(r.totalBruto, 8000);
+});
+
+test('Simulador de Rescisão — justa causa exclui proporcionais e aviso', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'justa_causa',formaAviso:'indenizado',salario:3000,diasSaldo:10,avosFerias:6,periodosVencidos:1,avosDecimo:8,diasAviso:30});
+  assert.equal(r.feriasProporcionais, 0);
+  assert.equal(r.decimoTerceiro, 0);
+  assert.equal(r.avisoPrevio, 0);
+  assert.equal(r.totalBruto, 5000);
+});
+
+test('Simulador de Rescisão — pedido sem aviso cumprido desconta 30 dias', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'pedido',formaAviso:'nao_cumprido',salario:3000,medias:300,diasSaldo:10,avosFerias:6,avosDecimo:8,diasAviso:30});
+  assert.equal(r.descontoAviso, 3300);
+  assert.equal(r.totalBruto, 2100);
+});
+
+test('Simulador de Rescisão — mútuo acordo paga metade do aviso indenizado', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'acordo',formaAviso:'indenizado',salario:3000,diasAviso:30});
+  assert.equal(r.avisoPrevio, 1500);
+});
+
+test('Simulador de Rescisão — término antecipado pelo empregador calcula art. 479', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'antecipada_empregador',salario:3000,desligamento:'2026-09-01',fimContrato:'2026-09-30'});
+  assert.equal(r.diasRestantes, 29);
+  assert.equal(r.indenizacao479, 1450);
+});
+
+test('Simulador de Rescisão — aviso proporcional respeita 30 a 90 dias', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const A = dom.window.CMACalculadoraRescisao;
+  assert.equal(A.diasAvisoAutomaticos('2026-01-01','2026-12-31','sem_justa'),30);
+  assert.equal(A.diasAvisoAutomaticos('2020-01-01','2026-01-01','sem_justa'),48);
+  assert.equal(A.diasAvisoAutomaticos('1990-01-01','2026-01-01','sem_justa'),90);
+  assert.equal(A.diasAvisoAutomaticos('2020-01-01','2026-01-01','pedido'),30);
+});
