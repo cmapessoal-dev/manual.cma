@@ -172,6 +172,15 @@ test('Apurador de Ponto — não oculta minutos dentro da margem informada', () 
   assert.equal(r.margem, true);
 });
 
+test('Apurador de Ponto — classifica todas as horas de domingo ou feriado a 100%', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'apurador-ponto/apurador-ponto.js');
+  const r = dom.window.CMAApuradorPonto.analisarDia({ previsto: 0, marcacoes: ['08:00','12:00','13:00','17:00'], especial: true });
+  assert.equal(r.trabalhado, 480);
+  assert.equal(r.extra50, 0);
+  assert.equal(r.extra100, 480);
+});
+
 test('Apurador de Ponto — exclui marcações incompletas da apuração', () => {
   const dom = criarAmbiente();
   carregar(dom, 'apurador-ponto/apurador-ponto.js');
