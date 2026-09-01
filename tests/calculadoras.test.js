@@ -143,3 +143,39 @@ test('Simulador de Folha — salário simples de R$ 3.000', () => {
   perto(brl(dom.window.document.getElementById('cma-folha-inss').textContent), 248.60);
   perto(brl(dom.window.document.getElementById('cma-folha-liquido').textContent), 2751.40);
 });
+
+test('Apurador de Ponto — apura quatro marcações e excedente diário', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'apurador-ponto/apurador-ponto.js');
+  const A = dom.window.CMAApuradorPonto;
+  const r = A.analisarDia({ previsto: 480, marcacoes: ['08:00','12:00','13:00','18:00'], margem: 10 });
+  assert.equal(r.valido, true);
+  assert.equal(r.trabalhado, 540);
+  assert.equal(r.extra, 60);
+  assert.equal(r.saldo, 60);
+});
+
+test('Apurador de Ponto — aceita jornada atravessando a meia-noite', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'apurador-ponto/apurador-ponto.js');
+  const r = dom.window.CMAApuradorPonto.analisarDia({ previsto: 360, marcacoes: ['22:00','02:00','03:00','05:00'] });
+  assert.equal(r.trabalhado, 360);
+  assert.equal(r.saldo, 0);
+});
+
+test('Apurador de Ponto — não oculta minutos dentro da margem informada', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'apurador-ponto/apurador-ponto.js');
+  const r = dom.window.CMAApuradorPonto.analisarDia({ previsto: 480, marcacoes: ['08:00','12:00','13:00','17:05'], margem: 10 });
+  assert.equal(r.extra, 5);
+  assert.equal(r.saldo, 5);
+  assert.equal(r.margem, true);
+});
+
+test('Apurador de Ponto — exclui marcações incompletas da apuração', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'apurador-ponto/apurador-ponto.js');
+  const r = dom.window.CMAApuradorPonto.analisarDia({ previsto: 480, marcacoes: ['08:00','','13:00','17:00'] });
+  assert.equal(r.valido, false);
+  assert.equal(r.incompleto, true);
+});
