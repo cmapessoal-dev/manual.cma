@@ -217,3 +217,27 @@ test('Simulador de Rescisão — calcula a base bruta das verbas informadas', ()
   assert.equal(r.avisoPrevio, 3000);
   assert.equal(r.totalBruto, 12000);
 });
+
+test('Simulador de Rescisão — calcula dias e avos automaticamente pelas datas', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularAutomaticos({
+    admissao: '2026-02-16',
+    desligamento: '2026-10-24',
+    inicioFerias: '2026-04-10'
+  });
+  assert.equal(r.diasSaldo, 24);
+  assert.equal(r.avosDecimo, 8);
+  assert.equal(r.avosFerias, 7);
+});
+
+test('Simulador de Rescisão — saldo usa salário e demais verbas usam salário mais médias', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularBase({salario:3000,medias:600,diasSaldo:10,avosFerias:6,periodosVencidos:1,avosDecimo:8,diasAviso:30});
+  assert.equal(r.saldoSalario, 1000);
+  assert.equal(r.feriasProporcionais, 1800);
+  assert.equal(r.decimoTerceiro, 2400);
+  assert.equal(r.avisoPrevio, 3600);
+  assert.equal(r.totalBruto, 14200);
+});
