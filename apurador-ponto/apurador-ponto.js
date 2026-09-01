@@ -25,7 +25,7 @@
       let inicio=minutos(marcacoes[i]),fim=minutos(marcacoes[i+1]);if(inicio===null||fim===null)continue;if(fim<inicio)fim+=1440;
       [-1,0,1].forEach(dia=>{const a=1320+dia*1440,b=1740+dia*1440;real+=Math.max(0,Math.min(fim,b)-Math.max(inicio,a));});
     }
-    return {real,reduzido:Math.round(real*8/7)};
+    return {real};
   }
   function analisarDia({previsto=0,marcacoes=[],situacao='trabalhado',especial=false,margem=10,noturno=true}={}){
     const base=Math.max(0,Number(previsto)||0);
@@ -42,8 +42,8 @@
       if(d===null)return {valido:false,incompleto:true,previsto:base,trabalhado:0,credito:0,extra:0,atraso:0,saldo:0,especial,margem:false};
       pares.push(d);
     }
-    const trabalhado=pares.reduce((a,b)=>a+b,0),saldo=trabalhado-base,extra=Math.max(0,saldo),noite=noturno?calcularNoturno(marcacoes):{real:0,reduzido:0};
-    return {valido:true,previsto:base,trabalhado,credito:0,extra,extra50:especial?0:extra,extra100:especial?trabalhado:0,noturnoReal:noite.real,noturnoReduzido:noite.reduzido,atraso:Math.max(0,-saldo),saldo,especial,margem:!especial&&Math.abs(saldo)>0&&Math.abs(saldo)<=Math.max(0,Number(margem)||0)};
+    const trabalhado=pares.reduce((a,b)=>a+b,0),saldo=trabalhado-base,extra=Math.max(0,saldo),noite=noturno?calcularNoturno(marcacoes):{real:0};
+    return {valido:true,previsto:base,trabalhado,credito:0,extra,extra50:especial?0:extra,extra100:especial?trabalhado:0,noturnoReal:noite.real,atraso:Math.max(0,-saldo),saldo,especial,margem:!especial&&Math.abs(saldo)>0&&Math.abs(saldo)<=Math.max(0,Number(margem)||0)};
   }
   function dataLocal(chave){const [a,m,d]=chave.split('-').map(Number);return new Date(a,m-1,d);}
   function chaveData(data){return `${data.getFullYear()}-${String(data.getMonth()+1).padStart(2,'0')}-${String(data.getDate()).padStart(2,'0')}`;}
@@ -151,6 +151,6 @@
     document.head.appendChild(st);
   }
 
-  window.CMAApuradorPonto={minutos,duracao,formatar,calcularNoturno,analisarDia,criar,versao:'1.6'};
+  window.CMAApuradorPonto={minutos,duracao,formatar,calcularNoturno,analisarDia,criar,versao:'1.7'};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',criar);else criar();
 })();
