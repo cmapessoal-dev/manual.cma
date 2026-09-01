@@ -307,3 +307,28 @@ test('Simulador de Rescisão — aviso proporcional respeita 30 a 90 dias', () =
   assert.equal(A.diasAvisoAutomaticos('1990-01-01','2026-01-01','sem_justa'),90);
   assert.equal(A.diasAvisoAutomaticos('2020-01-01','2026-01-01','pedido'),30);
 });
+
+test('Simulador de Rescisão — calcula INSS e IRRF separadamente sobre saldo e 13º', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'ferramentas/base-tributaria-2026.js');
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'termino_prazo',salario:6000,diasSaldo:30,avosDecimo:12});
+  assert.equal(r.inssSaldo, 641.51);
+  assert.equal(r.irSaldo, 385.10);
+  assert.equal(r.inssDecimo, 641.51);
+  assert.equal(r.irDecimo, 385.10);
+  assert.equal(r.totalTributos, 2053.22);
+  assert.equal(r.totalLiquido, 9946.78);
+});
+
+test('Simulador de Rescisão — não tributa férias indenizadas e terço constitucional', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'ferramentas/base-tributaria-2026.js');
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'termino_prazo',salario:6000,avosFerias:12,periodosVencidos:1});
+  assert.equal(r.feriasProporcionais, 6000);
+  assert.equal(r.feriasVencidas, 6000);
+  assert.equal(r.tercoFerias, 4000);
+  assert.equal(r.totalTributos, 0);
+  assert.equal(r.totalLiquido, 16000);
+});
