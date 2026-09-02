@@ -254,6 +254,23 @@ test('Simulador de Rescisão — saldo usa salário e demais verbas usam salári
   assert.equal(r.totalBruto, 14200);
 });
 
+test('Simulador de Rescisão — usa uma média independente para cada verba', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularBase({salario:3000,mediaDecimo:600,mediaAviso:300,mediaFeriasProporcionais:480,mediaFeriasVencidas:720,diasSaldo:10,avosFerias:6,periodosVencidos:1,avosDecimo:8,diasAviso:30});
+  assert.equal(r.baseDecimo, 3600);
+  assert.equal(r.baseAviso, 3300);
+  assert.equal(r.baseFeriasProporcionais, 3480);
+  assert.equal(r.baseFeriasVencidas, 3720);
+  assert.equal(r.saldoSalario, 1000);
+  assert.equal(r.feriasProporcionais, 1740);
+  assert.equal(r.feriasVencidas, 3720);
+  assert.equal(r.tercoFerias, 1820);
+  assert.equal(r.decimoTerceiro, 2400);
+  assert.equal(r.avisoPrevio, 3300);
+  assert.equal(r.totalBruto, 13980);
+});
+
 test('Simulador de Rescisão — dispensa sem justa causa inclui aviso indenizado', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
