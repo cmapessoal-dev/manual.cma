@@ -61,12 +61,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 
   const core=document.createElement('script');
   core.dataset.cmaBootstrap='1';
-  core.src='core/bootstrap.js?v=20260902f';
+  core.src='core/bootstrap.js?v=20260902g';
   core.async=false;
   document.body.appendChild(core);
 
   const ms=document.createElement('script');
-  ms.src='modelos/modelos.js?v=20260902f';
+  ms.src='modelos/modelos.js?v=20260902g';
   ms.defer=true;
   document.body.appendChild(ms);
 });
