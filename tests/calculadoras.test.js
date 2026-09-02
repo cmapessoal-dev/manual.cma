@@ -345,3 +345,47 @@ test('Simulador de Rescisão — outros descontos reduzem somente o líquido', (
   perto(r.totalDescontos, 2553.22);
   perto(r.totalLiquido, 9446.78);
 });
+
+test('Simulador de Rescisão — projeta aviso indenizado em férias e 13º', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const A = dom.window.CMACalculadoraRescisao;
+  const p = A.calcularProjecaoAviso({admissao:'2025-01-01',desligamento:'2026-08-20',modalidade:'sem_justa',formaAviso:'indenizado',diasAviso:33});
+  assert.equal(p.dataProjetada, '2026-09-22');
+  assert.equal(p.avosFeriasAviso, 1);
+  assert.equal(p.avosDecimoAviso, 1);
+  assert.equal(p.avosDecimoAvisoMesmoAno, 1);
+  assert.equal(p.avosDecimoAvisoAnoSeguinte, 0);
+  const r = A.calcularPorModalidade({modalidade:'sem_justa',formaAviso:'indenizado',salario:3000,diasSaldo:20,avosFerias:8,avosFeriasAviso:p.avosFeriasAviso,avosDecimo:8,avosDecimoAvisoMesmoAno:p.avosDecimoAvisoMesmoAno,avosDecimoAvisoAnoSeguinte:p.avosDecimoAvisoAnoSeguinte,diasAviso:33});
+  assert.equal(r.feriasAviso, 250);
+  assert.equal(r.decimoAviso, 250);
+  assert.equal(r.tercoFerias, 750);
+  assert.equal(r.totalBruto, 10550);
+});
+
+test('Simulador de Rescisão — separa tributação do 13º projetado para o ano seguinte', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'ferramentas/base-tributaria-2026.js');
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const A = dom.window.CMACalculadoraRescisao;
+  const p = A.calcularProjecaoAviso({admissao:'2025-07-01',desligamento:'2026-12-31',modalidade:'sem_justa',formaAviso:'indenizado',diasAviso:33});
+  assert.equal(p.dataProjetada, '2027-02-02');
+  assert.equal(p.avosFeriasAviso, 1);
+  assert.equal(p.avosDecimoAviso, 1);
+  assert.equal(p.avosDecimoAvisoMesmoAno, 0);
+  assert.equal(p.avosDecimoAvisoAnoSeguinte, 1);
+  const t = A.calcularTributos({decimoTerceiro:6000,decimoAvisoAnoSeguinte:500});
+  assert.equal(t.inssDecimo, 679.01);
+  assert.equal(t.irDecimo, 385.10);
+  assert.equal(t.totalTributos, 1064.11);
+});
+
+test('Simulador de Rescisão — reconhece avo de dezembro completado pela projeção', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const p = dom.window.CMACalculadoraRescisao.calcularProjecaoAviso({admissao:'2025-01-01',desligamento:'2026-12-10',modalidade:'sem_justa',formaAviso:'indenizado',diasAviso:33});
+  assert.equal(p.dataProjetada, '2027-01-12');
+  assert.equal(p.avosDecimoAvisoMesmoAno, 1);
+  assert.equal(p.avosDecimoAvisoAnoSeguinte, 0);
+  assert.equal(p.avosDecimoAviso, 1);
+});
