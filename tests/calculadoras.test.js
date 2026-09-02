@@ -380,6 +380,22 @@ test('Simulador de Rescisão — projeta aviso indenizado em férias e 13º', ()
   assert.equal(r.totalBruto, 10550);
 });
 
+test('Simulador de Rescisão — indeniza e projeta o excedente do aviso trabalhado', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const A = dom.window.CMACalculadoraRescisao;
+  assert.equal(A.diasAvisoAutomaticos('2024-01-01','2026-01-31','sem_justa'), 36);
+  assert.equal(A.calcularDiasAvisoIndenizados('sem_justa','trabalhado',36), 6);
+  assert.equal(A.calcularDiasAvisoIndenizados('sem_justa','trabalhado',30), 0);
+  const p = A.calcularProjecaoAviso({admissao:'2024-01-01',desligamento:'2026-01-31',modalidade:'sem_justa',formaAviso:'trabalhado',diasAviso:36});
+  assert.equal(p.diasAvisoIndenizados, 6);
+  assert.equal(p.dataProjetada, '2026-02-06');
+  const r = A.calcularPorModalidade({modalidade:'sem_justa',formaAviso:'trabalhado',salario:3000,mediaAviso:600,diasSaldo:30,diasAviso:36});
+  assert.equal(r.diasAvisoIndenizados, 6);
+  assert.equal(r.avisoPrevio, 720);
+  assert.equal(r.totalBruto, 3720);
+});
+
 test('Simulador de Rescisão — separa tributação do 13º projetado para o ano seguinte', () => {
   const dom = criarAmbiente();
   carregar(dom, 'ferramentas/base-tributaria-2026.js');
