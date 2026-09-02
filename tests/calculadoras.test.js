@@ -332,3 +332,16 @@ test('Simulador de Rescisão — não tributa férias indenizadas e terço const
   assert.equal(r.totalTributos, 0);
   assert.equal(r.totalLiquido, 16000);
 });
+
+test('Simulador de Rescisão — outros descontos reduzem somente o líquido', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'ferramentas/base-tributaria-2026.js');
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'termino_prazo',salario:6000,diasSaldo:30,avosDecimo:12,valeTransporte:300,planoSaude:100,alimentacao:50,outrosDescontos:50});
+  perto(r.baseINSSSaldo, 6000);
+  perto(r.baseINSSDecimo, 6000);
+  perto(r.totalTributos, 2053.22);
+  perto(r.totalOutrosDescontos, 500);
+  perto(r.totalDescontos, 2553.22);
+  perto(r.totalLiquido, 9446.78);
+});
