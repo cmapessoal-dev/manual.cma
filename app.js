@@ -52,6 +52,28 @@ function renderCmaCalendar(){
   }
 }
 
+function carregarModulosDoManual(){
+  if(!document.querySelector('script[data-cma-bootstrap]')){
+    const core=document.createElement('script');
+    core.dataset.cmaBootstrap='1';
+    core.src='core/bootstrap.js?v=20260903a';
+    core.async=false;
+    document.body.appendChild(core);
+  }
+
+  if(!document.querySelector('script[data-cma-modelos]')){
+    const ms=document.createElement('script');
+    ms.dataset.cmaModelos='1';
+    ms.src='modelos/modelos.js?v=20260903a';
+    ms.async=false;
+    document.body.appendChild(ms);
+  }
+}
+
+// O app.js é carregado no fim do <body>, portanto os módulos podem começar a
+// ser baixados imediatamente, sem aguardar novamente o DOMContentLoaded.
+carregarModulosDoManual();
+
 document.addEventListener('DOMContentLoaded',()=>{
   updateSectionNavigation('apresentacao');
   renderCmaCalendar();
@@ -59,14 +81,4 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(p)p.onclick=()=>{cmaCalendarDate.setMonth(cmaCalendarDate.getMonth()-1);renderCmaCalendar()};
   if(n)n.onclick=()=>{cmaCalendarDate.setMonth(cmaCalendarDate.getMonth()+1);renderCmaCalendar()};
 
-  const core=document.createElement('script');
-  core.dataset.cmaBootstrap='1';
-  core.src='core/bootstrap.js?v=20260902h';
-  core.async=false;
-  document.body.appendChild(core);
-
-  const ms=document.createElement('script');
-  ms.src='modelos/modelos.js?v=20260902h';
-  ms.defer=true;
-  document.body.appendChild(ms);
 });
