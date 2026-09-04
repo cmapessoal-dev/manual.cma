@@ -3,7 +3,7 @@
 
   const IDS=[
     'calculadora-ferias','calculadora-decimo-terceiro','calculadora-horas-extras',
-    'calculadora-adicional-noturno','calculadora-pro-labore','calculadora-faltas-atrasos',
+    'calculadora-adicional-noturno','calculadora-pro-labore','calculadora-tempo-parcial','calculadora-faltas-atrasos',
     'calculadora-folha','calculadora-rescisao','calculadora-jornada','apurador-ponto','calculadora-aviso-previo','calculadora-experiencia',
     'custo-empregado'
   ];
