@@ -422,3 +422,32 @@ test('Simulador de Rescisão — reconhece avo de dezembro completado pela proje
   assert.equal(p.avosDecimoAvisoAnoSeguinte, 0);
   assert.equal(p.avosDecimoAviso, 1);
 });
+
+test('Simulador de Rescisão — calcula variáveis do mês', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const v = dom.window.CMACalculadoraRescisao.calcularVariaveis({ativo:true,salario:2200,divisor:220,he50Horas:10,he50Percentual:50,he100Horas:5,he100Percentual:100,diasUteis:25,diasDsr:5,noturnasHoras:7,adicionalNoturnoPercentual:20,faltasDias:1,atrasosHoras:1,atrasosMinutos:30,dsrPerdidos:1});
+  perto(v.valorHora, 10);
+  perto(v.he50, 150);
+  perto(v.he100, 100);
+  perto(v.dsrHorasExtras, 50);
+  perto(v.horasNoturnasComputadas, 8);
+  perto(v.adicionalNoturno, 16);
+  perto(v.totalProventos, 316);
+  perto(v.descontoFaltas, 73.33);
+  perto(v.descontoAtrasos, 15);
+  perto(v.descontoDsr, 73.33);
+  perto(v.totalDescontos, 161.66);
+});
+
+test('Simulador de Rescisão — inclui variáveis nos proventos, descontos e base mensal', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const r = dom.window.CMACalculadoraRescisao.calcularPorModalidade({modalidade:'termino_prazo',salario:2200,diasSaldo:30,variaveis:{ativo:true,divisor:220,he50Horas:10,he50Percentual:50,diasUteis:25,diasDsr:5,faltasDias:1}});
+  perto(r.variaveis.totalProventos, 180);
+  perto(r.variaveis.totalDescontos, 73.33);
+  perto(r.totalBruto, 2380);
+  perto(r.remuneracaoMensalTributavel, 2306.67);
+  perto(r.totalDescontos, r.totalTributos + 73.33);
+  perto(r.totalLiquido, r.totalBruto - r.totalDescontos);
+});
