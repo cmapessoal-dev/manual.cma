@@ -451,3 +451,15 @@ test('Simulador de Rescisão — inclui variáveis nos proventos, descontos e ba
   perto(r.totalDescontos, r.totalTributos + 73.33);
   perto(r.totalLiquido, r.totalBruto - r.totalDescontos);
 });
+
+test('Simulador de Rescisão — respeita a ativação independente de cada cálculo', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
+  const v = dom.window.CMACalculadoraRescisao.calcularVariaveis({ativo:true,horasExtrasAtivas:false,adicionalNoturnoAtivo:true,faltasAtivas:false,atrasosAtivos:true,salario:2200,divisor:220,he50Horas:10,diasUteis:25,diasDsr:5,noturnasHoras:7,faltasDias:1,atrasosHoras:1,atrasosMinutos:30,dsrPerdidos:1});
+  perto(v.totalHorasExtras, 0);
+  perto(v.dsrHorasExtras, 0);
+  perto(v.adicionalNoturno, 16);
+  perto(v.descontoFaltas, 0);
+  perto(v.descontoDsr, 0);
+  perto(v.descontoAtrasos, 15);
+});
