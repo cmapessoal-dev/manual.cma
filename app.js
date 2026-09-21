@@ -56,7 +56,7 @@ function carregarModulosDoManual(){
   if(!document.querySelector('script[data-cma-bootstrap]')){
     const core=document.createElement('script');
     core.dataset.cmaBootstrap='1';
-    core.src='core/bootstrap.js?v=20260918a';
+    core.src='core/bootstrap.js?v=20260921a';
     core.async=false;
     document.body.appendChild(core);
   }
@@ -64,7 +64,7 @@ function carregarModulosDoManual(){
   if(!document.querySelector('script[data-cma-modelos]')){
     const ms=document.createElement('script');
     ms.dataset.cmaModelos='1';
-    ms.src='modelos/modelos.js?v=20260918a';
+    ms.src='modelos/modelos.js?v=20260921a';
     ms.async=false;
     document.body.appendChild(ms);
   }
