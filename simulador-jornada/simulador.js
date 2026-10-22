@@ -14,6 +14,12 @@ Error generating stack: `+l.message+`
 .five-export-hint{margin:-6px 0 18px;color:#64748b;font-size:13px;line-height:1.5}.five-actions{flex-wrap:wrap}.five-heading{flex-wrap:wrap}
 #simulador-jornada{font-family:Arial,sans-serif}#simulador-jornada *{box-sizing:border-box}#simulador-jornada button{cursor:pointer;font-family:inherit}#simulador-jornada .payroll-scroll{overflow:auto}#simulador-jornada .calculator-guidance{margin-top:20px}#simulador-jornada .five-visual{font-size:15px}#simulador-jornada p{text-align:left}#simulador-jornada .five-schedule h3,#simulador-jornada .five-schedule h4{letter-spacing:normal;text-transform:none}#simulador-jornada .five-controls label{font-size:14px}#simulador-jornada .five-actions button{font-size:13px}#simulador-jornada .five-day-switch button{line-height:1.4}
 #cma-simulador-jornada-root{container-type:inline-size}
+#simulador-jornada,#simulador-jornada *{letter-spacing:0!important;word-spacing:normal!important;font-family:Arial,sans-serif}
+#simulador-jornada .five-heading h3,#simulador-jornada .five-week-heading h3,#simulador-jornada .five-comparison-heading h3,#simulador-jornada .five-day-title h4{font-weight:700!important;line-height:1.25}
+#simulador-jornada .five-heading h3{font-size:25px}
+#simulador-jornada .five-day-hours>strong{font-weight:800!important;font-size:20px!important;font-variant-numeric:tabular-nums;line-height:1.2;color:#172554}
+#simulador-jornada .five-day-metrics>strong,#simulador-jornada .five-week-summary strong,#simulador-jornada .five-comparison-stats strong{font-weight:700!important;font-variant-numeric:tabular-nums}
+#simulador-jornada .five-eyebrow{font-size:11px;font-weight:700;line-height:1.3}
 #simulador-jornada .five-week-board{grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:14px}
 #simulador-jornada .five-day-card{padding:16px 14px}
 #simulador-jornada .five-day-switch button{min-height:34px;padding:7px 5px;white-space:nowrap}
