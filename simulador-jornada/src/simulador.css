@@ -22,3 +22,49 @@
 @container(max-width:740px){#simulador-jornada .five-week-board{grid-template-columns:repeat(3,minmax(0,1fr))}#simulador-jornada .five-comparison-heading{flex-direction:column;align-items:flex-start}}
 @container(max-width:580px){#simulador-jornada .five-week-board{grid-template-columns:repeat(2,minmax(0,1fr))}#simulador-jornada .five-presets .five-controls{grid-template-columns:1fr}#simulador-jornada .five-visual{padding:14px}#simulador-jornada .five-brand-icon{display:none}}
 @container(max-width:360px){#simulador-jornada .five-week-board{grid-template-columns:1fr}#simulador-jornada .five-week-summary,#simulador-jornada .five-comparison-stats{grid-template-columns:1fr}}
+#simulador-jornada .coverage-tabs{display:flex;gap:8px;margin:0 0 24px;border-bottom:1px solid #dbe3ef;padding-bottom:12px;flex-wrap:wrap}
+#simulador-jornada .coverage-tabs button{padding:11px 18px;border:1px solid #cbd5e1;border-radius:8px;font-size:14px;font-weight:700;background:#fff;color:#334155}
+#simulador-jornada .coverage-tabs button[aria-pressed=true]{background:#173b72;color:white;border-color:#173b72}
+#simulador-jornada .coverage-tool{color:#1e293b;font-size:14px;line-height:1.5}
+#simulador-jornada .coverage-tool h3{font-size:25px;font-weight:700;line-height:1.2;margin:5px 0 8px}
+#simulador-jornada .coverage-tool h4{font-size:17px;font-weight:700;margin:24px 0 10px}
+#simulador-jornada .coverage-heading{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap}
+#simulador-jornada .coverage-tool button{cursor:pointer}
+#simulador-jornada .coverage-heading>button,#simulador-jornada .coverage-editor>button{border:1px solid #94a3b8;border-radius:7px;background:#fff;padding:8px 12px;color:#173b72;font-weight:700}
+#simulador-jornada .coverage-top{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0}
+#simulador-jornada .coverage-top label{display:grid;gap:5px;font-size:13px;font-weight:700;flex:1;min-width:145px}
+#simulador-jornada .coverage-tool input:not([type=checkbox]),#simulador-jornada .coverage-tool select{border:1px solid #b7c4d6;border-radius:6px;padding:7px 8px;background:white;color:#172554;font-size:14px;min-width:0;width:100%;box-sizing:border-box}
+#simulador-jornada .coverage-tool input[type=checkbox]{width:18px;height:18px;accent-color:#173b72}
+#simulador-jornada .coverage-tool input:disabled{opacity:.4}
+#simulador-jornada .coverage-help{font-size:13px;color:#526176;margin:8px 0 16px}
+#simulador-jornada .coverage-scroll{overflow-x:auto;border:1px solid #dbe3ef;border-radius:9px}
+#simulador-jornada .coverage-scroll table{width:100%;border-collapse:collapse;min-width:540px;font-size:13px}
+#simulador-jornada .coverage-scroll th,#simulador-jornada .coverage-scroll td{padding:9px 10px;border-bottom:1px solid #e2e8f0;text-align:left;vertical-align:middle}
+#simulador-jornada .coverage-scroll thead{background:#edf2f9;color:#173b72}
+#simulador-jornada .coverage-scroll th{font-weight:700}
+#simulador-jornada .coverage-scroll .coverage-board{min-width:1060px;table-layout:fixed}
+#simulador-jornada .coverage-board th:first-child{width:180px}
+#simulador-jornada .coverage-board th:last-child{width:90px}
+#simulador-jornada .coverage-board td{padding:6px 4px}
+#simulador-jornada .coverage-board td>small{display:block;color:#64748b}
+#simulador-jornada .coverage-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;min-height:72px;border:2px solid transparent;border-radius:7px;color:white;padding:6px 3px;font-size:12px}
+#simulador-jornada .coverage-cell strong{font-weight:700;white-space:nowrap}
+#simulador-jornada .coverage-cell small{font-size:10px;margin-top:5px;color:inherit}
+#simulador-jornada .coverage-cell.off{background:#f8fafc;color:#64748b;border:1px dashed #b8c4d6}
+#simulador-jornada .coverage-cell[aria-expanded=true]{outline:3px solid #f59e0b;outline-offset:1px}
+#simulador-jornada .coverage-team-count{display:flex;align-items:center;gap:5px;margin-top:6px;font-weight:400}
+#simulador-jornada .coverage-team-count input{max-width:65px}
+#simulador-jornada .coverage-team-count button{margin-left:auto;color:#b91c1c;font-size:20px;padding:0 5px}
+#simulador-jornada .coverage-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:18px 0}
+#simulador-jornada .coverage-cards>div{border:1px solid #cbd5e1;border-radius:9px;padding:15px;background:#f8fafc;display:grid;gap:4px}
+#simulador-jornada .coverage-cards strong{font-size:23px;font-weight:700;color:#173b72}
+#simulador-jornada .coverage-cards span,#simulador-jornada .coverage-cards small{font-size:12px;color:#526176}
+#simulador-jornada .coverage-cards .selected{background:#edf7f2;border-color:#6caa8a}
+#simulador-jornada .coverage-cards .shortage{background:#fff2ef;border-color:#e5a79a}
+#simulador-jornada .coverage-editor{padding:16px;background:#edf2f9;border:1px solid #b7c4d6;border-radius:9px;margin:15px 0}
+#simulador-jornada .coverage-editor h4{margin:0}
+#simulador-jornada .coverage-days details{border:1px solid #cbd5e1;border-radius:7px;padding:11px 13px;margin:7px 0}
+#simulador-jornada .coverage-days details.shortage{border-left:4px solid #c2410c}
+#simulador-jornada .coverage-days summary{cursor:pointer}
+#simulador-jornada .coverage-days summary span{margin-left:15px;font-size:13px}
+#simulador-jornada .coverage-days p{font-size:13px;padding:6px 0;border-top:1px solid #e2e8f0}
