@@ -66,7 +66,7 @@
 
   function renderizar(){
     const lista=document.getElementById('cma-custo-grupo-lista'),resumo=document.getElementById('cma-custo-grupo-resumo');
-    const vazio=document.getElementById('cma-custo-grupo-vazio'),pdf=document.getElementById('cma-exportar-grupo-pdf');
+    const vazio=document.getElementById('cma-custo-grupo-vazio');
     if(!lista||!resumo)return;
     const t=totais();
     resumo.innerHTML=`
@@ -82,7 +82,6 @@
       <div class="cma-grupo-acoes"><button type="button" data-acao="editar">Editar</button><button type="button" data-acao="duplicar">Duplicar</button><button type="button" data-acao="excluir" class="cma-grupo-excluir">Excluir</button></div>
     </article>`).join('');
     if(vazio)vazio.hidden=funcionarios.length>0;
-    if(pdf)pdf.disabled=funcionarios.length===0;
     document.dispatchEvent(new CustomEvent('cma:custo-grupo-atualizado',{detail:dadosPublicos()}));
   }
 
@@ -169,7 +168,7 @@
     seletor.innerHTML='<button type="button" class="ativo" data-modo="individual" role="tab" aria-selected="true">Simulação individual</button><button type="button" data-modo="grupo" role="tab" aria-selected="false">Simulação em grupo</button>';
     grid.parentNode.insertBefore(seletor,grid);
     const painel=document.createElement('div');painel.id='cma-custo-grupo-painel';painel.className='cma-grupo-painel cma-grupo-hidden';
-    painel.innerHTML=`<div class="cma-grupo-cabecalho"><div><strong>Resumo consolidado</strong><span>Adicione os empregados um por vez. Os cálculos individuais serão somados automaticamente.</span></div><div class="cma-grupo-botoes"><button type="button" id="cma-custo-grupo-novo">Novo funcionário</button><button type="button" id="cma-exportar-grupo-pdf" disabled>Exportar grupo em PDF</button></div></div><div id="cma-custo-grupo-resumo" class="cma-grupo-resumo"></div><p id="cma-custo-grupo-vazio" class="cma-grupo-vazio">Nenhum funcionário foi adicionado. Preencha o formulário abaixo e clique em “Adicionar funcionário ao grupo”.</p><div id="cma-custo-grupo-lista" class="cma-grupo-lista"></div>`;
+    painel.innerHTML=`<div class="cma-grupo-cabecalho"><div><strong>Resumo consolidado</strong><span>Adicione os empregados um por vez. Os cálculos individuais serão somados automaticamente.</span></div><div class="cma-grupo-botoes"><button type="button" id="cma-custo-grupo-novo">Novo funcionário</button><button type="button" id="cma-exportar-grupo-pdf">Exportar grupo em PDF</button></div></div><div id="cma-custo-grupo-resumo" class="cma-grupo-resumo"></div><p id="cma-custo-grupo-vazio" class="cma-grupo-vazio">Nenhum funcionário foi adicionado. Preencha o formulário abaixo e clique em “Adicionar funcionário ao grupo”.</p><div id="cma-custo-grupo-lista" class="cma-grupo-lista"></div>`;
     grid.parentNode.insertBefore(painel,grid);
     const acao=document.createElement('div');acao.id='cma-custo-grupo-acao';acao.className='cma-grupo-acao cma-grupo-hidden';
     acao.innerHTML='<button type="button" id="cma-custo-grupo-salvar">Adicionar funcionário ao grupo</button><small id="cma-custo-grupo-status">O funcionário somente entra no total após clicar neste botão.</small>';
