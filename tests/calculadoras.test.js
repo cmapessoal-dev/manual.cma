@@ -245,6 +245,27 @@ test('Custo do Empregado — Anexo IV não inclui terceiros e FGTS usa 40%', () 
   perto(r.multaFgts, (r.fgtsRemuneracao + r.fgtsFerias + r.fgtsDecimo + r.fgtsAviso) * 0.40);
 });
 
+test('Custo do Empregado — jovem aprendiz usa FGTS de 2% e não provisiona multa', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  const r = dom.window.CMA_CALCULAR_CUSTO({
+    tipoEmpregado: 'aprendiz', regime: 'simples', salario: 3000, multaFgtsPct: 40
+  });
+  perto(r.fgtsPct, 2);
+  perto(r.fgtsRemuneracao, 60);
+  perto(r.fgtsFerias, (r.ferias + r.terco) * 0.02);
+  perto(r.fgtsDecimo, r.decimo * 0.02);
+  perto(r.fgtsAviso, r.aviso * 0.02);
+  perto(r.multaFgtsPct, 0);
+  perto(r.multaFgts, 0);
+
+  const aprendiz = dom.window.document.querySelector('input[name="cma-tipo-empregado"][value="aprendiz"]');
+  aprendiz.checked = true;
+  aprendiz.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  assert.equal(dom.window.document.getElementById('cma-custo-multa-fgts').value, '0');
+  assert.equal(dom.window.document.getElementById('cma-custo-multa-fgts').disabled, true);
+});
+
 test('Custo do Empregado — CNAE sugere FPAS, código e alíquota de Terceiros', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-custo/cnae-rat.js');
