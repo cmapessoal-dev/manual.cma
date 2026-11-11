@@ -52,6 +52,8 @@
   window.CMA_CONTAR_CALENDARIO_CUSTO=contarCalendario;
 
   function calcularValores(d){
+    const tipoEmpregado=d.tipoEmpregado==='aprendiz'?'aprendiz':'comum';
+    const fgtsPct=tipoEmpregado==='aprendiz'?2:8;
     const salario=Math.max(0,Number(d.salario)||0);
     const comissao=Math.max(0,Number(d.comissao)||0);
     const diasUteis=Math.max(0,Number(d.diasUteis)||0);
@@ -81,24 +83,24 @@
     const ratAjustadoPct=ratPct*fap;
     const terceirosPct=d.regime==='nao-simples'?Math.min(20,Math.max(0,Number(d.terceiros)||0)):0;
     const patronalPct=cppPct+ratAjustadoPct+terceirosPct;
-    const fgtsRemuneracao=remuneracao*0.08;
+    const fgtsRemuneracao=remuneracao*(fgtsPct/100);
     const cppFolha=remuneracao*(cppPct/100),ratFolha=remuneracao*(ratAjustadoPct/100),terceirosFolha=remuneracao*(terceirosPct/100);
     const encargosFolha=cppFolha+ratFolha+terceirosFolha;
     const desembolso=remuneracao+custoVT+custoAlim+plano+outros+fgtsRemuneracao+encargosFolha;
     const ferias=remuneracao/12;
     const terco=ferias/3;
-    const fgtsFerias=(ferias+terco)*0.08;
+    const fgtsFerias=(ferias+terco)*(fgtsPct/100);
     const decimo=remuneracao/12;
-    const fgtsDecimo=decimo*0.08;
+    const fgtsDecimo=decimo*(fgtsPct/100);
     const aviso=remuneracao/12;
-    const fgtsAviso=aviso*0.08;
-    const multaFgtsPct=Math.min(40,Math.max(0,Number(d.multaFgtsPct)||0));
+    const fgtsAviso=aviso*(fgtsPct/100);
+    const multaFgtsPct=tipoEmpregado==='aprendiz'?0:Math.min(40,Math.max(0,Number(d.multaFgtsPct)||0));
     const multaFgts=(fgtsRemuneracao+fgtsFerias+fgtsDecimo+fgtsAviso)*(multaFgtsPct/100);
     const baseEncargosProv=ferias+terco+decimo;
     const cppProv=baseEncargosProv*(cppPct/100),ratProv=baseEncargosProv*(ratAjustadoPct/100),terceirosProv=baseEncargosProv*(terceirosPct/100);
     const encargosProv=cppProv+ratProv+terceirosProv;
     const provisoes=ferias+terco+fgtsFerias+decimo+fgtsDecimo+aviso+fgtsAviso+multaFgts+encargosProv;
-    return {salario,comissao,diasUteis,diasDsr,dsrComissao,gratificacao,periculosidade,insalubridade,remuneracao,percentualVT,vtBruto,descontoVT,custoVT,percentualAlim,alimBruto,descontoAlim,custoAlim,plano,outros,cppPct,ratPct,fap,ratAjustadoPct,terceirosPct,patronalPct,fgtsRemuneracao,cppFolha,ratFolha,terceirosFolha,encargosFolha,desembolso,ferias,terco,fgtsFerias,decimo,fgtsDecimo,aviso,fgtsAviso,multaFgtsPct,multaFgts,baseEncargosProv,cppProv,ratProv,terceirosProv,encargosProv,provisoes,total:desembolso+provisoes};
+    return {tipoEmpregado,fgtsPct,salario,comissao,diasUteis,diasDsr,dsrComissao,gratificacao,periculosidade,insalubridade,remuneracao,percentualVT,vtBruto,descontoVT,custoVT,percentualAlim,alimBruto,descontoAlim,custoAlim,plano,outros,cppPct,ratPct,fap,ratAjustadoPct,terceirosPct,patronalPct,fgtsRemuneracao,cppFolha,ratFolha,terceirosFolha,encargosFolha,desembolso,ferias,terco,fgtsFerias,decimo,fgtsDecimo,aviso,fgtsAviso,multaFgtsPct,multaFgts,baseEncargosProv,cppProv,ratProv,terceirosProv,encargosProv,provisoes,total:desembolso+provisoes};
   }
   window.CMA_CALCULAR_CUSTO=calcularValores;
 
@@ -108,6 +110,7 @@
 
   function recalcular(){
     const regime=(document.querySelector('input[name="cma-regime"]:checked')||{}).value||'simples';
+    const tipoEmpregado=opcao('cma-tipo-empregado','comum');
     const salario=numero('cma-custo-salario');
     const temVT=sim('cma-vt');
     const temAlim=sim('cma-alim');
@@ -122,7 +125,17 @@
     const fpas=fpasEl?fpasEl.value:'',fpasDados=FPAS_TERCEIROS[fpas]||{codigo:'0000',aliquota:0};
     const terceirosEl=document.getElementById('cma-custo-terceiros'),codigoTerceirosEl=document.getElementById('cma-custo-codigo-terceiros');
     if(terceirosEl)terceirosEl.value=fpasDados.aliquota;if(codigoTerceirosEl)codigoTerceirosEl.value=fpasDados.codigo;
-    const v=calcularValores({regime,salario,rat,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),comissao:temComissao?numero('cma-custo-comissao'):0,diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),gratificacao:temGratificacao?numero('cma-custo-gratificacao'):0,risco,grauInsalubridade:grauEl?grauEl.value:0,baseInsalubridade:numero('cma-custo-insal-base'),temVT,vtBruto:numero('cma-custo-vt'),percentualVT:numero('cma-custo-vt-percentual'),temAlim,alimBruto:numero('cma-custo-alim'),percentualAlim:numero('cma-custo-alim-percentual'),plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')});
+    const multaEl=document.getElementById('cma-custo-multa-fgts');
+    if(multaEl){
+      if(tipoEmpregado==='aprendiz'){
+        if(!multaEl.disabled)multaEl.dataset.valorComum=multaEl.value;
+        multaEl.value='0';multaEl.disabled=true;
+      }else{
+        multaEl.disabled=false;
+        if(multaEl.dataset.valorComum){multaEl.value=multaEl.dataset.valorComum;delete multaEl.dataset.valorComum;}
+      }
+    }
+    const v=calcularValores({tipoEmpregado,regime,salario,rat,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),comissao:temComissao?numero('cma-custo-comissao'):0,diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),gratificacao:temGratificacao?numero('cma-custo-gratificacao'):0,risco,grauInsalubridade:grauEl?grauEl.value:0,baseInsalubridade:numero('cma-custo-insal-base'),temVT,vtBruto:numero('cma-custo-vt'),percentualVT:numero('cma-custo-vt-percentual'),temAlim,alimBruto:numero('cma-custo-alim'),percentualAlim:numero('cma-custo-alim-percentual'),plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')});
 
     const reg=document.getElementById('cma-custo-regime-label');
     if(reg)reg.textContent=rotuloRegime(regime);
@@ -147,7 +160,7 @@
       (temVT?linha('Vale-transporte — valor informado',v.vtBruto)+linha(`(-) Desconto do empregado (${v.percentualVT}%)`,-v.descontoVT,'cma-custo-desconto')+linha('Custo do VT para a empresa',v.custoVT,'cma-custo-sub'):'')+
       (v.plano?linha('Plano de saúde',v.plano):'')+
       (v.outros?linha('Outros benefícios',v.outros):'')+
-      linha('FGTS sobre remuneração',v.fgtsRemuneracao)+
+      linha(`FGTS sobre remuneração (${v.fgtsPct}%)`,v.fgtsRemuneracao)+
       (v.cppFolha?linha(`CPP sobre remuneração (${v.cppPct}%)`,v.cppFolha):'')+
       (v.ratFolha?linha(`RAT ajustado pelo FAP (${v.ratAjustadoPct.toFixed(2).replace('.',',')}%)`,v.ratFolha):'')+
       (v.terceirosFolha?linha(`Terceiros (${v.terceirosPct.toFixed(2).replace('.',',')}%)`,v.terceirosFolha):'')+
@@ -157,11 +170,11 @@
     if(prov)prov.innerHTML=
       linha('Férias sobre a remuneração',v.ferias)+
       linha('1/3 de férias',v.terco)+
-      linha('FGTS sobre férias + 1/3',v.fgtsFerias)+
+      linha(`FGTS sobre férias + 1/3 (${v.fgtsPct}%)`,v.fgtsFerias)+
       linha('13º salário sobre a remuneração',v.decimo)+
-      linha('FGTS sobre 13º',v.fgtsDecimo)+
+      linha(`FGTS sobre 13º (${v.fgtsPct}%)`,v.fgtsDecimo)+
       linha('Aviso-prévio sobre a remuneração',v.aviso)+
-      linha('FGTS sobre aviso-prévio',v.fgtsAviso)+
+      linha(`FGTS sobre aviso-prévio (${v.fgtsPct}%)`,v.fgtsAviso)+
       (v.multaFgtsPct?linha(`Provisão da multa do FGTS (${v.multaFgtsPct}%)`,v.multaFgts):'')+
       (v.cppProv?linha(`CPP sobre férias, 1/3 e 13º (${v.cppPct}%)`,v.cppProv):'')+
       (v.ratProv?linha(`RAT ajustado sobre férias, 1/3 e 13º (${v.ratAjustadoPct.toFixed(2).replace('.',',')}%)`,v.ratProv):'')+
@@ -179,6 +192,7 @@
     const iCampo=document.getElementById('cma-custo-insalubridade-wrap');if(iCampo)iCampo.classList.toggle('hidden',risco!=='insalubridade');
     const dsrResultado=document.getElementById('cma-custo-dsr-resultado');if(dsrResultado)dsrResultado.innerHTML=`<span>DSR calculado sobre as comissões</span><strong>${moeda(v.dsrComissao)}</strong>`;
     const insalAviso=document.getElementById('cma-custo-insal-aviso');if(insalAviso)insalAviso.textContent=risco==='insalubridade'&&numero('cma-custo-insal-base')<=0?'Informe a base de cálculo aplicável para apurar o adicional.':'A base pode variar conforme a regra aplicável ao caso e a norma coletiva.';
+    const aprendizAviso=document.getElementById('cma-custo-aprendiz-aviso');if(aprendizAviso)aprendizAviso.classList.toggle('hidden',tipoEmpregado!=='aprendiz');
   }
 
   function preencherCalendario(){
@@ -220,6 +234,13 @@
       <div class="cma-custo-grid">
         <div class="cma-custo-card cma-custo-form">
           <h4>1. Dados para o cálculo</h4>
+          <label class="cma-custo-label">Tipo de empregado</label>
+          <div class="cma-custo-segmentado">
+            <label><input type="radio" name="cma-tipo-empregado" value="comum" checked><span>Empregado comum</span></label>
+            <label><input type="radio" name="cma-tipo-empregado" value="aprendiz"><span>Jovem aprendiz</span></label>
+          </div>
+          <small id="cma-custo-aprendiz-aviso" class="hidden cma-custo-ajuda">Para o contrato de aprendizagem, o FGTS será calculado em 2% e não haverá provisão da multa de 40%, considerando o término normal do contrato.</small>
+
           <label class="cma-custo-label">Regime da empresa</label>
           <div class="cma-custo-segmentado cma-custo-segmentado-tres">
             <label><input type="radio" name="cma-regime" value="simples" checked><span>Simples — CPP no DAS</span></label>
@@ -308,9 +329,9 @@
               <div><strong>Férias:</strong> base remuneratória estimada ÷ 12. O valor representa uma provisão mensal.</div>
               <div><strong>1/3 de férias:</strong> valor mensal das férias ÷ 3.</div>
               <div><strong>13º salário:</strong> base remuneratória estimada ÷ 12.</div>
-              <div><strong>FGTS:</strong> aplicação de 8% sobre as parcelas consideradas na estimativa.</div>
+              <div><strong>FGTS:</strong> aplicação de 8% para empregado comum e de 2% para jovem aprendiz sobre as parcelas consideradas na estimativa.</div>
               <div><strong>Aviso-prévio:</strong> base remuneratória estimada ÷ 12, utilizado como provisão mensal.</div>
-              <div><strong>Multa do FGTS:</strong> aplica a opção selecionada (40%, 20% ou sem provisão) sobre os valores de FGTS considerados pela calculadora.</div>
+              <div><strong>Multa do FGTS:</strong> aplica a opção selecionada (40%, 20% ou sem provisão) sobre os valores de FGTS considerados pela calculadora. Para jovem aprendiz, a provisão fica desativada, considerando o término normal do contrato.</div>
               <div><strong>Vale-transporte:</strong> do valor médio mensal informado é descontado o percentual escolhido, limitado a 6% do salário base e ao próprio valor do benefício.</div>
               <div><strong>Vale-alimentação / refeição:</strong> do valor médio mensal informado é descontado o percentual escolhido, limitado a 20% nesta estimativa, ficando o restante como custo da empresa.</div>
               <div><strong>Encargos patronais:</strong> CPP de 20% quando aplicável + RAT do CNAE ajustado pelo FAP + terceiros informados. O aviso-prévio indenizado não compõe essa base patronal.</div>
