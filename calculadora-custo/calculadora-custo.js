@@ -6,6 +6,33 @@
   function soDigitos(valor){return String(valor||'').replace(/\D/g,'').slice(0,7);}
   function formatarCnae(valor){const d=soDigitos(valor);return d.length===7?`${d.slice(0,4)}-${d.slice(4,5)}/${d.slice(5)}`:d;}
   function rotuloRegime(regime){return regime==='simples-anexo-iv'?'Simples Nacional — Anexo IV':regime==='nao-simples'?'Não optante pelo Simples Nacional':'Simples Nacional — CPP no DAS';}
+  const FPAS_TERCEIROS={
+    '507':{codigo:'0079',aliquota:5.8},'515':{codigo:'0115',aliquota:5.8},'523':{codigo:'0003',aliquota:2.7},
+    '531':{codigo:'0003',aliquota:5.2},'540':{codigo:'0131',aliquota:5.2},'558':{codigo:'0259',aliquota:5.2},
+    '566':{codigo:'0099',aliquota:4.5},'574':{codigo:'0099',aliquota:4.5},'582':{codigo:'0000',aliquota:0},
+    '590':{codigo:'0000',aliquota:0},'604':{codigo:'0003',aliquota:2.7},'612':{codigo:'3139',aliquota:5.8},
+    '639':{codigo:'0000',aliquota:0},'647':{codigo:'0099',aliquota:4.5},'655':{codigo:'0001',aliquota:2.5},
+    '680':{codigo:'0131',aliquota:5.2},'736':{codigo:'0003',aliquota:2.7},'787':{codigo:'0515',aliquota:5.2},
+    '795':{codigo:'4099',aliquota:7.7},'825':{codigo:'0003',aliquota:5.2},'833':{codigo:'0079',aliquota:5.8},
+    '868':{codigo:'0000',aliquota:0},'876':{codigo:'0000',aliquota:0}
+  };
+  function sugerirFpas(cnae){
+    const d=soDigitos(cnae),divisao=Number(d.slice(0,2));
+    if(d.length!==7)return '';
+    if(d==='6912500')return '590';
+    if(divisao===49)return '612';
+    if(divisao===50)return '540';
+    if(divisao===51)return '558';
+    if(divisao>=64&&divisao<=66)return '736';
+    if(divisao===84)return '582';
+    if(divisao===85)return '574';
+    if(divisao===58||divisao===59||divisao===60||divisao===73||divisao===90||divisao===91||divisao===92||divisao===93||divisao===94)return '566';
+    if(divisao>=1&&divisao<=3)return '604';
+    if(divisao>=5&&divisao<=43)return '507';
+    return '515';
+  }
+  window.CMA_SUGERIR_FPAS=sugerirFpas;
+  window.CMA_FPAS_TERCEIROS=FPAS_TERCEIROS;
   function competenciaAtual(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
   function contarCalendario(valor){
     if(!/^\d{4}-\d{2}$/.test(valor||''))return null;
@@ -90,15 +117,22 @@
     const grauEl=document.getElementById('cma-custo-insal-grau');
     const cnaeEl=document.getElementById('cma-custo-cnae'),cnae=soDigitos(cnaeEl?cnaeEl.value:'');
     const rat=Number((window.CMA_CNAE_RAT||{})[cnae])||0;
+    const fpasEl=document.getElementById('cma-custo-fpas');
+    if(fpasEl&&cnae.length===7&&!fpasEl.dataset.manual)fpasEl.value=sugerirFpas(cnae);
+    const fpas=fpasEl?fpasEl.value:'',fpasDados=FPAS_TERCEIROS[fpas]||{codigo:'0000',aliquota:0};
+    const terceirosEl=document.getElementById('cma-custo-terceiros'),codigoTerceirosEl=document.getElementById('cma-custo-codigo-terceiros');
+    if(terceirosEl)terceirosEl.value=fpasDados.aliquota;if(codigoTerceirosEl)codigoTerceirosEl.value=fpasDados.codigo;
     const v=calcularValores({regime,salario,rat,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),comissao:temComissao?numero('cma-custo-comissao'):0,diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),gratificacao:temGratificacao?numero('cma-custo-gratificacao'):0,risco,grauInsalubridade:grauEl?grauEl.value:0,baseInsalubridade:numero('cma-custo-insal-base'),temVT,vtBruto:numero('cma-custo-vt'),percentualVT:numero('cma-custo-vt-percentual'),temAlim,alimBruto:numero('cma-custo-alim'),percentualAlim:numero('cma-custo-alim-percentual'),plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')});
 
     const reg=document.getElementById('cma-custo-regime-label');
     if(reg)reg.textContent=rotuloRegime(regime);
     const patronalWrap=document.getElementById('cma-custo-patronal-wrap');if(patronalWrap)patronalWrap.classList.toggle('hidden',regime==='simples');
     const terceirosWrap=document.getElementById('cma-custo-terceiros-wrap');if(terceirosWrap)terceirosWrap.classList.toggle('hidden',regime!=='nao-simples');
+    const terceirosDetalhe=document.getElementById('cma-custo-terceiros-detalhe');if(terceirosDetalhe)terceirosDetalhe.classList.toggle('hidden',regime!=='nao-simples');
     const cnaeStatus=document.getElementById('cma-custo-cnae-status');
     if(cnaeStatus)cnaeStatus.textContent=regime==='simples'?'A CPP está incluída no DAS nesta opção.':cnae.length<7?'Informe os 7 dígitos do CNAE preponderante para localizar o RAT.':rat?`CNAE localizado na tabela oficial — RAT ${rat}%.`:'CNAE não localizado na tabela oficial utilizada. Confira o código informado.';
     const patronalResumo=document.getElementById('cma-custo-patronal-resumo');if(patronalResumo)patronalResumo.innerHTML=`<span>Percentual patronal desta estimativa</span><strong>${v.patronalPct.toFixed(2).replace('.',',')}%</strong>`;
+    const fpasStatus=document.getElementById('cma-custo-fpas-status');if(fpasStatus)fpasStatus.textContent=regime!=='nao-simples'?'No Simples Nacional — Anexo IV não há contribuição a terceiros nesta estimativa.':fpas?`FPAS ${fpas} — código de Terceiros ${fpasDados.codigo} — alíquota ${fpasDados.aliquota.toFixed(1).replace('.',',')}%. Confirme o enquadramento da empresa.`:'Informe o CNAE ou selecione o FPAS para preencher Terceiros.';
 
     const caixa=document.getElementById('cma-custo-desembolso');
     if(caixa)caixa.innerHTML=
@@ -199,10 +233,15 @@
             <small id="cma-custo-cnae-status" class="cma-custo-ajuda">Informe os 7 dígitos do CNAE preponderante para localizar o RAT.</small>
             <div class="cma-custo-duas-colunas">
               <div><label class="cma-custo-label" for="cma-custo-fap">FAP da empresa</label><input id="cma-custo-fap" class="cma-custo-number" type="number" min="0.5" max="2" step="0.0001" value="1"></div>
-              <div id="cma-custo-terceiros-wrap" class="hidden"><label class="cma-custo-label" for="cma-custo-terceiros">Terceiros</label><div class="cma-custo-percentual"><input id="cma-custo-terceiros" type="number" min="0" max="20" step="0.01" value="0"><span>%</span></div></div>
+              <div id="cma-custo-terceiros-wrap" class="hidden"><label class="cma-custo-label" for="cma-custo-fpas">FPAS sugerido</label><select id="cma-custo-fpas" class="cma-custo-select"><option value="">Selecione</option><option value="507">507 — Indústria</option><option value="515">515 — Comércio e serviços</option><option value="523">523 — Entidades e navegação REB</option><option value="531">531 — Agroindústria específica</option><option value="540">540 — Navegação e portos</option><option value="558">558 — Aeroviário</option><option value="566">566 — Comunicação, publicidade e associações</option><option value="574">574 — Ensino</option><option value="582">582 — Poder público</option><option value="590">590 — Cartório</option><option value="604">604 — Produtor rural</option><option value="612">612 — Transporte rodoviário</option><option value="639">639 — Entidade beneficente isenta</option><option value="647">647 — Futebol profissional</option><option value="655">655 — Trabalho temporário</option><option value="680">680 — OGMO</option><option value="736">736 — Financeiro e seguros</option><option value="787">787 — Rural sobre folha</option><option value="795">795 — Cooperativa rural/industrial</option><option value="825">825 — Agroindústria DL 1.146</option><option value="833">833 — Setor industrial da agroindústria</option></select></div>
             </div>
+            <div id="cma-custo-terceiros-detalhe" class="cma-custo-duas-colunas hidden">
+              <div><label class="cma-custo-label" for="cma-custo-codigo-terceiros">Código de Terceiros</label><input id="cma-custo-codigo-terceiros" class="cma-custo-number" type="text" value="0000" readonly></div>
+              <div><label class="cma-custo-label" for="cma-custo-terceiros">Alíquota de Terceiros</label><div class="cma-custo-percentual"><input id="cma-custo-terceiros" type="number" value="0" readonly><span>%</span></div></div>
+            </div>
+            <small id="cma-custo-fpas-status" class="cma-custo-ajuda"></small>
             <div id="cma-custo-patronal-resumo" class="cma-custo-resultado-campo"><span>Percentual patronal desta estimativa</span><strong>0,00%</strong></div>
-            <small class="cma-custo-ajuda">O CNAE define o RAT básico. O FAP é específico da empresa. Para empresas fora do Simples, confirme também a alíquota de terceiros conforme o FPAS. No Anexo IV, a estimativa não inclui terceiros.</small>
+            <small class="cma-custo-ajuda">O CNAE define o RAT básico e sugere o FPAS. O FAP é específico da empresa. O código e a alíquota de Terceiros são preenchidos pelo FPAS, que deve ser confirmado nos dados tributários da empresa.</small>
           </div>
 
           <label class="cma-custo-label" for="cma-custo-salario">Salário base</label>
@@ -293,9 +332,9 @@
       .cma-custo-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}.cma-custo-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.05)}.cma-custo-card h4{margin:0 0 16px;color:#172554;font-size:17px;font-weight:800}.cma-custo-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.cma-custo-card-head h4{margin:0}.cma-custo-formula-btn{padding:7px 10px;border:1px solid #bfdbfe;border-radius:8px;background:#eff6ff;color:#1e3a8a;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}.cma-custo-formula-btn:hover{background:#dbeafe}.cma-custo-formulas{margin:0 0 14px;padding:13px 14px;border-left:4px solid #2563eb;border-radius:0 10px 10px 0;background:#f8fafc;color:#475569;font-size:12.5px;line-height:1.55}.cma-custo-formulas>div+div{margin-top:8px}.cma-custo-formulas strong{color:#172554}.cma-custo-label{display:block;margin:14px 0 6px;color:#334155;font-size:14px;font-weight:700}.cma-custo-label small{font-weight:500;color:#94a3b8}.cma-custo-money,.cma-custo-percentual{display:flex;align-items:center;border:1px solid #cbd5e1;border-radius:9px;background:#fff;overflow:hidden}.cma-custo-money span,.cma-custo-percentual span{padding:11px 10px;background:#f8fafc;border-right:1px solid #e2e8f0;color:#64748b;font-weight:700}.cma-custo-money input,.cma-custo-percentual input{width:100%;padding:11px 12px;outline:none;color:#0f172a;font-size:16px}.cma-custo-money:focus-within,.cma-custo-percentual:focus-within{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}.cma-custo-number,.cma-custo-select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#0f172a;font-size:15px;outline:none}.cma-custo-number[readonly]{background:#eef2f7;color:#475569;font-weight:800;cursor:default}.cma-custo-number:focus,.cma-custo-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}.cma-custo-segmentado{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cma-custo-segmentado-tres{grid-template-columns:repeat(3,1fr);margin-top:9px}.cma-custo-segmentado input,.cma-custo-simnao input{position:absolute;opacity:0}.cma-custo-segmentado span,.cma-custo-simnao span{display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#475569;font-size:13px;font-weight:700;cursor:pointer;text-align:center}.cma-custo-segmentado input:checked+span,.cma-custo-simnao input:checked+span{background:#172554;color:#fff;border-color:#172554}.cma-custo-pergunta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid #eef2f7;color:#334155}.cma-custo-pergunta-bloco{display:block}.cma-custo-pergunta strong{display:block;font-size:14px}.cma-custo-pergunta small{display:block;margin-top:2px;color:#94a3b8;font-size:12px}.cma-custo-simnao{display:grid;grid-template-columns:58px 58px;gap:6px;flex:0 0 auto}.cma-custo-subform{margin-top:10px;padding:12px 13px;border:1px solid #dbe5f1;border-radius:10px;background:#f8fafc}.cma-custo-subform .cma-custo-label{margin-top:0}.cma-custo-duas-colunas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cma-custo-duas-colunas>div{display:flex;flex-direction:column}.cma-custo-duas-colunas>div>.cma-custo-money,.cma-custo-duas-colunas>div>.cma-custo-percentual{margin-top:auto}.cma-custo-ajuda{display:block;margin-top:8px;color:#64748b;font-size:11.5px;line-height:1.45}.cma-custo-resultado-campo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:9px 10px;border-radius:8px;background:#eaf2ff;color:#334155;font-size:12px}.cma-custo-resultado-campo strong{color:#172554;text-align:right}.cma-custo-resultados{display:flex;flex-direction:column;gap:14px}.cma-custo-resumo{padding:22px;border-radius:14px;background:linear-gradient(135deg,#061a46,#082f7d);color:#fff;box-shadow:0 10px 28px rgba(8,47,125,.18)}.cma-custo-resumo>span{display:block;color:#bfdbfe;font-size:12px;font-weight:700}.cma-custo-resumo small{display:block;margin-top:11px;color:#dbeafe;font-size:13px}.cma-custo-resumo strong{display:block;margin-top:3px;font-size:34px;line-height:1.15}.cma-custo-resumo em{display:block;margin-top:6px;color:#fbbf24;font-size:12px;font-style:normal;font-weight:700}.cma-custo-linha{display:flex;justify-content:space-between;gap:18px;padding:8px 0;border-bottom:1px solid #f1f5f9;color:#475569;font-size:13px}.cma-custo-linha span{max-width:72%}.cma-custo-linha strong{color:#1e293b;white-space:nowrap}.cma-custo-desconto strong{color:#b91c1c}.cma-custo-sub{padding-left:12px;background:#f8fafc}.cma-custo-total-linha{margin-top:4px;padding-top:12px;border-top:2px solid #dbeafe;border-bottom:0;font-weight:800;color:#172554}.cma-custo-total-linha strong{color:#172554;font-size:14px}@media(max-width:800px){.cma-custo-grid{grid-template-columns:1fr}.cma-custo-card{padding:15px}.cma-custo-card-head{align-items:flex-start;flex-direction:column}.cma-custo-formula-btn{width:100%;font-size:13px}.cma-custo-formulas{font-size:14px}.cma-custo-segmentado{grid-template-columns:1fr}.cma-custo-segmentado-tres{grid-template-columns:1fr}.cma-custo-pergunta{align-items:flex-start;flex-direction:column}.cma-custo-simnao{width:100%;grid-template-columns:1fr 1fr}.cma-custo-duas-colunas{grid-template-columns:1fr}.cma-custo-number,.cma-custo-select,.cma-custo-percentual input{font-size:16px}.cma-custo-resultado-campo{align-items:flex-start;flex-direction:column}.cma-custo-resultado-campo strong{text-align:left}.cma-custo-resumo strong{font-size:30px}.cma-custo-linha{font-size:14px;line-height:1.45}.cma-custo-linha span{max-width:68%}}`;
     document.head.appendChild(style);
 
-    section.querySelectorAll('input:not(#cma-custo-competencia)').forEach(i=>i.addEventListener('input',()=>{if(i.id==='cma-custo-cnae'){i.value=formatarCnae(i.value);}recalcular();}));
+    section.querySelectorAll('input:not(#cma-custo-competencia)').forEach(i=>i.addEventListener('input',()=>{if(i.id==='cma-custo-cnae'){i.value=formatarCnae(i.value);const f=document.getElementById('cma-custo-fpas');if(f)delete f.dataset.manual;}recalcular();}));
     section.querySelectorAll('input[type="radio"]').forEach(i=>i.addEventListener('change',recalcular));
-    section.querySelectorAll('select').forEach(i=>i.addEventListener('change',recalcular));
+    section.querySelectorAll('select').forEach(i=>i.addEventListener('change',()=>{if(i.id==='cma-custo-fpas')i.dataset.manual='1';recalcular();}));
     const competencia=section.querySelector('#cma-custo-competencia');
     if(competencia){competencia.value=competenciaAtual();competencia.addEventListener('change',preencherCalendario);preencherCalendario();}else recalcular();
     if(window.location.hash==='#custo-empregado')setTimeout(()=>showSection('custo-empregado',botao),60);
