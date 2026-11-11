@@ -7,6 +7,7 @@
   function textoGrupo(idGrupo,idPadrao){return texto(idGrupo)||texto(idPadrao);}
   function numero(id){const n=parseFloat(String(texto(id)||'0').replace(',','.'));return Number.isFinite(n)?n:0;}
   function opcao(nome,padrao=''){const el=document.querySelector(`input[name="${nome}"]:checked`);return el?el.value:padrao;}
+  function rotuloRegime(regime){return regime==='simples-anexo-iv'?'Simples — Anexo IV':regime==='nao-simples'?'Não optante pelo Simples':'Simples — CPP no DAS';}
   function escapar(valor){return String(valor||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function idNovo(){return window.crypto&&crypto.randomUUID?crypto.randomUUID():`cma-${Date.now()}-${Math.random().toString(16).slice(2)}`;}
 
@@ -30,6 +31,7 @@
   function lerAtual(){
     const bruto={
       empresa:textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),nome:textoGrupo('cma-custo-grupo-empregado-campo','cma-custo-empregado'),regime:opcao('cma-regime','simples'),
+      cnae:texto('cma-custo-cnae'),rat:Number((window.CMA_CNAE_RAT||{})[texto('cma-custo-cnae').replace(/\D/g,'')])||0,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),
       salario:numero('cma-custo-salario'),temComissao:opcao('cma-comissao','nao')==='sim',comissao:numero('cma-custo-comissao'),
       competencia:texto('cma-custo-competencia'),diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),
       temGratificacao:opcao('cma-gratificacao','nao')==='sim',gratificacao:numero('cma-custo-gratificacao'),
@@ -39,7 +41,7 @@
       plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')
     };
     const calculo=window.CMA_CALCULAR_CUSTO({
-      regime:bruto.regime,salario:bruto.salario,comissao:bruto.temComissao?bruto.comissao:0,diasUteis:bruto.diasUteis,diasDsr:bruto.diasDsr,
+      regime:bruto.regime,rat:bruto.rat,fap:bruto.fap,terceiros:bruto.terceiros,multaFgtsPct:bruto.multaFgtsPct,salario:bruto.salario,comissao:bruto.temComissao?bruto.comissao:0,diasUteis:bruto.diasUteis,diasDsr:bruto.diasDsr,
       gratificacao:bruto.temGratificacao?bruto.gratificacao:0,risco:bruto.risco,grauInsalubridade:bruto.grauInsalubridade,
       baseInsalubridade:bruto.baseInsalubridade,temVT:bruto.temVT,vtBruto:bruto.vtBruto,percentualVT:bruto.percentualVT,
       temAlim:bruto.temAlim,alimBruto:bruto.alimBruto,percentualAlim:bruto.percentualAlim,plano:bruto.plano,outros:bruto.outros
@@ -81,7 +83,7 @@
       <div><span>Provisões</span><strong>${moeda(t.provisoes)}</strong></div>
       <div class="cma-grupo-total"><span>Custo total mensal</span><strong>${moeda(t.total)}</strong></div>`;
     lista.innerHTML=funcionarios.map((f,i)=>`<article class="cma-grupo-item" data-id="${f.id}">
-      <div class="cma-grupo-numero">${i+1}</div><div class="cma-grupo-dados"><strong>${escapar(f.bruto.nome)}</strong><span>${escapar(f.bruto.regime==='simples'?'Simples Nacional':'Não optante pelo Simples')} • Salário ${moeda(f.bruto.salario)}</span></div>
+      <div class="cma-grupo-numero">${i+1}</div><div class="cma-grupo-dados"><strong>${escapar(f.bruto.nome)}</strong><span>${escapar(rotuloRegime(f.bruto.regime))} • Salário ${moeda(f.bruto.salario)}</span></div>
       <div class="cma-grupo-valor"><span>Custo mensal</span><strong>${moeda(f.calculo.total)}</strong></div>
       <div class="cma-grupo-acoes"><button type="button" data-acao="editar">Editar</button><button type="button" data-acao="duplicar">Duplicar</button><button type="button" data-acao="excluir" class="cma-grupo-excluir">Excluir</button></div>
     </article>`).join('');
@@ -103,6 +105,7 @@
     definirValor('cma-custo-empresa',bruto.empresa);
     definirValor('cma-custo-empregado',bruto.nome);
     definirRadio('cma-regime',bruto.regime);
+    definirValor('cma-custo-cnae',bruto.cnae);definirValor('cma-custo-fap',bruto.fap);definirValor('cma-custo-terceiros',bruto.terceiros);definirValor('cma-custo-multa-fgts',bruto.multaFgtsPct,'change');
     definirValor('cma-custo-salario',bruto.salario);
     definirRadio('cma-comissao',bruto.temComissao?'sim':'nao');definirValor('cma-custo-comissao',bruto.comissao);
     definirValor('cma-custo-competencia',bruto.competencia,'change');
@@ -116,7 +119,7 @@
   function limpar(){
     const empresa=textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),regime=opcao('cma-regime','simples'),competencia=texto('cma-custo-competencia');
     editandoId=null;
-    aplicar({empresa,nome:'',regime,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
+    aplicar({empresa,nome:'',regime,cnae:'',fap:1,terceiros:0,multaFgtsPct:40,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
     atualizarBotaoSalvar();
     (document.getElementById('cma-custo-grupo-empregado-campo')||document.getElementById('cma-custo-empregado'))?.focus();
   }
