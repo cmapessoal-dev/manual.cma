@@ -88,7 +88,7 @@
   async function exportarGrupo(){
     const d=typeof window.CMA_OBTER_GRUPO_CUSTO==='function'?window.CMA_OBTER_GRUPO_CUSTO():null;
     if(!d||!d.funcionarios.length){alert('Adicione pelo menos um funcionário à simulação em grupo.');return;}
-    const btn=document.getElementById('cma-exportar-grupo-pdf'),original=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Gerando PDF...';}
+    const btn=document.getElementById('cma-custo-grupo-relatorio'),original=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Gerando PDF...';}
     try{const [JsPDF,logo]=await Promise.all([carregarJsPdf(),carregarLogoCMA()]);const doc=new JsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});doc.setProperties({title:'Custo dos Empregados - CMA',subject:'Resumo consolidado do custo mensal dos empregados',author:'CMA Assessoria Contábil'});gerarGrupo(doc,d,logo);doc.save(`Custo-dos-Empregados-CMA-${new Date().toISOString().slice(0,10)}.pdf`);}catch(e){console.error(e);alert('Não foi possível gerar o PDF consolidado neste navegador.');}finally{if(btn){btn.disabled=false;btn.textContent=original;}}
   }
   window.CMA_EXPORTAR_CUSTO_GRUPO=exportarGrupo;
