@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20261111e';
+  const VERSAO='20261111f';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -36,6 +36,7 @@
     ['capa-url','capa/capa-url.js'],
     ['interface-refinements','core/interface-refinements.js'],
     ['revisao-editorial','core/revisao-editorial.js'],
+    ['cnae-rat','calculadora-custo/cnae-rat.js'],
     ['calculadora-custo','calculadora-custo/calculadora-custo.js'],
     ['calculadora-custo-grupo','calculadora-custo/grupo.js'],
     ['ferramentas-base','ferramentas/ferramentas-base.js'],
