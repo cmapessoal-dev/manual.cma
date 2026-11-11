@@ -245,6 +245,24 @@ test('Custo do Empregado — Anexo IV não inclui terceiros e FGTS usa 40%', () 
   perto(r.multaFgts, (r.fgtsRemuneracao + r.fgtsFerias + r.fgtsDecimo + r.fgtsAviso) * 0.40);
 });
 
+test('Custo do Empregado — CNAE sugere FPAS, código e alíquota de Terceiros', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/cnae-rat.js');
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  assert.equal(dom.window.CMA_SUGERIR_FPAS('6920-6/01'), '515');
+  assert.equal(dom.window.CMA_FPAS_TERCEIROS['515'].codigo, '0115');
+  assert.equal(dom.window.CMA_FPAS_TERCEIROS['515'].aliquota, 5.8);
+  assert.equal(dom.window.CMA_SUGERIR_FPAS('4930-2/01'), '612');
+  assert.equal(dom.window.CMA_FPAS_TERCEIROS['612'].codigo, '3139');
+  const foraSimples = dom.window.document.querySelector('input[name="cma-regime"][value="nao-simples"]');
+  foraSimples.checked = true;
+  foraSimples.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  setValor(dom, 'cma-custo-cnae', '6920601');
+  assert.equal(dom.window.document.getElementById('cma-custo-fpas').value, '515');
+  assert.equal(dom.window.document.getElementById('cma-custo-codigo-terceiros').value, '0115');
+  assert.equal(dom.window.document.getElementById('cma-custo-terceiros').value, '5.8');
+});
+
 test('Simulador de Rescisão — calcula dias e avos automaticamente pelas datas', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
