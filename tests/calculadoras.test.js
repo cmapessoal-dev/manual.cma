@@ -218,6 +218,33 @@ test('Simulador de Rescisão — calcula a base bruta das verbas informadas', ()
   assert.equal(r.totalBruto, 12000);
 });
 
+test('Custo do Empregado — CNAE localiza RAT e compõe a parte patronal sem percentual fixo', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/cnae-rat.js');
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  assert.equal(dom.window.CMA_CNAE_RAT['6920601'], 1);
+  const r = dom.window.CMA_CALCULAR_CUSTO({
+    regime: 'nao-simples', salario: 3000, rat: 2, fap: 1.25, terceiros: 5.8, multaFgtsPct: 40
+  });
+  perto(r.patronalPct, 28.3);
+  perto(r.cppFolha, 600);
+  perto(r.ratFolha, 75);
+  perto(r.terceirosFolha, 174);
+  perto(r.encargosFolha, 849);
+});
+
+test('Custo do Empregado — Anexo IV não inclui terceiros e FGTS usa 40%', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  const r = dom.window.CMA_CALCULAR_CUSTO({
+    regime: 'simples-anexo-iv', salario: 3000, rat: 3, fap: 1, terceiros: 5.8, multaFgtsPct: 40
+  });
+  perto(r.patronalPct, 23);
+  perto(r.terceirosFolha, 0);
+  perto(r.multaFgtsPct, 40);
+  perto(r.multaFgts, (r.fgtsRemuneracao + r.fgtsFerias + r.fgtsDecimo + r.fgtsAviso) * 0.40);
+});
+
 test('Simulador de Rescisão — calcula dias e avos automaticamente pelas datas', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-rescisao/calculadora-rescisao.js');
