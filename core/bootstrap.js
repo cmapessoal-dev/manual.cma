@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20261111c';
+  const VERSAO='20261111d';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
