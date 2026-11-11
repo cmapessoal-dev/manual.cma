@@ -1,5 +1,5 @@
 (function(){
-  const VERSAO='20260930c';
+  const VERSAO='20261111a';
   window.CMA_MANUAL_VERSION=VERSAO;
   const modulos=[
     ['registro-manual','core/registro-manual.js'],
@@ -37,6 +37,7 @@
     ['interface-refinements','core/interface-refinements.js'],
     ['revisao-editorial','core/revisao-editorial.js'],
     ['calculadora-custo','calculadora-custo/calculadora-custo.js'],
+    ['calculadora-custo-grupo','calculadora-custo/grupo.js'],
     ['ferramentas-base','ferramentas/ferramentas-base.js'],
     ['base-tributaria-2026','ferramentas/base-tributaria-2026.js'],
     ['calculadora-ferias','calculadora-ferias/calculadora-ferias.js'],
