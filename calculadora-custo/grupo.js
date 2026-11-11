@@ -66,8 +66,8 @@
   }
   window.CMA_OBTER_GRUPO_CUSTO=dadosPublicos;
 
-  function exportarGrupo(){
-    if(typeof window.CMA_EXPORTAR_CUSTO_GRUPO==='function')window.CMA_EXPORTAR_CUSTO_GRUPO();
+  function exportarGrupo(analitico=false){
+    if(typeof window.CMA_EXPORTAR_CUSTO_GRUPO==='function')window.CMA_EXPORTAR_CUSTO_GRUPO(analitico);
     else alert('O exportador ainda está sendo carregado. Tente novamente em instantes.');
   }
   function renderizar(){
@@ -118,9 +118,11 @@
   }
 
   function limpar(){
-    const empresa=textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),regime=opcao('cma-regime','simples'),competencia=texto('cma-custo-competencia');
+    const {empresa,regime,competencia,cnae,fap,fpas}=lerAtual().bruto;
+    const multa=document.getElementById('cma-custo-multa-fgts');
+    const multaFgtsPct=multa?.dataset.valorComum??multa?.value??40;
     editandoId=null;
-    aplicar({empresa,nome:'',tipoEmpregado:'comum',regime,cnae:'',fap:1,fpas:'',codigoTerceiros:'0000',terceiros:0,multaFgtsPct:40,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
+    aplicar({empresa,nome:'',tipoEmpregado:'comum',regime,cnae,fap,fpas,multaFgtsPct,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
     atualizarBotaoSalvar();
     (document.getElementById('cma-custo-grupo-empregado-campo')||document.getElementById('cma-custo-empregado'))?.focus();
   }
@@ -176,7 +178,7 @@
     seletor.innerHTML='<button type="button" class="ativo" data-modo="individual" role="tab" aria-selected="true">Simulação individual</button><button type="button" data-modo="grupo" role="tab" aria-selected="false">Simulação em grupo</button>';
     grid.parentNode.insertBefore(seletor,grid);
     const painel=document.createElement('div');painel.id='cma-custo-grupo-painel';painel.className='cma-grupo-painel cma-grupo-hidden';
-    painel.innerHTML=`<div class="cma-grupo-cabecalho"><div><strong>Resumo consolidado</strong><span>Adicione os empregados um por vez. Os cálculos individuais serão somados automaticamente.</span></div><div class="cma-grupo-botoes"><button type="button" id="cma-custo-grupo-novo">Novo funcionário</button><button type="button" id="cma-custo-grupo-relatorio">Baixar relatório consolidado</button></div></div><div id="cma-custo-grupo-resumo" class="cma-grupo-resumo"></div><p id="cma-custo-grupo-vazio" class="cma-grupo-vazio">Nenhum funcionário foi adicionado. Preencha o formulário abaixo e clique em “Adicionar funcionário ao grupo”.</p><div id="cma-custo-grupo-lista" class="cma-grupo-lista"></div>`;
+    painel.innerHTML=`<div class="cma-grupo-cabecalho"><div><strong>Resumo consolidado</strong><span>Adicione os empregados um por vez. Os cálculos individuais serão somados automaticamente.</span></div><div class="cma-grupo-botoes"><button type="button" id="cma-custo-grupo-novo">Novo funcionário</button><button type="button" id="cma-custo-grupo-relatorio">Baixar relatório consolidado</button><button type="button" id="cma-custo-grupo-analitico">Baixar relatório analítico</button></div></div><div id="cma-custo-grupo-resumo" class="cma-grupo-resumo"></div><p id="cma-custo-grupo-vazio" class="cma-grupo-vazio">Nenhum funcionário foi adicionado. Preencha o formulário abaixo e clique em “Adicionar funcionário ao grupo”.</p><div id="cma-custo-grupo-lista" class="cma-grupo-lista"></div>`;
     grid.parentNode.insertBefore(painel,grid);
     const acao=document.createElement('div');acao.id='cma-custo-grupo-acao';acao.className='cma-grupo-acao cma-grupo-hidden';
     acao.innerHTML='<button type="button" id="cma-custo-grupo-salvar">Adicionar funcionário ao grupo</button><small id="cma-custo-grupo-status">O funcionário somente entra no total após clicar neste botão.</small>';
@@ -184,7 +186,8 @@
     seletor.addEventListener('click',e=>{const b=e.target.closest('[data-modo]');if(b)mudarModo(b.dataset.modo);});
     document.getElementById('cma-custo-grupo-salvar').addEventListener('click',salvar);
     document.getElementById('cma-custo-grupo-novo').addEventListener('click',limpar);
-    document.getElementById('cma-custo-grupo-relatorio').addEventListener('click',exportarGrupo);
+    document.getElementById('cma-custo-grupo-relatorio').addEventListener('click',()=>exportarGrupo());
+    document.getElementById('cma-custo-grupo-analitico').addEventListener('click',()=>exportarGrupo(true));
     document.getElementById('cma-custo-grupo-lista').addEventListener('click',e=>{const b=e.target.closest('[data-acao]'),item=e.target.closest('[data-id]');if(!b||!item)return;if(b.dataset.acao==='editar')editar(item.dataset.id);if(b.dataset.acao==='duplicar')editar(item.dataset.id,true);if(b.dataset.acao==='excluir')excluir(item.dataset.id);});
     if(!document.getElementById('cma-custo-grupo-style')){const st=document.createElement('style');st.id='cma-custo-grupo-style';st.textContent=`
       .cma-custo-identificacao{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}.cma-custo-texto{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#0f172a;font-size:14px;outline:none}.cma-custo-texto:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}

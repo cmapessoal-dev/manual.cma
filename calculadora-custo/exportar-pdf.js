@@ -34,7 +34,7 @@
     else{fill(doc,azul);doc.roundedRect(m,14,20,13,2.5,2.5,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);rgb(doc,[255,255,255]);doc.text('CMA',m+10,22.2,{align:'center'});}
     doc.setFont('helvetica','bold');doc.setFontSize(13);rgb(doc,azulEscuro);doc.text('CMA Assessoria Contábil',textoX,19.5);
     doc.setFont('helvetica','normal');doc.setFontSize(8);rgb(doc,cinza);doc.text('Departamento Pessoal',textoX,24);doc.text('Simulação em '+d.data,pw-m,21,{align:'right'});
-    fill(doc,amarelo);doc.rect(m,31,usable,1.1,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);rgb(doc,cinza);doc.text('RELATÓRIO DE ESTIMATIVA',m,40);
+    fill(doc,amarelo);doc.rect(m,31,usable,1.1,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);rgb(doc,cinza);doc.text(d.analitico?'RELATÓRIO ANALÍTICO':'RELATÓRIO DE ESTIMATIVA',m,40);
     doc.setFontSize(22);rgb(doc,azulEscuro);doc.text('Custo do Empregado',m,49);
     doc.setFont('helvetica','normal');doc.setFontSize(8.2);rgb(doc,cinza);doc.text('Empresa: '+d.empresa,m,55);doc.text('Empregado: '+d.empregado,m,60);doc.text(d.regime,m,65);
     fill(doc,azul);doc.roundedRect(m,71,usable,27,3,3,'F');doc.setFontSize(8.5);rgb(doc,[191,219,254]);doc.text('Custo efetivo mensal estimado',m+7,79);
@@ -54,6 +54,8 @@
     fill(doc,[255,251,235]);stroke(doc,[245,158,11]);doc.roundedRect(m,y,usable,nh,2,2,'FD');fill(doc,[217,119,6]);doc.rect(m,y,1.4,nh,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(8);rgb(doc,[146,64,14]);doc.text('Importante',m+5,y+6);
     doc.setFont('helvetica','normal');doc.setFontSize(6.8);rgb(doc,[120,53,15]);doc.text(linhas,m+5,y+10);
+  }
+  function numerar(doc){
     const paginas=doc.getNumberOfPages();for(let p=1;p<=paginas;p++){doc.setPage(p);doc.setFontSize(6.5);rgb(doc,[148,163,184]);doc.text('CMA Assessoria Contábil • Manual de Diretrizes Trabalhistas & Boas Práticas',105,288,{align:'center'});doc.text(p+' / '+paginas,196,288,{align:'right'});}
   }
   function gerarGrupo(doc,d,logo){
@@ -85,16 +87,29 @@
     y+=7;const aviso='Estimativa destinada ao planejamento. O custo efetivo pode variar conforme enquadramento tributário, normas coletivas, benefícios, condições contratuais e particularidades de cada empregado.';const linhas=doc.splitTextToSize(aviso,usable-10),nh=11+linhas.length*3.4;
     if(y+nh>280){doc.addPage();y=22;}
     fill(doc,[255,251,235]);stroke(doc,[245,158,11]);doc.roundedRect(m,y,usable,nh,2,2,'FD');doc.setFont('helvetica','bold');doc.setFontSize(7.5);rgb(doc,[146,64,14]);doc.text('Importante',m+5,y+5.5);doc.setFont('helvetica','normal');doc.setFontSize(6.6);doc.text(linhas,m+5,y+9.5);
-    const paginas=doc.getNumberOfPages();for(let p=1;p<=paginas;p++){doc.setPage(p);doc.setFontSize(6.5);rgb(doc,[148,163,184]);doc.text('CMA Assessoria Contábil • Manual de Diretrizes Trabalhistas & Boas Práticas',105,288,{align:'center'});doc.text(p+' / '+paginas,196,288,{align:'right'});}
   }
-  async function exportarGrupo(){
+  function gerarAnalitico(doc,d,logo){
+    const pct=n=>Number(n).toLocaleString('pt-BR')+'%';
+    const linhas=(itens)=>itens.map(([label,n,total])=>({label,valor:moeda(n),total}));
+    d.funcionarios.forEach(({bruto:b,calculo:v},i)=>{
+      if(i)doc.addPage();
+      const beneficios=[['Tipo de empregado',b.tipoEmpregado==='aprendiz'?'Jovem aprendiz':'Empregado comum'],['Competência',formatarCompetencia(b.competencia)],['Salário base',moeda(v.salario)],['FGTS',pct(v.fgtsPct)],['Multa do FGTS (provisão)',pct(v.multaFgtsPct)]];
+      if(b.regime!=='simples')beneficios.push(['CNAE preponderante',b.cnae||'Não informado'],['FAP',String(v.fap).replace('.',',')],['CPP',pct(v.cppPct)],['RAT ajustado',pct(v.ratAjustadoPct)]);
+      if(b.regime==='nao-simples')beneficios.push(['FPAS',b.fpas||'Não informado'],['Código de Terceiros',b.codigoTerceiros||'0000'],['Terceiros',pct(v.terceirosPct)]);
+      const regimes={'simples':'Simples Nacional','simples-anexo-iv':'Simples Nacional — Anexo IV','nao-simples':'Fora do Simples Nacional'};
+      gerar(doc,{analitico:true,empresa:b.empresa||d.empresa,empregado:b.nome,regime:regimes[b.regime]||b.regime,total:moeda(v.total),percentual:'Empregado '+(i+1)+' de '+d.funcionarios.length,data:new Date().toLocaleDateString('pt-BR'),beneficios,
+        desembolso:linhas([['Salário base',v.salario],['Comissões',v.comissao],['DSR sobre comissões',v.dsrComissao],['Gratificação',v.gratificacao],['Periculosidade',v.periculosidade],['Insalubridade',v.insalubridade],['Vale-transporte líquido',v.custoVT],['Alimentação líquida',v.custoAlim],['Plano de saúde',v.plano],['Outros benefícios',v.outros],['FGTS da remuneração',v.fgtsRemuneracao],['CPP',v.cppFolha],['RAT ajustado',v.ratFolha],['Terceiros',v.terceirosFolha]].filter(([,n])=>n!==0).concat([['Desembolso mensal',v.desembolso,true]])),
+        provisoes:linhas([['Férias',v.ferias],['1/3 de férias',v.terco],['FGTS sobre férias e 1/3',v.fgtsFerias],['13º salário',v.decimo],['FGTS sobre 13º',v.fgtsDecimo],['Aviso-prévio',v.aviso],['FGTS sobre aviso-prévio',v.fgtsAviso],['Multa do FGTS',v.multaFgts],['CPP sobre provisões',v.cppProv],['RAT sobre provisões',v.ratProv],['Terceiros sobre provisões',v.terceirosProv]].filter(([,n])=>n!==0).concat([['Provisões mensais',v.provisoes,true]]))},logo);
+    });
+  }
+  async function exportarGrupo(analitico=false){
     const d=typeof window.CMA_OBTER_GRUPO_CUSTO==='function'?window.CMA_OBTER_GRUPO_CUSTO():null;
     if(!d||!d.funcionarios.length){alert('Adicione pelo menos um funcionário à simulação em grupo.');return;}
-    const btn=document.getElementById('cma-custo-grupo-relatorio'),original=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Gerando PDF...';}
-    try{const [JsPDF,logo]=await Promise.all([carregarJsPdf(),carregarLogoCMA()]);const doc=new JsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});doc.setProperties({title:'Custo dos Empregados - CMA',subject:'Resumo consolidado do custo mensal dos empregados',author:'CMA Assessoria Contábil'});gerarGrupo(doc,d,logo);doc.save(`Custo-dos-Empregados-CMA-${new Date().toISOString().slice(0,10)}.pdf`);}catch(e){console.error(e);alert('Não foi possível gerar o PDF consolidado neste navegador.');}finally{if(btn){btn.disabled=false;btn.textContent=original;}}
+    const btn=document.getElementById(analitico?'cma-custo-grupo-analitico':'cma-custo-grupo-relatorio'),original=btn?btn.textContent:'';if(btn){btn.disabled=true;btn.textContent='Gerando PDF...';}
+    try{const [JsPDF,logo]=await Promise.all([carregarJsPdf(),carregarLogoCMA()]);const doc=new JsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});doc.setProperties({title:'Custo dos Empregados - CMA',subject:analitico?'Detalhamento do custo mensal por empregado':'Resumo consolidado do custo mensal dos empregados',author:'CMA Assessoria Contábil'});(analitico?gerarAnalitico:gerarGrupo)(doc,d,logo);numerar(doc);doc.save(`Custo-dos-Empregados-${analitico?'Analitico':'Consolidado'}-CMA-${new Date().toISOString().slice(0,10)}.pdf`);}catch(e){console.error(e);alert('Não foi possível gerar o PDF do grupo neste navegador.');}finally{if(btn){btn.disabled=false;btn.textContent=original;}}
   }
   window.CMA_EXPORTAR_CUSTO_GRUPO=exportarGrupo;
-  async function exportar(){const d=dados();if(d.salario<=0){alert('Informe o salário base antes de exportar o relatório.');return;}const btn=document.getElementById('cma-exportar-custo-pdf'),original=btn?btn.innerHTML:'';if(btn){btn.disabled=true;btn.textContent='Gerando PDF...';}try{const [JsPDF,logo]=await Promise.all([carregarJsPdf(),carregarLogoCMA()]);const doc=new JsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});doc.setProperties({title:'Custo do Empregado - CMA',subject:'Estimativa de custo mensal do empregado',author:'CMA Assessoria Contábil'});gerar(doc,d,logo);doc.save(`Custo-do-Empregado-CMA-${new Date().toISOString().slice(0,10)}.pdf`);}catch(e){console.error(e);alert('Não foi possível gerar o PDF neste navegador. Tente novamente ou atualize a página.');}finally{if(btn){btn.disabled=false;btn.innerHTML=original;}}}
+  async function exportar(){const d=dados();if(d.salario<=0){alert('Informe o salário base antes de exportar o relatório.');return;}const btn=document.getElementById('cma-exportar-custo-pdf'),original=btn?btn.innerHTML:'';if(btn){btn.disabled=true;btn.textContent='Gerando PDF...';}try{const [JsPDF,logo]=await Promise.all([carregarJsPdf(),carregarLogoCMA()]);const doc=new JsPDF({orientation:'portrait',unit:'mm',format:'a4',compress:true});doc.setProperties({title:'Custo do Empregado - CMA',subject:'Estimativa de custo mensal do empregado',author:'CMA Assessoria Contábil'});gerar(doc,d,logo);numerar(doc);doc.save(`Custo-do-Empregado-CMA-${new Date().toISOString().slice(0,10)}.pdf`);}catch(e){console.error(e);alert('Não foi possível gerar o PDF neste navegador. Tente novamente ou atualize a página.');}finally{if(btn){btn.disabled=false;btn.innerHTML=original;}}}
   function instalar(){const secao=document.getElementById('custo-empregado');if(!secao)return false;instalarIdentificacao(secao);if(document.getElementById('cma-exportar-custo-pdf'))return true;const resumo=secao.querySelector('.cma-custo-resumo');if(!resumo)return false;const btn=document.createElement('button');btn.type='button';btn.id='cma-exportar-custo-pdf';btn.className='cma-exportar-custo-pdf';btn.innerHTML='<span aria-hidden="true">⇩</span> Exportar em PDF';btn.addEventListener('click',exportar);resumo.appendChild(btn);if(!document.getElementById('cma-exportar-pdf-style')){const st=document.createElement('style');st.id='cma-exportar-pdf-style';st.textContent='.cma-exportar-custo-pdf{display:inline-flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;padding:9px 13px;border:1px solid rgba(255,255,255,.28);border-radius:8px;background:#fff;color:#082f7d;font-size:12.5px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.12);transition:.2s}.cma-exportar-custo-pdf:hover{background:#f8fafc;transform:translateY(-1px)}.cma-exportar-custo-pdf:disabled{opacity:.65;cursor:wait;transform:none}@media(max-width:800px){.cma-exportar-custo-pdf{width:100%;font-size:14px;padding:11px 14px}}';document.head.appendChild(st);}return true;}
   let tentativas=0;function iniciar(){if(instalar())return;if(++tentativas<40)setTimeout(iniciar,250);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',iniciar);else iniciar();
 })();
