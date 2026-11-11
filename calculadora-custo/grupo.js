@@ -31,7 +31,7 @@
   function lerAtual(){
     const bruto={
       empresa:textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),nome:textoGrupo('cma-custo-grupo-empregado-campo','cma-custo-empregado'),regime:opcao('cma-regime','simples'),
-      cnae:texto('cma-custo-cnae'),rat:Number((window.CMA_CNAE_RAT||{})[texto('cma-custo-cnae').replace(/\D/g,'')])||0,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),
+      cnae:texto('cma-custo-cnae'),rat:Number((window.CMA_CNAE_RAT||{})[texto('cma-custo-cnae').replace(/\D/g,'')])||0,fap:numero('cma-custo-fap'),fpas:texto('cma-custo-fpas'),codigoTerceiros:texto('cma-custo-codigo-terceiros'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),
       salario:numero('cma-custo-salario'),temComissao:opcao('cma-comissao','nao')==='sim',comissao:numero('cma-custo-comissao'),
       competencia:texto('cma-custo-competencia'),diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),
       temGratificacao:opcao('cma-gratificacao','nao')==='sim',gratificacao:numero('cma-custo-gratificacao'),
@@ -105,7 +105,7 @@
     definirValor('cma-custo-empresa',bruto.empresa);
     definirValor('cma-custo-empregado',bruto.nome);
     definirRadio('cma-regime',bruto.regime);
-    definirValor('cma-custo-cnae',bruto.cnae);definirValor('cma-custo-fap',bruto.fap);definirValor('cma-custo-terceiros',bruto.terceiros);definirValor('cma-custo-multa-fgts',bruto.multaFgtsPct,'change');
+    definirValor('cma-custo-cnae',bruto.cnae);definirValor('cma-custo-fap',bruto.fap);definirValor('cma-custo-fpas',bruto.fpas,'change');definirValor('cma-custo-multa-fgts',bruto.multaFgtsPct,'change');
     definirValor('cma-custo-salario',bruto.salario);
     definirRadio('cma-comissao',bruto.temComissao?'sim':'nao');definirValor('cma-custo-comissao',bruto.comissao);
     definirValor('cma-custo-competencia',bruto.competencia,'change');
@@ -119,7 +119,7 @@
   function limpar(){
     const empresa=textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),regime=opcao('cma-regime','simples'),competencia=texto('cma-custo-competencia');
     editandoId=null;
-    aplicar({empresa,nome:'',regime,cnae:'',fap:1,terceiros:0,multaFgtsPct:40,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
+    aplicar({empresa,nome:'',regime,cnae:'',fap:1,fpas:'',codigoTerceiros:'0000',terceiros:0,multaFgtsPct:40,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
     atualizarBotaoSalvar();
     (document.getElementById('cma-custo-grupo-empregado-campo')||document.getElementById('cma-custo-empregado'))?.focus();
   }
