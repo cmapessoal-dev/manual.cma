@@ -4,16 +4,23 @@
 
   function moeda(valor){return (Number(valor)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
   function texto(id){const el=document.getElementById(id);return el?String(el.value||'').trim():'';}
+  function textoGrupo(idGrupo,idPadrao){return texto(idGrupo)||texto(idPadrao);}
   function numero(id){const n=parseFloat(String(texto(id)||'0').replace(',','.'));return Number.isFinite(n)?n:0;}
   function opcao(nome,padrao=''){const el=document.querySelector(`input[name="${nome}"]:checked`);return el?el.value:padrao;}
   function escapar(valor){return String(valor||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function idNovo(){return window.crypto&&crypto.randomUUID?crypto.randomUUID():`cma-${Date.now()}-${Math.random().toString(16).slice(2)}`;}
 
   function garantirIdentificacao(secao){
-    if(document.getElementById('cma-custo-empresa'))return;
     const form=secao.querySelector('.cma-custo-form');
     const regime=[...form.querySelectorAll('.cma-custo-label')].find(x=>(x.textContent||'').includes('Regime da empresa'));
     if(!form||!regime)return;
+    if(!document.getElementById('cma-custo-grupo-identificacao')){
+      const grupo=document.createElement('div');
+      grupo.id='cma-custo-grupo-identificacao';grupo.className='cma-custo-identificacao cma-grupo-identificacao cma-grupo-hidden';
+      grupo.innerHTML='<div><label class="cma-custo-label" for="cma-custo-grupo-empresa-campo">Empresa</label><input id="cma-custo-grupo-empresa-campo" class="cma-custo-texto" type="text" autocomplete="organization" placeholder="Nome da empresa"></div><div><label class="cma-custo-label" for="cma-custo-grupo-empregado-campo">Nome do empregado</label><input id="cma-custo-grupo-empregado-campo" class="cma-custo-texto" type="text" autocomplete="off" placeholder="Nome do empregado"></div>';
+      form.insertBefore(grupo,regime);
+    }
+    if(document.getElementById('cma-custo-empresa'))return;
     const bloco=document.createElement('div');
     bloco.className='cma-custo-identificacao';
     bloco.innerHTML='<div><label class="cma-custo-label" for="cma-custo-empresa">Empresa</label><input id="cma-custo-empresa" class="cma-custo-texto" type="text" autocomplete="organization" placeholder="Nome da empresa"></div><div><label class="cma-custo-label" for="cma-custo-empregado">Nome do empregado</label><input id="cma-custo-empregado" class="cma-custo-texto" type="text" autocomplete="name" placeholder="Nome do empregado"></div>';
@@ -22,7 +29,7 @@
 
   function lerAtual(){
     const bruto={
-      empresa:texto('cma-custo-empresa'),nome:texto('cma-custo-empregado'),regime:opcao('cma-regime','simples'),
+      empresa:textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),nome:textoGrupo('cma-custo-grupo-empregado-campo','cma-custo-empregado'),regime:opcao('cma-regime','simples'),
       salario:numero('cma-custo-salario'),temComissao:opcao('cma-comissao','nao')==='sim',comissao:numero('cma-custo-comissao'),
       competencia:texto('cma-custo-competencia'),diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),
       temGratificacao:opcao('cma-gratificacao','nao')==='sim',gratificacao:numero('cma-custo-gratificacao'),
@@ -53,7 +60,7 @@
   }
 
   function dadosPublicos(){
-    return {empresa:funcionarios[0]?.bruto.empresa||texto('cma-custo-empresa')||'Não informada',funcionarios:funcionarios.map(f=>({id:f.id,bruto:{...f.bruto},calculo:{...f.calculo}})),totais:totais()};
+    return {empresa:funcionarios[0]?.bruto.empresa||textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa')||'Não informada',funcionarios:funcionarios.map(f=>({id:f.id,bruto:{...f.bruto},calculo:{...f.calculo}})),totais:totais()};
   }
   window.CMA_OBTER_GRUPO_CUSTO=dadosPublicos;
 
@@ -88,6 +95,8 @@
   }
 
   function aplicar(bruto){
+    definirValor('cma-custo-grupo-empresa-campo',bruto.empresa);
+    definirValor('cma-custo-grupo-empregado-campo',bruto.nome);
     definirValor('cma-custo-empresa',bruto.empresa);
     definirValor('cma-custo-empregado',bruto.nome);
     definirRadio('cma-regime',bruto.regime);
@@ -102,11 +111,11 @@
   }
 
   function limpar(){
-    const empresa=texto('cma-custo-empresa'),regime=opcao('cma-regime','simples'),competencia=texto('cma-custo-competencia');
+    const empresa=textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),regime=opcao('cma-regime','simples'),competencia=texto('cma-custo-competencia');
     editandoId=null;
     aplicar({empresa,nome:'',regime,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
     atualizarBotaoSalvar();
-    document.getElementById('cma-custo-empregado')?.focus();
+    (document.getElementById('cma-custo-grupo-empregado-campo')||document.getElementById('cma-custo-empregado'))?.focus();
   }
 
   function atualizarBotaoSalvar(){
@@ -116,7 +125,7 @@
 
   function salvar(){
     const atual=lerAtual();
-    if(!atual.bruto.nome){alert('Informe o nome do empregado antes de adicioná-lo ao grupo.');document.getElementById('cma-custo-empregado')?.focus();return;}
+    if(!atual.bruto.nome){alert('Informe o nome do empregado antes de adicioná-lo ao grupo.');(document.getElementById('cma-custo-grupo-empregado-campo')||document.getElementById('cma-custo-empregado'))?.focus();return;}
     if(atual.bruto.salario<=0){alert('Informe o salário base antes de adicionar o empregado.');document.getElementById('cma-custo-salario')?.focus();return;}
     if(editandoId){
       const indice=funcionarios.findIndex(f=>f.id===editandoId);
@@ -146,6 +155,7 @@
     const grupo=modo==='grupo';
     document.getElementById('cma-custo-grupo-painel')?.classList.toggle('cma-grupo-hidden',!grupo);
     document.getElementById('cma-custo-grupo-acao')?.classList.toggle('cma-grupo-hidden',!grupo);
+    document.getElementById('cma-custo-grupo-identificacao')?.classList.toggle('cma-grupo-hidden',!grupo);
     document.querySelectorAll('.cma-custo-modo button').forEach(b=>{const ativo=b.dataset.modo===modo;b.classList.toggle('ativo',ativo);b.setAttribute('aria-selected',String(ativo));});
   }
 
