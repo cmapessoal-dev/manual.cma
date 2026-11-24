@@ -86,4 +86,19 @@
 #simulador-jornada .coverage-auto-summary span{font-size:13px;flex:1;min-width:220px}
 #simulador-jornada .coverage-auto-summary button{border:1px solid #7e9bbd;border-radius:7px;background:#fff;color:#173b72;padding:8px 11px;font-weight:700}
 #simulador-jornada .coverage-cell:disabled{cursor:default;opacity:1}
+#simulador-jornada .coverage-auto-board{display:grid;gap:12px}
+#simulador-jornada .coverage-person-card{border:1px solid #cbd9e9;border-radius:10px;background:#fff;overflow:hidden}
+#simulador-jornada .coverage-person-card>header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:#edf2f9;color:#173b72}
+#simulador-jornada .coverage-person-card>header strong{font-size:15px}
+#simulador-jornada .coverage-person-card>header span{font-size:12px;color:#526176}
+#simulador-jornada .coverage-person-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+#simulador-jornada .coverage-person-week>div{display:grid;gap:4px;min-width:0;padding:11px 9px;border-right:1px solid #e2e8f0;border-top:3px solid #2866ac}
+#simulador-jornada .coverage-person-week>div:last-child{border-right:0}
+#simulador-jornada .coverage-person-week strong{font-size:12px;color:#173b72}
+#simulador-jornada .coverage-person-week span{font-size:12px;font-weight:700;white-space:nowrap;color:#334155}
+#simulador-jornada .coverage-person-week small{font-size:10px;color:#64748b;line-height:1.35}
+#simulador-jornada .coverage-person-week .off{background:#f1f8f5;border-top-color:#2e8066}
+#simulador-jornada .coverage-person-week .off span{color:#28634f}
+@container(max-width:800px){#simulador-jornada .coverage-person-week{grid-template-columns:repeat(2,minmax(0,1fr))}#simulador-jornada .coverage-person-week>div{border-bottom:1px solid #e2e8f0}}
 @container(max-width:700px){#simulador-jornada .coverage-staffing{grid-template-columns:1fr}#simulador-jornada .coverage-mode{width:100%}#simulador-jornada .coverage-mode button{flex:1}}
+@container(max-width:420px){#simulador-jornada .coverage-person-week{grid-template-columns:1fr}#simulador-jornada .coverage-person-card>header{align-items:flex-start;flex-direction:column}}
