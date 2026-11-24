@@ -68,8 +68,16 @@
 #simulador-jornada .coverage-days summary{cursor:pointer}
 #simulador-jornada .coverage-days summary span{margin-left:15px;font-size:13px}
 #simulador-jornada .coverage-days p{font-size:13px;padding:6px 0;border-top:1px solid #e2e8f0}
-#simulador-jornada .coverage-operation{min-width:910px!important}
-#simulador-jornada .coverage-operation th:first-child{width:64px}
+#simulador-jornada .coverage-operation{min-width:760px!important}
+#simulador-jornada .coverage-operation th:first-child{width:58px}
+#simulador-jornada .coverage-operation th:nth-child(2){width:68px;text-align:center}
+#simulador-jornada .coverage-operation td:nth-child(2){text-align:center}
+#simulador-jornada .coverage-hours{display:flex;align-items:end;gap:8px;min-width:230px}
+#simulador-jornada .coverage-hours label{display:grid;gap:3px;color:#64748b;font-size:11px;font-weight:700;flex:1}
+#simulador-jornada .coverage-bands{display:grid;gap:7px;min-width:330px}
+#simulador-jornada .coverage-bands label{display:flex;align-items:center;gap:7px;color:#526176;font-size:12px;white-space:nowrap}
+#simulador-jornada .coverage-bands input[type=number]{width:58px!important;flex:0 0 58px}
+#simulador-jornada .coverage-bands input[type=time]{width:112px!important;flex:0 0 112px}
 #simulador-jornada .coverage-staffing{grid-template-columns:repeat(3,minmax(0,1fr))}
 #simulador-jornada .coverage-mode{display:flex;gap:6px;padding:4px;background:#edf2f9;border-radius:9px}
 #simulador-jornada .coverage-mode button{border:0;border-radius:7px;background:transparent;color:#526176;font-weight:700;padding:9px 13px}
