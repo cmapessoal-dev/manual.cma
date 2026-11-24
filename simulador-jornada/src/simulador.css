@@ -68,3 +68,14 @@
 #simulador-jornada .coverage-days summary{cursor:pointer}
 #simulador-jornada .coverage-days summary span{margin-left:15px;font-size:13px}
 #simulador-jornada .coverage-days p{font-size:13px;padding:6px 0;border-top:1px solid #e2e8f0}
+#simulador-jornada .coverage-operation{min-width:910px!important}
+#simulador-jornada .coverage-operation th:first-child{width:64px}
+#simulador-jornada .coverage-staffing{grid-template-columns:repeat(3,minmax(0,1fr))}
+#simulador-jornada .coverage-mode{display:flex;gap:6px;padding:4px;background:#edf2f9;border-radius:9px}
+#simulador-jornada .coverage-mode button{border:0;border-radius:7px;background:transparent;color:#526176;font-weight:700;padding:9px 13px}
+#simulador-jornada .coverage-mode button[aria-pressed=true]{background:#173b72;color:#fff;box-shadow:0 1px 3px #17255422}
+#simulador-jornada .coverage-auto-summary{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;margin:4px 0 14px;background:#edf7f2;border:1px solid #9fc9b3;border-radius:9px;color:#215f49}
+#simulador-jornada .coverage-auto-summary span{font-size:13px;flex:1;min-width:220px}
+#simulador-jornada .coverage-auto-summary button{border:1px solid #7e9bbd;border-radius:7px;background:#fff;color:#173b72;padding:8px 11px;font-weight:700}
+#simulador-jornada .coverage-cell:disabled{cursor:default;opacity:1}
+@container(max-width:700px){#simulador-jornada .coverage-staffing{grid-template-columns:1fr}#simulador-jornada .coverage-mode{width:100%}#simulador-jornada .coverage-mode button{flex:1}}
