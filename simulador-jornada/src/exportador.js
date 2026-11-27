@@ -2,7 +2,6 @@
 (function(){
   if(window.CMAEscalaExportador)return;
   const configs={
-    'custo-empregado':{titulo:'Estimativa de Custo do Empregado',empresa:'cma-custo-empresa',empregado:'cma-custo-empregado',resumo:'cma-custo-total',sub:'cma-custo-percentual',blocos:[['Desembolso mensal','cma-custo-desembolso'],['Provisões','cma-custo-provisoes']],memoria:'.cma-export-inputs'},
     'calculadora-tempo-parcial':{titulo:'Cálculo de Salário em Tempo Parcial',empresa:'cma-tp-empresa',empregado:'cma-tp-empregado',resumo:'cma-tp-total',sub:'cma-tp-horas-mensais',blocos:[['Memória do cálculo','cma-tp-memoria']],memoria:'.cma-export-inputs'},
     'apurador-ponto':{titulo:'Apuração de Ponto',empresa:'cma-ap-empresa',empregado:'cma-ap-empregado',resumo:'cma-ap-trabalhado',sub:'cma-ap-periodo',blocos:[['Totais da apuração','cma-ap-export-totals'],['Registros do período','cma-ap-export-days']],memoria:'.cma-export-inputs'},
     'calculadora-ferias':{titulo:'Cálculo de Férias',empresa:'cma-ferias-empresa',empregado:'cma-ferias-empregado',resumo:'cma-ferias-total',sub:'cma-ferias-bruto-resumo',blocos:[['Proventos','cma-ferias-proventos'],['Descontos','cma-ferias-descontos']],memoria:'.cma-ferias-memoria'},
@@ -93,7 +92,7 @@
   }
   function preparar(id){
     const c=configs[id],sec=document.getElementById(id);if(!c||!sec||c.custom)return;
-    if(['custo-empregado','calculadora-tempo-parcial','apurador-ponto'].includes(id)){
+    if(['calculadora-tempo-parcial','apurador-ponto'].includes(id)){
       const data=[...sec.querySelectorAll('input,select')].filter(el=>!el.closest('[hidden],.hidden,#cma-ap-corpo')&&!['password','hidden','button'].includes(el.type)&&(!['radio','checkbox'].includes(el.type)||el.checked)).map(el=>{
         const label=(el.id&&sec.querySelector('label[for="'+el.id+'"]'))||el.closest('label')||el.parentElement?.querySelector('label');
         return [(label?.textContent||el.getAttribute('aria-label')||el.getAttribute('placeholder')||'Parâmetro informado').trim(),el.tagName==='SELECT'?el.selectedOptions?.[0]?.textContent||el.value:el.value||'Não informado']
