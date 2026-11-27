@@ -157,8 +157,8 @@
     const domesticoWrap=document.getElementById('cma-custo-domestico-wrap');if(domesticoWrap)domesticoWrap.classList.toggle('hidden',tipoEmpregador!=='domestico');
     const patronalWrap=document.getElementById('cma-custo-patronal-wrap');if(patronalWrap)patronalWrap.classList.toggle('hidden',regime==='simples'||regime==='domestico');
     const usaTerceiros=regime==='nao-simples';
-    const terceirosWrap=document.getElementById('cma-custo-terceiros-wrap');if(terceirosWrap)terceirosWrap.classList.toggle('hidden',!usaTerceiros);
-    const terceirosDetalhe=document.getElementById('cma-custo-terceiros-detalhe');if(terceirosDetalhe)terceirosDetalhe.classList.toggle('hidden',!usaTerceiros);
+    const terceirosWrap=document.getElementById('cma-custo-terceiros-wrap');if(terceirosWrap){terceirosWrap.classList.toggle('hidden',!usaTerceiros);terceirosWrap.style.display=usaTerceiros?'':'none';}
+    const terceirosDetalhe=document.getElementById('cma-custo-terceiros-detalhe');if(terceirosDetalhe){terceirosDetalhe.classList.toggle('hidden',!usaTerceiros);terceirosDetalhe.style.display=usaTerceiros?'':'none';}
     const multaWrap=document.getElementById('cma-custo-multa-wrap');if(multaWrap)multaWrap.classList.toggle('hidden',tipoEmpregador==='domestico');
     const cnaeStatus=document.getElementById('cma-custo-cnae-status');
     if(cnaeStatus)cnaeStatus.textContent=regime==='simples'?'A CPP está incluída no DAS nesta opção.':cnae.length<7?'Informe os 7 dígitos da atividade preponderante para localizar o RAT.':rat?`CNAE localizado na tabela oficial — RAT ${rat}%.`:'CNAE não localizado na tabela oficial utilizada. Confira o código informado.';
