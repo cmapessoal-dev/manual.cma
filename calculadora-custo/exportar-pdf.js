@@ -44,12 +44,7 @@
     cabecalho('Custo mensal do empregado',1);
     fill(doc,azul);doc.roundedRect(m,71,usable,24,3,3,'F');doc.setFontSize(8.5);rgb(doc,[191,219,254]);doc.text('Custo mensal sem provisões',m+7,79);
     doc.setFont('helvetica','bold');doc.setFontSize(21);rgb(doc,[255,255,255]);doc.text(custoMensal,m+7,89);
-    let y=103;
-    doc.setFont('helvetica','bold');doc.setFontSize(10);rgb(doc,azulEscuro);doc.text('Dados informados',m,y);y+=4;
-    const cols=3,gapCard=4,colW=(usable-(gapCard*(cols-1)))/cols;
-    d.beneficios.forEach((item,i)=>{const col=i%cols,row=Math.floor(i/cols),x=m+(col*(colW+gapCard)),cy=y+(row*13);fill(doc,claro);stroke(doc,borda);doc.roundedRect(x,cy,colW,10,2,2,'FD');doc.setFont('helvetica','normal');doc.setFontSize(6.4);rgb(doc,cinza);doc.text(doc.splitTextToSize(item[0],colW-6)[0],x+3,cy+3.8);doc.setFont('helvetica','bold');doc.setFontSize(7.5);rgb(doc,azulEscuro);doc.text(doc.splitTextToSize(item[1],colW-6)[0],x+3,cy+8);});
-    y+=Math.ceil(d.beneficios.length/cols)*13+7;
-    desenharTabela(doc,m,y,usable,'Composição do custo mensal',d.desembolso);
+    desenharTabela(doc,m,104,usable,'Composição do custo mensal',d.desembolso);
 
     doc.addPage();cabecalho('Provisões mensais do empregado',2);
     fill(doc,azul);doc.roundedRect(m,71,usable,27,3,3,'F');doc.setFontSize(8.5);rgb(doc,[191,219,254]);doc.text('Provisão mensal estimada',m+7,79);
