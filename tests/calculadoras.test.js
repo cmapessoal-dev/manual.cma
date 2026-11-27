@@ -266,6 +266,50 @@ test('Custo do Empregado — jovem aprendiz usa FGTS de 2% e não provisiona mul
   assert.equal(dom.window.document.getElementById('cma-custo-multa-fgts').disabled, true);
 });
 
+test('Custo do Empregado — CAEPF calcula patronal, RAT, Terceiros e aposentadoria especial', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  const r = dom.window.CMA_CALCULAR_CUSTO({
+    tipoEmpregador: 'caepf', regime: 'simples', salario: 3000, rat: 1, fap: 1, terceiros: 2.7, aposentadoriaEspecialPct: 6
+  });
+  perto(r.cppPct, 20);
+  perto(r.ratAjustadoPct, 1);
+  perto(r.terceirosPct, 2.7);
+  perto(r.aposentadoriaEspecialPct, 6);
+  perto(r.patronalPct, 29.7);
+  perto(r.especialFolha, 180);
+});
+
+test('Custo do Empregado — doméstico usa encargos fixos e indenização de 3,2%', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  const r = dom.window.CMA_CALCULAR_CUSTO({
+    tipoEmpregador: 'domestico', tipoEmpregado: 'aprendiz', regime: 'nao-simples', salario: 3000, rat: 3, fap: 2, terceiros: 5.8, aposentadoriaEspecialPct: 12, multaFgtsPct: 40
+  });
+  assert.equal(r.tipoEmpregado, 'comum');
+  perto(r.fgtsPct, 8);
+  perto(r.cppPct, 8);
+  perto(r.ratAjustadoPct, 0.8);
+  perto(r.terceirosPct, 0);
+  perto(r.aposentadoriaEspecialPct, 0);
+  perto(r.indenizacaoCompensatoriaPct, 3.2);
+  perto(r.indenizacaoRemuneracao, 96);
+  perto(r.multaFgtsPct, 0);
+});
+
+test('Custo do Empregado — insalubridade integra a base sem ativar aposentadoria especial', () => {
+  const dom = criarAmbiente();
+  carregar(dom, 'calculadora-custo/calculadora-custo.js');
+  const r = dom.window.CMA_CALCULAR_CUSTO({
+    tipoEmpregador: 'caepf', salario: 3000, risco: 'insalubridade', baseInsalubridade: 1500, grauInsalubridade: 20, rat: 1, fap: 1
+  });
+  perto(r.insalubridade, 300);
+  perto(r.remuneracao, 3300);
+  perto(r.aposentadoriaEspecialPct, 0);
+  perto(r.cppFolha, 660);
+  perto(r.ratFolha, 33);
+});
+
 test('Custo do Empregado — CNAE sugere FPAS, código e alíquota de Terceiros', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-custo/cnae-rat.js');
