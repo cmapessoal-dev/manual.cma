@@ -84,7 +84,7 @@
     const ratPct=domestico?0.8:aplicaPatronal?Math.min(3,Math.max(0,Number(d.rat)||0)):0;
     const fap=domestico?1:aplicaPatronal?Math.min(2,Math.max(0.5,Number(d.fap)||1)):0;
     const ratAjustadoPct=ratPct*fap;
-    const terceirosPct=!domestico&&(caepf||d.regime==='nao-simples')?Math.min(20,Math.max(0,Number(d.terceiros)||0)):0;
+    const terceirosPct=caepf?4.5:!domestico&&d.regime==='nao-simples'?Math.min(20,Math.max(0,Number(d.terceiros)||0)):0;
     const especialInformado=[6,9,12].includes(Number(d.aposentadoriaEspecialPct))?Number(d.aposentadoriaEspecialPct):0;
     const aposentadoriaEspecialPct=!domestico&&aplicaPatronal?especialInformado:0;
     const patronalPct=cppPct+ratAjustadoPct+terceirosPct+aposentadoriaEspecialPct;
@@ -156,14 +156,14 @@
     const regimeWrap=document.getElementById('cma-custo-regime-empresa-wrap');if(regimeWrap)regimeWrap.classList.toggle('hidden',tipoEmpregador!=='pessoa-juridica');
     const domesticoWrap=document.getElementById('cma-custo-domestico-wrap');if(domesticoWrap)domesticoWrap.classList.toggle('hidden',tipoEmpregador!=='domestico');
     const patronalWrap=document.getElementById('cma-custo-patronal-wrap');if(patronalWrap)patronalWrap.classList.toggle('hidden',regime==='simples'||regime==='domestico');
-    const usaTerceiros=regime==='nao-simples'||regime==='caepf';
+    const usaTerceiros=regime==='nao-simples';
     const terceirosWrap=document.getElementById('cma-custo-terceiros-wrap');if(terceirosWrap)terceirosWrap.classList.toggle('hidden',!usaTerceiros);
     const terceirosDetalhe=document.getElementById('cma-custo-terceiros-detalhe');if(terceirosDetalhe)terceirosDetalhe.classList.toggle('hidden',!usaTerceiros);
     const multaWrap=document.getElementById('cma-custo-multa-wrap');if(multaWrap)multaWrap.classList.toggle('hidden',tipoEmpregador==='domestico');
     const cnaeStatus=document.getElementById('cma-custo-cnae-status');
     if(cnaeStatus)cnaeStatus.textContent=regime==='simples'?'A CPP está incluída no DAS nesta opção.':cnae.length<7?'Informe os 7 dígitos da atividade preponderante para localizar o RAT.':rat?`CNAE localizado na tabela oficial — RAT ${rat}%.`:'CNAE não localizado na tabela oficial utilizada. Confira o código informado.';
     const patronalResumo=document.getElementById('cma-custo-patronal-resumo');if(patronalResumo)patronalResumo.innerHTML=`<span>Percentual patronal desta estimativa</span><strong>${v.patronalPct.toFixed(2).replace('.',',')}%</strong>`;
-    const fpasStatus=document.getElementById('cma-custo-fpas-status');if(fpasStatus)fpasStatus.textContent=!usaTerceiros?'No Simples Nacional — Anexo IV não há contribuição a terceiros nesta estimativa.':fpas?`FPAS ${fpas} — código de Terceiros ${fpasDados.codigo} — alíquota ${fpasDados.aliquota.toFixed(1).replace('.',',')}%. Confirme o enquadramento do empregador.`:'Informe o CNAE ou selecione o FPAS para preencher Terceiros.';
+    const fpasStatus=document.getElementById('cma-custo-fpas-status');if(fpasStatus)fpasStatus.textContent=regime==='caepf'?'Para pessoa física com CAEPF, a calculadora aplica Terceiros em 4,50%, sem vincular essa alíquota ao CNAE ou ao FPAS.':!usaTerceiros?'No Simples Nacional — Anexo IV não há contribuição a terceiros nesta estimativa.':fpas?`FPAS ${fpas} — código de Terceiros ${fpasDados.codigo} — alíquota ${fpasDados.aliquota.toFixed(1).replace('.',',')}%. Confirme o enquadramento do empregador.`:'Informe o CNAE ou selecione o FPAS para preencher Terceiros.';
 
     const caixa=document.getElementById('cma-custo-desembolso');
     if(caixa)caixa.innerHTML=
