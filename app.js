@@ -56,7 +56,7 @@ function carregarModulosDoManual(){
   if(!document.querySelector('script[data-cma-bootstrap]')){
     const core=document.createElement('script');
     core.dataset.cmaBootstrap='1';
-    core.src='core/bootstrap.js?v=20261127d';
+    core.src='core/bootstrap.js?v=20261127e';
     core.async=false;
     document.body.appendChild(core);
   }
