@@ -29,28 +29,35 @@
   function desenharTabela(doc,x,y,w,titulo,linhas){const azul=[23,37,84],cinza=[71,85,105],borda=[226,232,240],fundo=[248,250,252],vermelho=[185,28,28],headH=10,h=alturaTabela(doc,w,linhas);fill(doc,[255,255,255]);stroke(doc,borda);doc.roundedRect(x,y,w,h,3,3,'FD');fill(doc,fundo);doc.roundedRect(x,y,w,headH,3,3,'F');doc.rect(x,y+headH-3,w,3,'F');doc.setFont('helvetica','bold');doc.setFontSize(9.5);rgb(doc,azul);doc.text(titulo,x+4,y+6.5);let cy=y+headH;linhas.forEach((l,i)=>{doc.setFont('helvetica',l.total?'bold':'normal');doc.setFontSize(7.3);const textos=doc.splitTextToSize(l.label,w-37),rowH=Math.max(7.2,textos.length*3.2+3);if(i>0){stroke(doc,[241,245,249]);doc.line(x+4,cy,x+w-4,cy);}rgb(doc,l.desconto?vermelho:cinza);doc.text(textos,x+4,cy+4.8);doc.setFont('helvetica','bold');rgb(doc,l.desconto?vermelho:azul);doc.text(l.valor,x+w-4,cy+4.8,{align:'right'});cy+=rowH;});return h;}
   function gerar(doc,d,logo){
     const azul=[8,47,125],azulEscuro=[23,37,84],amarelo=[245,181,27],cinza=[100,116,139],borda=[226,232,240],claro=[248,250,252],m=14,pw=210,usable=pw-(m*2);
-    let textoX=39;
-    if(logo&&logo.dataUrl){const maxW=27,maxH=13,ratio=logo.w/logo.h;let logoW=maxW,logoH=logoW/ratio;if(logoH>maxH){logoH=maxH;logoW=logoH*ratio;}doc.addImage(logo.dataUrl,'PNG',m,14,logoW,logoH,undefined,'FAST');textoX=m+logoW+5;}
-    else{fill(doc,azul);doc.roundedRect(m,14,20,13,2.5,2.5,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);rgb(doc,[255,255,255]);doc.text('CMA',m+10,22.2,{align:'center'});}
-    doc.setFont('helvetica','bold');doc.setFontSize(13);rgb(doc,azulEscuro);doc.text('CMA Assessoria Contábil',textoX,19.5);
-    doc.setFont('helvetica','normal');doc.setFontSize(8);rgb(doc,cinza);doc.text('Departamento Pessoal',textoX,24);doc.text('Simulação em '+d.data,pw-m,21,{align:'right'});
-    fill(doc,amarelo);doc.rect(m,31,usable,1.1,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);rgb(doc,cinza);doc.text(d.analitico?'RELATÓRIO ANALÍTICO':'RELATÓRIO DE ESTIMATIVA',m,40);
-    doc.setFontSize(22);rgb(doc,azulEscuro);doc.text('Custo do Empregado',m,49);
-    doc.setFont('helvetica','normal');doc.setFontSize(8.2);rgb(doc,cinza);doc.text('Empresa: '+d.empresa,m,55);doc.text('Empregado: '+d.empregado,m,60);doc.text(d.regime,m,65);
-    fill(doc,azul);doc.roundedRect(m,71,usable,27,3,3,'F');doc.setFontSize(8.5);rgb(doc,[191,219,254]);doc.text('Custo efetivo mensal estimado',m+7,79);
-    doc.setFont('helvetica','bold');doc.setFontSize(22);rgb(doc,[255,255,255]);doc.text(d.total,m+7,89);doc.setFontSize(8.5);rgb(doc,amarelo);doc.text(d.percentual,m+7,95);
-    let y=105;
+    const custoMensal=(d.desembolso.find(x=>x.total)||d.desembolso[d.desembolso.length-1]||{}).valor||d.total;
+    const provisaoMensal=(d.provisoes.find(x=>x.total)||d.provisoes[d.provisoes.length-1]||{}).valor||'R$ 0,00';
+    function cabecalho(titulo,pagina){
+      let textoX=39;
+      if(logo&&logo.dataUrl){const maxW=27,maxH=13,ratio=logo.w/logo.h;let logoW=maxW,logoH=logoW/ratio;if(logoH>maxH){logoH=maxH;logoW=logoH*ratio;}doc.addImage(logo.dataUrl,'PNG',m,14,logoW,logoH,undefined,'FAST');textoX=m+logoW+5;}
+      else{fill(doc,azul);doc.roundedRect(m,14,20,13,2.5,2.5,'F');doc.setFont('helvetica','bold');doc.setFontSize(10);rgb(doc,[255,255,255]);doc.text('CMA',m+10,22.2,{align:'center'});}
+      doc.setFont('helvetica','bold');doc.setFontSize(13);rgb(doc,azulEscuro);doc.text('CMA Assessoria Contábil',textoX,19.5);
+      doc.setFont('helvetica','normal');doc.setFontSize(8);rgb(doc,cinza);doc.text('Departamento Pessoal',textoX,24);doc.text('Simulação em '+d.data,pw-m,21,{align:'right'});
+      fill(doc,amarelo);doc.rect(m,31,usable,1.1,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);rgb(doc,cinza);doc.text(d.analitico?'RELATÓRIO ANALÍTICO':'RELATÓRIO DE ESTIMATIVA',m,40);
+      doc.setFontSize(21);rgb(doc,azulEscuro);doc.text(titulo,m,49);
+      doc.setFont('helvetica','normal');doc.setFontSize(8.2);rgb(doc,cinza);doc.text('Empresa: '+d.empresa,m,55);doc.text('Empregado: '+d.empregado,m,60);doc.text(d.regime,m,65);doc.text('Página '+pagina,pw-m,65,{align:'right'});
+    }
+    cabecalho('Custo mensal do empregado',1);
+    fill(doc,azul);doc.roundedRect(m,71,usable,24,3,3,'F');doc.setFontSize(8.5);rgb(doc,[191,219,254]);doc.text('Custo mensal sem provisões',m+7,79);
+    doc.setFont('helvetica','bold');doc.setFontSize(21);rgb(doc,[255,255,255]);doc.text(custoMensal,m+7,89);
+    let y=103;
     doc.setFont('helvetica','bold');doc.setFontSize(10);rgb(doc,azulEscuro);doc.text('Dados informados',m,y);y+=4;
     const cols=3,gapCard=4,colW=(usable-(gapCard*(cols-1)))/cols;
     d.beneficios.forEach((item,i)=>{const col=i%cols,row=Math.floor(i/cols),x=m+(col*(colW+gapCard)),cy=y+(row*13);fill(doc,claro);stroke(doc,borda);doc.roundedRect(x,cy,colW,10,2,2,'FD');doc.setFont('helvetica','normal');doc.setFontSize(6.4);rgb(doc,cinza);doc.text(doc.splitTextToSize(item[0],colW-6)[0],x+3,cy+3.8);doc.setFont('helvetica','bold');doc.setFontSize(7.5);rgb(doc,azulEscuro);doc.text(doc.splitTextToSize(item[1],colW-6)[0],x+3,cy+8);});
     y+=Math.ceil(d.beneficios.length/cols)*13+7;
-    const gap=6,tw=(usable-gap)/2,altura=Math.max(alturaTabela(doc,tw,d.desembolso),alturaTabela(doc,tw,d.provisoes));
-    if(y+altura+35>282){doc.addPage();y=22;doc.setFont('helvetica','bold');doc.setFontSize(14);rgb(doc,azulEscuro);doc.text('Composição detalhada do custo',m,y);fill(doc,amarelo);doc.rect(m,y+4,usable,1,'F');y+=11;}
-    const h1=desenharTabela(doc,m,y,tw,'Desembolso mensal',d.desembolso),h2=desenharTabela(doc,m+tw+gap,y,tw,'Provisões mensais',d.provisoes);
-    y+=Math.max(h1,h2)+8;
+    desenharTabela(doc,m,y,usable,'Composição do custo mensal',d.desembolso);
+
+    doc.addPage();cabecalho('Provisões mensais do empregado',2);
+    fill(doc,azul);doc.roundedRect(m,71,usable,27,3,3,'F');doc.setFontSize(8.5);rgb(doc,[191,219,254]);doc.text('Provisão mensal estimada',m+7,79);
+    doc.setFont('helvetica','bold');doc.setFontSize(21);rgb(doc,[255,255,255]);doc.text(provisaoMensal,m+7,89);doc.setFontSize(8);rgb(doc,amarelo);doc.text('Custo total mensal com provisões: '+d.total,m+7,95);
+    y=107+desenharTabela(doc,m,107,usable,'Composição das provisões',d.provisoes)+8;
     const aviso='Os valores apresentados são apenas uma estimativa para planejamento. O custo efetivo do empregado pode variar conforme o enquadramento tributário da empresa, atividade exercida, alíquotas aplicáveis, benefícios concedidos, normas coletivas, condições contratuais e demais particularidades de cada caso.';
     const linhas=doc.splitTextToSize(aviso,usable-10),nh=12+(linhas.length*3.5);
-    if(y+nh>282){doc.addPage();y=22;}
+    if(y+nh>282)y=270-nh;
     fill(doc,[255,251,235]);stroke(doc,[245,158,11]);doc.roundedRect(m,y,usable,nh,2,2,'FD');fill(doc,[217,119,6]);doc.rect(m,y,1.4,nh,'F');
     doc.setFont('helvetica','bold');doc.setFontSize(8);rgb(doc,[146,64,14]);doc.text('Importante',m+5,y+6);
     doc.setFont('helvetica','normal');doc.setFontSize(6.8);rgb(doc,[120,53,15]);doc.text(linhas,m+5,y+10);
