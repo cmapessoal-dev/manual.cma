@@ -5,7 +5,7 @@
   function opcao(id,padrao=''){const el=document.querySelector(`input[name="${id}"]:checked`);return el?el.value:padrao;}
   function soDigitos(valor){return String(valor||'').replace(/\D/g,'').slice(0,7);}
   function formatarCnae(valor){const d=soDigitos(valor);return d.length===7?`${d.slice(0,4)}-${d.slice(4,5)}/${d.slice(5)}`:d;}
-  function rotuloRegime(regime){return regime==='simples-anexo-iv'?'Simples Nacional — Anexo IV':regime==='nao-simples'?'Não optante pelo Simples Nacional':'Simples Nacional — CPP no DAS';}
+  function rotuloRegime(regime){return regime==='domestico'?'Empregador doméstico':regime==='caepf'?'Pessoa física — CAEPF':regime==='simples-anexo-iv'?'Simples Nacional — Anexo IV':regime==='nao-simples'?'Não optante pelo Simples Nacional':'Simples Nacional — CPP no DAS';}
   const FPAS_TERCEIROS={
     '507':{codigo:'0079',aliquota:5.8},'515':{codigo:'0115',aliquota:5.8},'523':{codigo:'0003',aliquota:2.7},
     '531':{codigo:'0003',aliquota:5.2},'540':{codigo:'0131',aliquota:5.2},'558':{codigo:'0259',aliquota:5.2},
@@ -52,7 +52,8 @@
   window.CMA_CONTAR_CALENDARIO_CUSTO=contarCalendario;
 
   function calcularValores(d){
-    const tipoEmpregado=d.tipoEmpregado==='aprendiz'?'aprendiz':'comum';
+    const tipoEmpregador=['caepf','domestico'].includes(d.tipoEmpregador)?d.tipoEmpregador:'pessoa-juridica';
+    const tipoEmpregado=tipoEmpregador!=='domestico'&&d.tipoEmpregado==='aprendiz'?'aprendiz':'comum';
     const fgtsPct=tipoEmpregado==='aprendiz'?2:8;
     const salario=Math.max(0,Number(d.salario)||0);
     const comissao=Math.max(0,Number(d.comissao)||0);
@@ -76,17 +77,23 @@
     const plano=Math.max(0,Number(d.plano)||0);
     const outros=Math.max(0,Number(d.outros)||0);
 
-    const aplicaPatronal=d.regime==='simples-anexo-iv'||d.regime==='nao-simples';
-    const cppPct=aplicaPatronal?20:0;
-    const ratPct=aplicaPatronal?Math.min(3,Math.max(0,Number(d.rat)||0)):0;
-    const fap=aplicaPatronal?Math.min(2,Math.max(0.5,Number(d.fap)||1)):0;
+    const domestico=tipoEmpregador==='domestico';
+    const caepf=tipoEmpregador==='caepf';
+    const aplicaPatronal=domestico||caepf||d.regime==='simples-anexo-iv'||d.regime==='nao-simples';
+    const cppPct=domestico?8:aplicaPatronal?20:0;
+    const ratPct=domestico?0.8:aplicaPatronal?Math.min(3,Math.max(0,Number(d.rat)||0)):0;
+    const fap=domestico?1:aplicaPatronal?Math.min(2,Math.max(0.5,Number(d.fap)||1)):0;
     const ratAjustadoPct=ratPct*fap;
-    const terceirosPct=d.regime==='nao-simples'?Math.min(20,Math.max(0,Number(d.terceiros)||0)):0;
-    const patronalPct=cppPct+ratAjustadoPct+terceirosPct;
+    const terceirosPct=!domestico&&(caepf||d.regime==='nao-simples')?Math.min(20,Math.max(0,Number(d.terceiros)||0)):0;
+    const especialInformado=[6,9,12].includes(Number(d.aposentadoriaEspecialPct))?Number(d.aposentadoriaEspecialPct):0;
+    const aposentadoriaEspecialPct=!domestico&&aplicaPatronal?especialInformado:0;
+    const patronalPct=cppPct+ratAjustadoPct+terceirosPct+aposentadoriaEspecialPct;
     const fgtsRemuneracao=remuneracao*(fgtsPct/100);
-    const cppFolha=remuneracao*(cppPct/100),ratFolha=remuneracao*(ratAjustadoPct/100),terceirosFolha=remuneracao*(terceirosPct/100);
-    const encargosFolha=cppFolha+ratFolha+terceirosFolha;
-    const desembolso=remuneracao+custoVT+custoAlim+plano+outros+fgtsRemuneracao+encargosFolha;
+    const cppFolha=remuneracao*(cppPct/100),ratFolha=remuneracao*(ratAjustadoPct/100),terceirosFolha=remuneracao*(terceirosPct/100),especialFolha=remuneracao*(aposentadoriaEspecialPct/100);
+    const indenizacaoCompensatoriaPct=domestico?3.2:0;
+    const indenizacaoRemuneracao=remuneracao*(indenizacaoCompensatoriaPct/100);
+    const encargosFolha=cppFolha+ratFolha+terceirosFolha+especialFolha;
+    const desembolso=remuneracao+custoVT+custoAlim+plano+outros+fgtsRemuneracao+indenizacaoRemuneracao+encargosFolha;
     const ferias=remuneracao/12;
     const terco=ferias/3;
     const fgtsFerias=(ferias+terco)*(fgtsPct/100);
@@ -94,13 +101,14 @@
     const fgtsDecimo=decimo*(fgtsPct/100);
     const aviso=remuneracao/12;
     const fgtsAviso=aviso*(fgtsPct/100);
-    const multaFgtsPct=tipoEmpregado==='aprendiz'?0:Math.min(40,Math.max(0,Number(d.multaFgtsPct)||0));
+    const multaFgtsPct=tipoEmpregado==='aprendiz'||domestico?0:Math.min(40,Math.max(0,Number(d.multaFgtsPct)||0));
     const multaFgts=(fgtsRemuneracao+fgtsFerias+fgtsDecimo+fgtsAviso)*(multaFgtsPct/100);
     const baseEncargosProv=ferias+terco+decimo;
-    const cppProv=baseEncargosProv*(cppPct/100),ratProv=baseEncargosProv*(ratAjustadoPct/100),terceirosProv=baseEncargosProv*(terceirosPct/100);
-    const encargosProv=cppProv+ratProv+terceirosProv;
-    const provisoes=ferias+terco+fgtsFerias+decimo+fgtsDecimo+aviso+fgtsAviso+multaFgts+encargosProv;
-    return {tipoEmpregado,fgtsPct,salario,comissao,diasUteis,diasDsr,dsrComissao,gratificacao,periculosidade,insalubridade,remuneracao,percentualVT,vtBruto,descontoVT,custoVT,percentualAlim,alimBruto,descontoAlim,custoAlim,plano,outros,cppPct,ratPct,fap,ratAjustadoPct,terceirosPct,patronalPct,fgtsRemuneracao,cppFolha,ratFolha,terceirosFolha,encargosFolha,desembolso,ferias,terco,fgtsFerias,decimo,fgtsDecimo,aviso,fgtsAviso,multaFgtsPct,multaFgts,baseEncargosProv,cppProv,ratProv,terceirosProv,encargosProv,provisoes,total:desembolso+provisoes};
+    const cppProv=baseEncargosProv*(cppPct/100),ratProv=baseEncargosProv*(ratAjustadoPct/100),terceirosProv=baseEncargosProv*(terceirosPct/100),especialProv=baseEncargosProv*(aposentadoriaEspecialPct/100);
+    const indenizacaoProv=(ferias+terco+decimo+aviso)*(indenizacaoCompensatoriaPct/100);
+    const encargosProv=cppProv+ratProv+terceirosProv+especialProv;
+    const provisoes=ferias+terco+fgtsFerias+decimo+fgtsDecimo+aviso+fgtsAviso+multaFgts+indenizacaoProv+encargosProv;
+    return {tipoEmpregador,tipoEmpregado,fgtsPct,salario,comissao,diasUteis,diasDsr,dsrComissao,gratificacao,periculosidade,insalubridade,remuneracao,percentualVT,vtBruto,descontoVT,custoVT,percentualAlim,alimBruto,descontoAlim,custoAlim,plano,outros,cppPct,ratPct,fap,ratAjustadoPct,terceirosPct,aposentadoriaEspecialPct,patronalPct,fgtsRemuneracao,cppFolha,ratFolha,terceirosFolha,especialFolha,indenizacaoCompensatoriaPct,indenizacaoRemuneracao,encargosFolha,desembolso,ferias,terco,fgtsFerias,decimo,fgtsDecimo,aviso,fgtsAviso,multaFgtsPct,multaFgts,indenizacaoProv,baseEncargosProv,cppProv,ratProv,terceirosProv,especialProv,encargosProv,provisoes,total:desembolso+provisoes};
   }
   window.CMA_CALCULAR_CUSTO=calcularValores;
 
@@ -109,7 +117,13 @@
   }
 
   function recalcular(){
-    const regime=(document.querySelector('input[name="cma-regime"]:checked')||{}).value||'simples';
+    const tipoEmpregador=opcao('cma-tipo-empregador','pessoa-juridica');
+    const regimeSelecionado=(document.querySelector('input[name="cma-regime"]:checked')||{}).value||'simples';
+    const regime=tipoEmpregador==='caepf'?'caepf':tipoEmpregador==='domestico'?'domestico':regimeSelecionado;
+    const aprendizRadio=document.querySelector('input[name="cma-tipo-empregado"][value="aprendiz"]');
+    const comumRadio=document.querySelector('input[name="cma-tipo-empregado"][value="comum"]');
+    if(aprendizRadio)aprendizRadio.disabled=tipoEmpregador==='domestico';
+    if(tipoEmpregador==='domestico'&&aprendizRadio?.checked&&comumRadio)comumRadio.checked=true;
     const tipoEmpregado=opcao('cma-tipo-empregado','comum');
     const salario=numero('cma-custo-salario');
     const temVT=sim('cma-vt');
@@ -135,17 +149,21 @@
         if(multaEl.dataset.valorComum){multaEl.value=multaEl.dataset.valorComum;delete multaEl.dataset.valorComum;}
       }
     }
-    const v=calcularValores({tipoEmpregado,regime,salario,rat,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),comissao:temComissao?numero('cma-custo-comissao'):0,diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),gratificacao:temGratificacao?numero('cma-custo-gratificacao'):0,risco,grauInsalubridade:grauEl?grauEl.value:0,baseInsalubridade:numero('cma-custo-insal-base'),temVT,vtBruto:numero('cma-custo-vt'),percentualVT:numero('cma-custo-vt-percentual'),temAlim,alimBruto:numero('cma-custo-alim'),percentualAlim:numero('cma-custo-alim-percentual'),plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')});
+    const v=calcularValores({tipoEmpregador,tipoEmpregado,regime,salario,rat,fap:numero('cma-custo-fap'),terceiros:numero('cma-custo-terceiros'),aposentadoriaEspecialPct:numero('cma-custo-aposentadoria-especial'),multaFgtsPct:numero('cma-custo-multa-fgts'),comissao:temComissao?numero('cma-custo-comissao'):0,diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),gratificacao:temGratificacao?numero('cma-custo-gratificacao'):0,risco,grauInsalubridade:grauEl?grauEl.value:0,baseInsalubridade:numero('cma-custo-insal-base'),temVT,vtBruto:numero('cma-custo-vt'),percentualVT:numero('cma-custo-vt-percentual'),temAlim,alimBruto:numero('cma-custo-alim'),percentualAlim:numero('cma-custo-alim-percentual'),plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')});
 
     const reg=document.getElementById('cma-custo-regime-label');
     if(reg)reg.textContent=rotuloRegime(regime);
-    const patronalWrap=document.getElementById('cma-custo-patronal-wrap');if(patronalWrap)patronalWrap.classList.toggle('hidden',regime==='simples');
-    const terceirosWrap=document.getElementById('cma-custo-terceiros-wrap');if(terceirosWrap)terceirosWrap.classList.toggle('hidden',regime!=='nao-simples');
-    const terceirosDetalhe=document.getElementById('cma-custo-terceiros-detalhe');if(terceirosDetalhe)terceirosDetalhe.classList.toggle('hidden',regime!=='nao-simples');
+    const regimeWrap=document.getElementById('cma-custo-regime-empresa-wrap');if(regimeWrap)regimeWrap.classList.toggle('hidden',tipoEmpregador!=='pessoa-juridica');
+    const domesticoWrap=document.getElementById('cma-custo-domestico-wrap');if(domesticoWrap)domesticoWrap.classList.toggle('hidden',tipoEmpregador!=='domestico');
+    const patronalWrap=document.getElementById('cma-custo-patronal-wrap');if(patronalWrap)patronalWrap.classList.toggle('hidden',regime==='simples'||regime==='domestico');
+    const usaTerceiros=regime==='nao-simples'||regime==='caepf';
+    const terceirosWrap=document.getElementById('cma-custo-terceiros-wrap');if(terceirosWrap)terceirosWrap.classList.toggle('hidden',!usaTerceiros);
+    const terceirosDetalhe=document.getElementById('cma-custo-terceiros-detalhe');if(terceirosDetalhe)terceirosDetalhe.classList.toggle('hidden',!usaTerceiros);
+    const multaWrap=document.getElementById('cma-custo-multa-wrap');if(multaWrap)multaWrap.classList.toggle('hidden',tipoEmpregador==='domestico');
     const cnaeStatus=document.getElementById('cma-custo-cnae-status');
-    if(cnaeStatus)cnaeStatus.textContent=regime==='simples'?'A CPP está incluída no DAS nesta opção.':cnae.length<7?'Informe os 7 dígitos do CNAE preponderante para localizar o RAT.':rat?`CNAE localizado na tabela oficial — RAT ${rat}%.`:'CNAE não localizado na tabela oficial utilizada. Confira o código informado.';
+    if(cnaeStatus)cnaeStatus.textContent=regime==='simples'?'A CPP está incluída no DAS nesta opção.':cnae.length<7?'Informe os 7 dígitos da atividade preponderante para localizar o RAT.':rat?`CNAE localizado na tabela oficial — RAT ${rat}%.`:'CNAE não localizado na tabela oficial utilizada. Confira o código informado.';
     const patronalResumo=document.getElementById('cma-custo-patronal-resumo');if(patronalResumo)patronalResumo.innerHTML=`<span>Percentual patronal desta estimativa</span><strong>${v.patronalPct.toFixed(2).replace('.',',')}%</strong>`;
-    const fpasStatus=document.getElementById('cma-custo-fpas-status');if(fpasStatus)fpasStatus.textContent=regime!=='nao-simples'?'No Simples Nacional — Anexo IV não há contribuição a terceiros nesta estimativa.':fpas?`FPAS ${fpas} — código de Terceiros ${fpasDados.codigo} — alíquota ${fpasDados.aliquota.toFixed(1).replace('.',',')}%. Confirme o enquadramento da empresa.`:'Informe o CNAE ou selecione o FPAS para preencher Terceiros.';
+    const fpasStatus=document.getElementById('cma-custo-fpas-status');if(fpasStatus)fpasStatus.textContent=!usaTerceiros?'No Simples Nacional — Anexo IV não há contribuição a terceiros nesta estimativa.':fpas?`FPAS ${fpas} — código de Terceiros ${fpasDados.codigo} — alíquota ${fpasDados.aliquota.toFixed(1).replace('.',',')}%. Confirme o enquadramento do empregador.`:'Informe o CNAE ou selecione o FPAS para preencher Terceiros.';
 
     const caixa=document.getElementById('cma-custo-desembolso');
     if(caixa)caixa.innerHTML=
@@ -161,9 +179,11 @@
       (v.plano?linha('Plano de saúde',v.plano):'')+
       (v.outros?linha('Outros benefícios',v.outros):'')+
       linha(`FGTS sobre remuneração (${v.fgtsPct}%)`,v.fgtsRemuneracao)+
+      (v.indenizacaoRemuneracao?linha(`Indenização compensatória do doméstico (${v.indenizacaoCompensatoriaPct}%)`,v.indenizacaoRemuneracao):'')+
       (v.cppFolha?linha(`CPP sobre remuneração (${v.cppPct}%)`,v.cppFolha):'')+
       (v.ratFolha?linha(`RAT ajustado pelo FAP (${v.ratAjustadoPct.toFixed(2).replace('.',',')}%)`,v.ratFolha):'')+
       (v.terceirosFolha?linha(`Terceiros (${v.terceirosPct.toFixed(2).replace('.',',')}%)`,v.terceirosFolha):'')+
+      (v.especialFolha?linha(`Aposentadoria especial (${v.aposentadoriaEspecialPct}%)`,v.especialFolha):'')+
       linha('Subtotal mensal',v.desembolso,'cma-custo-total-linha');
 
     const prov=document.getElementById('cma-custo-provisoes');
@@ -176,9 +196,11 @@
       linha('Aviso-prévio sobre a remuneração',v.aviso)+
       linha(`FGTS sobre aviso-prévio (${v.fgtsPct}%)`,v.fgtsAviso)+
       (v.multaFgtsPct?linha(`Provisão da multa do FGTS (${v.multaFgtsPct}%)`,v.multaFgts):'')+
+      (v.indenizacaoProv?linha(`Indenização compensatória do doméstico (${v.indenizacaoCompensatoriaPct}%)`,v.indenizacaoProv):'')+
       (v.cppProv?linha(`CPP sobre férias, 1/3 e 13º (${v.cppPct}%)`,v.cppProv):'')+
       (v.ratProv?linha(`RAT ajustado sobre férias, 1/3 e 13º (${v.ratAjustadoPct.toFixed(2).replace('.',',')}%)`,v.ratProv):'')+
       (v.terceirosProv?linha(`Terceiros sobre férias, 1/3 e 13º (${v.terceirosPct.toFixed(2).replace('.',',')}%)`,v.terceirosProv):'')+
+      (v.especialProv?linha(`Aposentadoria especial sobre férias, 1/3 e 13º (${v.aposentadoriaEspecialPct}%)`,v.especialProv):'')+
       linha('Subtotal de provisões',v.provisoes,'cma-custo-total-linha');
 
     const t=document.getElementById('cma-custo-total');if(t)t.textContent=moeda(v.total);
@@ -228,24 +250,38 @@
       <div id="exp-custo-empregado" class="hidden bg-slate-100 border border-slate-300 p-3 rounded mb-4 text-xs text-slate-700 space-y-2">
         <p><strong>Desembolso mensal:</strong> valores que normalmente representam saída de caixa no mês, como salário, benefícios e encargos correntes.</p>
         <p><strong>Provisões:</strong> valores mensais estimados para obrigações que serão pagas em períodos futuros, como férias, 13º salário, aviso-prévio e multa do FGTS.</p>
-        <p><strong>Encargos patronais:</strong> a calculadora separa CPP, RAT ajustado pelo FAP e contribuições a terceiros. O CNAE preponderante localiza o RAT; o FAP e a alíquota de terceiros devem ser confirmados nos dados da empresa.</p>
+        <p><strong>Encargos patronais:</strong> a calculadora diferencia pessoa jurídica, pessoa física com CAEPF e empregador doméstico. Quando aplicável, separa CPP, RAT ajustado pelo FAP, contribuições a terceiros e adicional para aposentadoria especial.</p>
       </div>
 
       <div class="cma-custo-grid">
         <div class="cma-custo-card cma-custo-form">
           <h4>1. Dados para o cálculo</h4>
+          <label class="cma-custo-label">Tipo de empregador</label>
+          <div class="cma-custo-segmentado cma-custo-segmentado-tres">
+            <label><input type="radio" name="cma-tipo-empregador" value="pessoa-juridica" checked><span>Pessoa jurídica</span></label>
+            <label><input type="radio" name="cma-tipo-empregador" value="caepf"><span>Pessoa física — CAEPF</span></label>
+            <label><input type="radio" name="cma-tipo-empregador" value="domestico"><span>Empregador doméstico</span></label>
+          </div>
+
           <label class="cma-custo-label">Tipo de empregado</label>
           <div class="cma-custo-segmentado">
             <label><input type="radio" name="cma-tipo-empregado" value="comum" checked><span>Empregado comum</span></label>
-            <label><input type="radio" name="cma-tipo-empregado" value="aprendiz"><span>Jovem aprendiz</span></label>
+            <label id="cma-custo-aprendiz-opcao"><input type="radio" name="cma-tipo-empregado" value="aprendiz"><span>Jovem aprendiz</span></label>
           </div>
           <small id="cma-custo-aprendiz-aviso" class="hidden cma-custo-ajuda">Para o contrato de aprendizagem, o FGTS será calculado em 2% e não haverá provisão da multa de 40%, considerando o término normal do contrato.</small>
 
-          <label class="cma-custo-label">Regime da empresa</label>
-          <div class="cma-custo-segmentado cma-custo-segmentado-tres">
-            <label><input type="radio" name="cma-regime" value="simples" checked><span>Simples — CPP no DAS</span></label>
-            <label><input type="radio" name="cma-regime" value="simples-anexo-iv"><span>Simples — Anexo IV</span></label>
-            <label><input type="radio" name="cma-regime" value="nao-simples"><span>Não optante pelo Simples</span></label>
+          <div id="cma-custo-regime-empresa-wrap">
+            <label class="cma-custo-label">Regime da empresa</label>
+            <div class="cma-custo-segmentado cma-custo-segmentado-tres">
+              <label><input type="radio" name="cma-regime" value="simples" checked><span>Simples — CPP no DAS</span></label>
+              <label><input type="radio" name="cma-regime" value="simples-anexo-iv"><span>Simples — Anexo IV</span></label>
+              <label><input type="radio" name="cma-regime" value="nao-simples"><span>Não optante pelo Simples</span></label>
+            </div>
+          </div>
+
+          <div id="cma-custo-domestico-wrap" class="hidden cma-custo-subform">
+            <div class="cma-custo-resultado-campo"><span>Encargos fixos do empregador doméstico</span><strong>8% INSS + 0,8% GILRAT + 8% FGTS + 3,2% indenização</strong></div>
+            <small class="cma-custo-ajuda">A indenização compensatória de 3,2% é calculada mensalmente. CNAE, FAP, FPAS e Terceiros não se aplicam a esta opção.</small>
           </div>
 
           <div id="cma-custo-patronal-wrap" class="hidden cma-custo-subform cma-custo-patronal">
@@ -261,6 +297,9 @@
               <div><label class="cma-custo-label" for="cma-custo-terceiros">Alíquota de Terceiros</label><div class="cma-custo-percentual"><input id="cma-custo-terceiros" type="number" value="0" readonly><span>%</span></div></div>
             </div>
             <small id="cma-custo-fpas-status" class="cma-custo-ajuda"></small>
+            <label class="cma-custo-label" for="cma-custo-aposentadoria-especial">Exposição que gera aposentadoria especial</label>
+            <select id="cma-custo-aposentadoria-especial" class="cma-custo-select"><option value="0">Não se aplica</option><option value="6">25 anos — adicional de 6%</option><option value="9">20 anos — adicional de 9%</option><option value="12">15 anos — adicional de 12%</option></select>
+            <small class="cma-custo-ajuda">Selecione somente quando o enquadramento estiver caracterizado no LTCAT/PPP e informado no S-2240. O simples pagamento de insalubridade não gera esse adicional automaticamente.</small>
             <div id="cma-custo-patronal-resumo" class="cma-custo-resultado-campo"><span>Percentual patronal desta estimativa</span><strong>0,00%</strong></div>
             <small class="cma-custo-ajuda">O CNAE define o RAT básico e sugere o FPAS. O FAP é específico da empresa. O código e a alíquota de Terceiros são preenchidos pelo FPAS, que deve ser confirmado nos dados tributários da empresa.</small>
           </div>
@@ -268,8 +307,8 @@
           <label class="cma-custo-label" for="cma-custo-salario">Salário base</label>
           <div class="cma-custo-money"><span>R$</span><input id="cma-custo-salario" type="number" min="0" step="0.01" value="0"></div>
 
-          <label class="cma-custo-label" for="cma-custo-multa-fgts">Provisão da multa do FGTS</label>
-          <select id="cma-custo-multa-fgts" class="cma-custo-select"><option value="40">40% — dispensa sem justa causa</option><option value="20">20% — acordo entre as partes</option><option value="0">Sem provisão de multa</option></select>
+          <div id="cma-custo-multa-wrap"><label class="cma-custo-label" for="cma-custo-multa-fgts">Provisão da multa do FGTS</label>
+          <select id="cma-custo-multa-fgts" class="cma-custo-select"><option value="40">40% — dispensa sem justa causa</option><option value="20">20% — acordo entre as partes</option><option value="0">Sem provisão de multa</option></select></div>
 
           <div class="cma-custo-pergunta"><div><strong>Recebe comissão?</strong><small>A comissão e o DSR calculado integram a remuneração da estimativa.</small></div><div class="cma-custo-simnao"><label><input type="radio" name="cma-comissao" value="nao" checked><span>Não</span></label><label><input type="radio" name="cma-comissao" value="sim"><span>Sim</span></label></div></div>
           <div id="cma-custo-comissao-wrap" class="hidden cma-custo-subform">
@@ -326,6 +365,7 @@
               <div><strong>DSR sobre comissão:</strong> comissões ÷ dias úteis × domingos e feriados. As quantidades são preenchidas automaticamente conforme a competência e o calendário do Manual.</div>
               <div><strong>Periculosidade:</strong> 30% do salário base, sem acrescentar gratificação ou comissão à base.</div>
               <div><strong>Insalubridade:</strong> base informada × grau selecionado (10%, 20% ou 40%). A base deve ser confirmada conforme a regra aplicável.</div>
+              <div><strong>Aposentadoria especial:</strong> o adicional previdenciário de 6%, 9% ou 12% somente é aplicado quando selecionado conforme o enquadramento técnico. Insalubridade e aposentadoria especial são critérios diferentes.</div>
               <div><strong>Férias:</strong> base remuneratória estimada ÷ 12. O valor representa uma provisão mensal.</div>
               <div><strong>1/3 de férias:</strong> valor mensal das férias ÷ 3.</div>
               <div><strong>13º salário:</strong> base remuneratória estimada ÷ 12.</div>
@@ -334,7 +374,7 @@
               <div><strong>Multa do FGTS:</strong> aplica a opção selecionada (40%, 20% ou sem provisão) sobre os valores de FGTS considerados pela calculadora. Para jovem aprendiz, a provisão fica desativada, considerando o término normal do contrato.</div>
               <div><strong>Vale-transporte:</strong> do valor médio mensal informado é descontado o percentual escolhido, limitado a 6% do salário base e ao próprio valor do benefício.</div>
               <div><strong>Vale-alimentação / refeição:</strong> do valor médio mensal informado é descontado o percentual escolhido, limitado a 20% nesta estimativa, ficando o restante como custo da empresa.</div>
-              <div><strong>Encargos patronais:</strong> CPP de 20% quando aplicável + RAT do CNAE ajustado pelo FAP + terceiros informados. O aviso-prévio indenizado não compõe essa base patronal.</div>
+              <div><strong>Encargos patronais:</strong> para pessoa jurídica ou CAEPF, considera CPP de 20% quando aplicável + RAT ajustado pelo FAP + terceiros + eventual adicional de aposentadoria especial. Para empregador doméstico, utiliza 8% de contribuição patronal, 0,8% de GILRAT e indenização compensatória de 3,2%. O aviso-prévio indenizado não compõe a base patronal.</div>
             </div>
             <div id="cma-custo-provisoes"></div>
           </div>
@@ -350,7 +390,7 @@
     }
 
     const style=document.createElement('style');style.id='cma-custo-style';style.textContent=`
-      .cma-custo-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}.cma-custo-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.05)}.cma-custo-card h4{margin:0 0 16px;color:#172554;font-size:17px;font-weight:800}.cma-custo-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.cma-custo-card-head h4{margin:0}.cma-custo-formula-btn{padding:7px 10px;border:1px solid #bfdbfe;border-radius:8px;background:#eff6ff;color:#1e3a8a;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}.cma-custo-formula-btn:hover{background:#dbeafe}.cma-custo-formulas{margin:0 0 14px;padding:13px 14px;border-left:4px solid #2563eb;border-radius:0 10px 10px 0;background:#f8fafc;color:#475569;font-size:12.5px;line-height:1.55}.cma-custo-formulas>div+div{margin-top:8px}.cma-custo-formulas strong{color:#172554}.cma-custo-label{display:block;margin:14px 0 6px;color:#334155;font-size:14px;font-weight:700}.cma-custo-label small{font-weight:500;color:#94a3b8}.cma-custo-money,.cma-custo-percentual{display:flex;align-items:center;border:1px solid #cbd5e1;border-radius:9px;background:#fff;overflow:hidden}.cma-custo-money span,.cma-custo-percentual span{padding:11px 10px;background:#f8fafc;border-right:1px solid #e2e8f0;color:#64748b;font-weight:700}.cma-custo-money input,.cma-custo-percentual input{width:100%;padding:11px 12px;outline:none;color:#0f172a;font-size:16px}.cma-custo-money:focus-within,.cma-custo-percentual:focus-within{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}.cma-custo-number,.cma-custo-select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#0f172a;font-size:15px;outline:none}.cma-custo-number[readonly]{background:#eef2f7;color:#475569;font-weight:800;cursor:default}.cma-custo-number:focus,.cma-custo-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}.cma-custo-segmentado{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cma-custo-segmentado-tres{grid-template-columns:repeat(3,1fr);margin-top:9px}.cma-custo-segmentado input,.cma-custo-simnao input{position:absolute;opacity:0}.cma-custo-segmentado span,.cma-custo-simnao span{display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#475569;font-size:13px;font-weight:700;cursor:pointer;text-align:center}.cma-custo-segmentado input:checked+span,.cma-custo-simnao input:checked+span{background:#172554;color:#fff;border-color:#172554}.cma-custo-pergunta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid #eef2f7;color:#334155}.cma-custo-pergunta-bloco{display:block}.cma-custo-pergunta strong{display:block;font-size:14px}.cma-custo-pergunta small{display:block;margin-top:2px;color:#94a3b8;font-size:12px}.cma-custo-simnao{display:grid;grid-template-columns:58px 58px;gap:6px;flex:0 0 auto}.cma-custo-subform{margin-top:10px;padding:12px 13px;border:1px solid #dbe5f1;border-radius:10px;background:#f8fafc}.cma-custo-subform .cma-custo-label{margin-top:0}.cma-custo-duas-colunas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cma-custo-duas-colunas>div{display:flex;flex-direction:column}.cma-custo-duas-colunas>div>.cma-custo-money,.cma-custo-duas-colunas>div>.cma-custo-percentual{margin-top:auto}.cma-custo-ajuda{display:block;margin-top:8px;color:#64748b;font-size:11.5px;line-height:1.45}.cma-custo-resultado-campo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:9px 10px;border-radius:8px;background:#eaf2ff;color:#334155;font-size:12px}.cma-custo-resultado-campo strong{color:#172554;text-align:right}.cma-custo-resultados{display:flex;flex-direction:column;gap:14px}.cma-custo-resumo{padding:22px;border-radius:14px;background:linear-gradient(135deg,#061a46,#082f7d);color:#fff;box-shadow:0 10px 28px rgba(8,47,125,.18)}.cma-custo-resumo>span{display:block;color:#bfdbfe;font-size:12px;font-weight:700}.cma-custo-resumo small{display:block;margin-top:11px;color:#dbeafe;font-size:13px}.cma-custo-resumo strong{display:block;margin-top:3px;font-size:34px;line-height:1.15}.cma-custo-resumo em{display:block;margin-top:6px;color:#fbbf24;font-size:12px;font-style:normal;font-weight:700}.cma-custo-linha{display:flex;justify-content:space-between;gap:18px;padding:8px 0;border-bottom:1px solid #f1f5f9;color:#475569;font-size:13px}.cma-custo-linha span{max-width:72%}.cma-custo-linha strong{color:#1e293b;white-space:nowrap}.cma-custo-desconto strong{color:#b91c1c}.cma-custo-sub{padding-left:12px;background:#f8fafc}.cma-custo-total-linha{margin-top:4px;padding-top:12px;border-top:2px solid #dbeafe;border-bottom:0;font-weight:800;color:#172554}.cma-custo-total-linha strong{color:#172554;font-size:14px}@media(max-width:800px){.cma-custo-grid{grid-template-columns:1fr}.cma-custo-card{padding:15px}.cma-custo-card-head{align-items:flex-start;flex-direction:column}.cma-custo-formula-btn{width:100%;font-size:13px}.cma-custo-formulas{font-size:14px}.cma-custo-segmentado{grid-template-columns:1fr}.cma-custo-segmentado-tres{grid-template-columns:1fr}.cma-custo-pergunta{align-items:flex-start;flex-direction:column}.cma-custo-simnao{width:100%;grid-template-columns:1fr 1fr}.cma-custo-duas-colunas{grid-template-columns:1fr}.cma-custo-number,.cma-custo-select,.cma-custo-percentual input{font-size:16px}.cma-custo-resultado-campo{align-items:flex-start;flex-direction:column}.cma-custo-resultado-campo strong{text-align:left}.cma-custo-resumo strong{font-size:30px}.cma-custo-linha{font-size:14px;line-height:1.45}.cma-custo-linha span{max-width:68%}}`;
+      .cma-custo-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}.cma-custo-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.05)}.cma-custo-card h4{margin:0 0 16px;color:#172554;font-size:17px;font-weight:800}.cma-custo-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.cma-custo-card-head h4{margin:0}.cma-custo-formula-btn{padding:7px 10px;border:1px solid #bfdbfe;border-radius:8px;background:#eff6ff;color:#1e3a8a;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}.cma-custo-formula-btn:hover{background:#dbeafe}.cma-custo-formulas{margin:0 0 14px;padding:13px 14px;border-left:4px solid #2563eb;border-radius:0 10px 10px 0;background:#f8fafc;color:#475569;font-size:12.5px;line-height:1.55}.cma-custo-formulas>div+div{margin-top:8px}.cma-custo-formulas strong{color:#172554}.cma-custo-label{display:block;margin:14px 0 6px;color:#334155;font-size:14px;font-weight:700}.cma-custo-label small{font-weight:500;color:#94a3b8}.cma-custo-money,.cma-custo-percentual{display:flex;align-items:center;border:1px solid #cbd5e1;border-radius:9px;background:#fff;overflow:hidden}.cma-custo-money span,.cma-custo-percentual span{padding:11px 10px;background:#f8fafc;border-right:1px solid #e2e8f0;color:#64748b;font-weight:700}.cma-custo-money input,.cma-custo-percentual input{width:100%;padding:11px 12px;outline:none;color:#0f172a;font-size:16px}.cma-custo-money:focus-within,.cma-custo-percentual:focus-within{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}.cma-custo-number,.cma-custo-select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#0f172a;font-size:15px;outline:none}.cma-custo-number[readonly]{background:#eef2f7;color:#475569;font-weight:800;cursor:default}.cma-custo-number:focus,.cma-custo-select:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.1)}.cma-custo-segmentado{display:grid;grid-template-columns:1fr 1fr;gap:8px}.cma-custo-segmentado-tres{grid-template-columns:repeat(3,1fr);margin-top:9px}.cma-custo-segmentado input,.cma-custo-simnao input{position:absolute;opacity:0}.cma-custo-segmentado span,.cma-custo-simnao span{display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid #cbd5e1;border-radius:9px;background:#fff;color:#475569;font-size:13px;font-weight:700;cursor:pointer;text-align:center}.cma-custo-segmentado input:checked+span,.cma-custo-simnao input:checked+span{background:#172554;color:#fff;border-color:#172554}.cma-custo-segmentado input:disabled+span{background:#f1f5f9;color:#94a3b8;cursor:not-allowed}.cma-custo-pergunta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid #eef2f7;color:#334155}.cma-custo-pergunta-bloco{display:block}.cma-custo-pergunta strong{display:block;font-size:14px}.cma-custo-pergunta small{display:block;margin-top:2px;color:#94a3b8;font-size:12px}.cma-custo-simnao{display:grid;grid-template-columns:58px 58px;gap:6px;flex:0 0 auto}.cma-custo-subform{margin-top:10px;padding:12px 13px;border:1px solid #dbe5f1;border-radius:10px;background:#f8fafc}.cma-custo-subform .cma-custo-label{margin-top:0}.cma-custo-duas-colunas{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cma-custo-duas-colunas>div{display:flex;flex-direction:column}.cma-custo-duas-colunas>div>.cma-custo-money,.cma-custo-duas-colunas>div>.cma-custo-percentual{margin-top:auto}.cma-custo-ajuda{display:block;margin-top:8px;color:#64748b;font-size:11.5px;line-height:1.45}.cma-custo-resultado-campo{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:9px 10px;border-radius:8px;background:#eaf2ff;color:#334155;font-size:12px}.cma-custo-resultado-campo strong{color:#172554;text-align:right}.cma-custo-resultados{display:flex;flex-direction:column;gap:14px}.cma-custo-resumo{padding:22px;border-radius:14px;background:linear-gradient(135deg,#061a46,#082f7d);color:#fff;box-shadow:0 10px 28px rgba(8,47,125,.18)}.cma-custo-resumo>span{display:block;color:#bfdbfe;font-size:12px;font-weight:700}.cma-custo-resumo small{display:block;margin-top:11px;color:#dbeafe;font-size:13px}.cma-custo-resumo strong{display:block;margin-top:3px;font-size:34px;line-height:1.15}.cma-custo-resumo em{display:block;margin-top:6px;color:#fbbf24;font-size:12px;font-style:normal;font-weight:700}.cma-custo-linha{display:flex;justify-content:space-between;gap:18px;padding:8px 0;border-bottom:1px solid #f1f5f9;color:#475569;font-size:13px}.cma-custo-linha span{max-width:72%}.cma-custo-linha strong{color:#1e293b;white-space:nowrap}.cma-custo-desconto strong{color:#b91c1c}.cma-custo-sub{padding-left:12px;background:#f8fafc}.cma-custo-total-linha{margin-top:4px;padding-top:12px;border-top:2px solid #dbeafe;border-bottom:0;font-weight:800;color:#172554}.cma-custo-total-linha strong{color:#172554;font-size:14px}@media(max-width:800px){.cma-custo-grid{grid-template-columns:1fr}.cma-custo-card{padding:15px}.cma-custo-card-head{align-items:flex-start;flex-direction:column}.cma-custo-formula-btn{width:100%;font-size:13px}.cma-custo-formulas{font-size:14px}.cma-custo-segmentado{grid-template-columns:1fr}.cma-custo-segmentado-tres{grid-template-columns:1fr}.cma-custo-pergunta{align-items:flex-start;flex-direction:column}.cma-custo-simnao{width:100%;grid-template-columns:1fr 1fr}.cma-custo-duas-colunas{grid-template-columns:1fr}.cma-custo-number,.cma-custo-select,.cma-custo-percentual input{font-size:16px}.cma-custo-resultado-campo{align-items:flex-start;flex-direction:column}.cma-custo-resultado-campo strong{text-align:left}.cma-custo-resumo strong{font-size:30px}.cma-custo-linha{font-size:14px;line-height:1.45}.cma-custo-linha span{max-width:68%}}`;
     document.head.appendChild(style);
 
     section.querySelectorAll('input:not(#cma-custo-competencia)').forEach(i=>i.addEventListener('input',()=>{if(i.id==='cma-custo-cnae'){i.value=formatarCnae(i.value);const f=document.getElementById('cma-custo-fpas');if(f)delete f.dataset.manual;}recalcular();}));
