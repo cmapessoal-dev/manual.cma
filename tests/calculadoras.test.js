@@ -266,7 +266,7 @@ test('Custo do Empregado — jovem aprendiz usa FGTS de 2% e não provisiona mul
   assert.equal(dom.window.document.getElementById('cma-custo-multa-fgts').disabled, true);
 });
 
-test('Custo do Empregado — CAEPF calcula patronal, RAT, Terceiros e aposentadoria especial', () => {
+test('Custo do Empregado — CAEPF usa Terceiros fixos em 4,50%', () => {
   const dom = criarAmbiente();
   carregar(dom, 'calculadora-custo/calculadora-custo.js');
   const r = dom.window.CMA_CALCULAR_CUSTO({
@@ -274,9 +274,9 @@ test('Custo do Empregado — CAEPF calcula patronal, RAT, Terceiros e aposentado
   });
   perto(r.cppPct, 20);
   perto(r.ratAjustadoPct, 1);
-  perto(r.terceirosPct, 2.7);
+  perto(r.terceirosPct, 4.5);
   perto(r.aposentadoriaEspecialPct, 6);
-  perto(r.patronalPct, 29.7);
+  perto(r.patronalPct, 31.5);
   perto(r.especialFolha, 180);
 });
 
