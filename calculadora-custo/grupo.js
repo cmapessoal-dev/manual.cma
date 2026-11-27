@@ -7,31 +7,31 @@
   function textoGrupo(idGrupo,idPadrao){return texto(idGrupo)||texto(idPadrao);}
   function numero(id){const n=parseFloat(String(texto(id)||'0').replace(',','.'));return Number.isFinite(n)?n:0;}
   function opcao(nome,padrao=''){const el=document.querySelector(`input[name="${nome}"]:checked`);return el?el.value:padrao;}
-  function rotuloRegime(regime){return regime==='simples-anexo-iv'?'Simples — Anexo IV':regime==='nao-simples'?'Não optante pelo Simples':'Simples — CPP no DAS';}
+  function rotuloRegime(regime){return regime==='domestico'?'Empregador doméstico':regime==='caepf'?'Pessoa física — CAEPF':regime==='simples-anexo-iv'?'Simples — Anexo IV':regime==='nao-simples'?'Não optante pelo Simples':'Simples — CPP no DAS';}
   function escapar(valor){return String(valor||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
   function idNovo(){return window.crypto&&crypto.randomUUID?crypto.randomUUID():`cma-${Date.now()}-${Math.random().toString(16).slice(2)}`;}
 
   function garantirIdentificacao(secao){
     const form=secao.querySelector('.cma-custo-form');
-    const regime=[...form.querySelectorAll('.cma-custo-label')].find(x=>(x.textContent||'').includes('Regime da empresa'));
-    if(!form||!regime)return;
+    const ancora=form?.querySelector('#cma-custo-regime-empresa-wrap')||form?.querySelector('.cma-custo-label');
+    if(!form||!ancora)return;
     if(!document.getElementById('cma-custo-grupo-identificacao')){
       const grupo=document.createElement('div');
       grupo.id='cma-custo-grupo-identificacao';grupo.className='cma-custo-identificacao cma-grupo-identificacao cma-grupo-hidden';
       grupo.innerHTML='<div><label class="cma-custo-label" for="cma-custo-grupo-empresa-campo">Empresa</label><input id="cma-custo-grupo-empresa-campo" class="cma-custo-texto" type="text" autocomplete="organization" placeholder="Nome da empresa"></div><div><label class="cma-custo-label" for="cma-custo-grupo-empregado-campo">Nome do empregado</label><input id="cma-custo-grupo-empregado-campo" class="cma-custo-texto" type="text" autocomplete="off" placeholder="Nome do empregado"></div>';
-      form.insertBefore(grupo,regime);
+      form.insertBefore(grupo,ancora);
     }
     if(document.getElementById('cma-custo-empresa'))return;
     const bloco=document.createElement('div');
     bloco.className='cma-custo-identificacao';
     bloco.innerHTML='<div><label class="cma-custo-label" for="cma-custo-empresa">Empresa</label><input id="cma-custo-empresa" class="cma-custo-texto" type="text" autocomplete="organization" placeholder="Nome da empresa"></div><div><label class="cma-custo-label" for="cma-custo-empregado">Nome do empregado</label><input id="cma-custo-empregado" class="cma-custo-texto" type="text" autocomplete="name" placeholder="Nome do empregado"></div>';
-    form.insertBefore(bloco,regime);
+    form.insertBefore(bloco,ancora);
   }
 
   function lerAtual(){
     const bruto={
-      empresa:textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),nome:textoGrupo('cma-custo-grupo-empregado-campo','cma-custo-empregado'),tipoEmpregado:opcao('cma-tipo-empregado','comum'),regime:opcao('cma-regime','simples'),
-      cnae:texto('cma-custo-cnae'),rat:Number((window.CMA_CNAE_RAT||{})[texto('cma-custo-cnae').replace(/\D/g,'')])||0,fap:numero('cma-custo-fap'),fpas:texto('cma-custo-fpas'),codigoTerceiros:texto('cma-custo-codigo-terceiros'),terceiros:numero('cma-custo-terceiros'),multaFgtsPct:numero('cma-custo-multa-fgts'),
+      empresa:textoGrupo('cma-custo-grupo-empresa-campo','cma-custo-empresa'),nome:textoGrupo('cma-custo-grupo-empregado-campo','cma-custo-empregado'),tipoEmpregador:opcao('cma-tipo-empregador','pessoa-juridica'),tipoEmpregado:opcao('cma-tipo-empregado','comum'),regime:opcao('cma-regime','simples'),
+      cnae:texto('cma-custo-cnae'),rat:Number((window.CMA_CNAE_RAT||{})[texto('cma-custo-cnae').replace(/\D/g,'')])||0,fap:numero('cma-custo-fap'),fpas:texto('cma-custo-fpas'),codigoTerceiros:texto('cma-custo-codigo-terceiros'),terceiros:numero('cma-custo-terceiros'),aposentadoriaEspecialPct:numero('cma-custo-aposentadoria-especial'),multaFgtsPct:numero('cma-custo-multa-fgts'),
       salario:numero('cma-custo-salario'),temComissao:opcao('cma-comissao','nao')==='sim',comissao:numero('cma-custo-comissao'),
       competencia:texto('cma-custo-competencia'),diasUteis:numero('cma-custo-dias-uteis'),diasDsr:numero('cma-custo-dias-dsr'),
       temGratificacao:opcao('cma-gratificacao','nao')==='sim',gratificacao:numero('cma-custo-gratificacao'),
@@ -41,7 +41,7 @@
       plano:numero('cma-custo-plano'),outros:numero('cma-custo-outros')
     };
     const calculo=window.CMA_CALCULAR_CUSTO({
-      tipoEmpregado:bruto.tipoEmpregado,regime:bruto.regime,rat:bruto.rat,fap:bruto.fap,terceiros:bruto.terceiros,multaFgtsPct:bruto.multaFgtsPct,salario:bruto.salario,comissao:bruto.temComissao?bruto.comissao:0,diasUteis:bruto.diasUteis,diasDsr:bruto.diasDsr,
+      tipoEmpregador:bruto.tipoEmpregador,tipoEmpregado:bruto.tipoEmpregado,regime:bruto.regime,rat:bruto.rat,fap:bruto.fap,terceiros:bruto.terceiros,aposentadoriaEspecialPct:bruto.aposentadoriaEspecialPct,multaFgtsPct:bruto.multaFgtsPct,salario:bruto.salario,comissao:bruto.temComissao?bruto.comissao:0,diasUteis:bruto.diasUteis,diasDsr:bruto.diasDsr,
       gratificacao:bruto.temGratificacao?bruto.gratificacao:0,risco:bruto.risco,grauInsalubridade:bruto.grauInsalubridade,
       baseInsalubridade:bruto.baseInsalubridade,temVT:bruto.temVT,vtBruto:bruto.vtBruto,percentualVT:bruto.percentualVT,
       temAlim:bruto.temAlim,alimBruto:bruto.alimBruto,percentualAlim:bruto.percentualAlim,plano:bruto.plano,outros:bruto.outros
@@ -83,7 +83,7 @@
       <div><span>Provisões</span><strong>${moeda(t.provisoes)}</strong></div>
       <div class="cma-grupo-total"><span>Custo total mensal</span><strong>${moeda(t.total)}</strong></div>`;
     lista.innerHTML=funcionarios.map((f,i)=>`<article class="cma-grupo-item" data-id="${f.id}">
-      <div class="cma-grupo-numero">${i+1}</div><div class="cma-grupo-dados"><strong>${escapar(f.bruto.nome)}</strong><span>${f.bruto.tipoEmpregado==='aprendiz'?'Jovem aprendiz':'Empregado comum'} • ${escapar(rotuloRegime(f.bruto.regime))} • Salário ${moeda(f.bruto.salario)}</span></div>
+      <div class="cma-grupo-numero">${i+1}</div><div class="cma-grupo-dados"><strong>${escapar(f.bruto.nome)}</strong><span>${f.bruto.tipoEmpregado==='aprendiz'?'Jovem aprendiz':'Empregado comum'} • ${escapar(rotuloRegime(f.calculo.tipoEmpregador==='caepf'?'caepf':f.calculo.tipoEmpregador==='domestico'?'domestico':f.bruto.regime))} • Salário ${moeda(f.bruto.salario)}</span></div>
       <div class="cma-grupo-valor"><span>Custo mensal</span><strong>${moeda(f.calculo.total)}</strong></div>
       <div class="cma-grupo-acoes"><button type="button" data-acao="editar">Editar</button><button type="button" data-acao="duplicar">Duplicar</button><button type="button" data-acao="excluir" class="cma-grupo-excluir">Excluir</button></div>
     </article>`).join('');
@@ -104,9 +104,10 @@
     definirValor('cma-custo-grupo-empregado-campo',bruto.nome);
     definirValor('cma-custo-empresa',bruto.empresa);
     definirValor('cma-custo-empregado',bruto.nome);
+    definirRadio('cma-tipo-empregador',bruto.tipoEmpregador||'pessoa-juridica');
     definirRadio('cma-tipo-empregado',bruto.tipoEmpregado||'comum');
     definirRadio('cma-regime',bruto.regime);
-    definirValor('cma-custo-cnae',bruto.cnae);definirValor('cma-custo-fap',bruto.fap);definirValor('cma-custo-fpas',bruto.fpas,'change');definirValor('cma-custo-multa-fgts',bruto.multaFgtsPct,'change');
+    definirValor('cma-custo-cnae',bruto.cnae);definirValor('cma-custo-fap',bruto.fap);definirValor('cma-custo-fpas',bruto.fpas,'change');definirValor('cma-custo-aposentadoria-especial',bruto.aposentadoriaEspecialPct||0,'change');definirValor('cma-custo-multa-fgts',bruto.multaFgtsPct,'change');
     definirValor('cma-custo-salario',bruto.salario);
     definirRadio('cma-comissao',bruto.temComissao?'sim':'nao');definirValor('cma-custo-comissao',bruto.comissao);
     definirValor('cma-custo-competencia',bruto.competencia,'change');
@@ -118,11 +119,11 @@
   }
 
   function limpar(){
-    const {empresa,regime,competencia,cnae,fap,fpas}=lerAtual().bruto;
+    const {empresa,tipoEmpregador,regime,competencia,cnae,fap,fpas,aposentadoriaEspecialPct}=lerAtual().bruto;
     const multa=document.getElementById('cma-custo-multa-fgts');
     const multaFgtsPct=multa?.dataset.valorComum??multa?.value??40;
     editandoId=null;
-    aplicar({empresa,nome:'',tipoEmpregado:'comum',regime,cnae,fap,fpas,multaFgtsPct,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
+    aplicar({empresa,nome:'',tipoEmpregador,tipoEmpregado:'comum',regime,cnae,fap,fpas,aposentadoriaEspecialPct,multaFgtsPct,salario:0,temComissao:false,comissao:0,competencia,diasUteis:0,diasDsr:0,temGratificacao:false,gratificacao:0,risco:'nenhum',grauInsalubridade:10,baseInsalubridade:0,temVT:false,vtBruto:0,percentualVT:6,temAlim:false,alimBruto:0,percentualAlim:20,plano:0,outros:0});
     atualizarBotaoSalvar();
     (document.getElementById('cma-custo-grupo-empregado-campo')||document.getElementById('cma-custo-empregado'))?.focus();
   }
